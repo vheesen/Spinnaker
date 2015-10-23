@@ -1,0 +1,3 @@
+double synchrotron (double x);
+
+
