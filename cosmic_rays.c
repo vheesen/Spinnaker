@@ -85,7 +85,7 @@ void gamma_cr (void)
                    cr[i][j-1].N, cr[i][j-1].E); 
             printf("gamma= %g\n", - log (cr[i][j+1].N / cr[i][j-1].N) / 
                    log (cr[i][j+1].E / cr[i][j-1].E));
-            printf("Stop at i = %d j = %d.\n", i, j);
+            printf("Stop at i = %ld j = %ld\n", i, j);
             exit(0);
         }
         cr[i][j].gamma = - log (cr[i][j+1].N / cr[i][j-1].N) / 
@@ -261,7 +261,7 @@ struct grid_1d setup_initial_grid (void)
 
     printf ("E(1)=%g\n", cr[1][1].E);
     
-
+    
 
 }
 
