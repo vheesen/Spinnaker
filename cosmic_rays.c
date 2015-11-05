@@ -261,6 +261,7 @@ struct grid_1d setup_initial_grid (void)
 
     printf ("E(1)=%g\n", cr[1][1].E);
     
+    return cr[i][j];
     
 
 }
