@@ -317,18 +317,19 @@ void output_file (long i_max)
     
     double alpha1, alpha2, alpha3, alpha4, alpha5, alpha6;
     long integrate_true_1, integrate_true_2, integrate_true_3, integrate_true_4, integrate_true_5, integrate_true_6;
-    double x_spec_1[402][402], x_spec_2[402][402], x_spec_3[402][402], x_spec_4[402][402], x_spec_5[402][402], x_spec_6[402][402];
+//    double x_spec_1[402][402], x_spec_2[402][402], x_spec_3[402][402], x_spec_4[402][402], x_spec_5[402][402], x_spec_6[402][402];
     double nu_crit_corr_1, nu_crit_corr_2, nu_crit_corr_3, nu_crit_corr_4, nu_crit_corr_5, nu_crit_corr_6;
-    double i_syn_spec_1[402], i_syn_spec_2[402], i_syn_spec_3[402], i_syn_spec_4[402], i_syn_spec_5[402], i_syn_spec_6[402];
+//    double i_syn_spec_1[402], i_syn_spec_2[402], i_syn_spec_3[402], i_syn_spec_4[402], i_syn_spec_5[402], i_syn_spec_6[402];
     double A_spec_1, A_spec_2, A_spec_3, A_spec_4, A_spec_5, A_spec_6;
     
 //    printf("z(spec_4) =%g\n", cr[spec_4][1].z / parsec / 1.e3);
     
     
-    f1=fopen("./n1.dat", "w");
-    f2=fopen("./b.dat", "w");
-    f3=fopen("./int.dat", "w");
-    f4=fopen("./spec.dat", "w");
+   f1=fopen("./n1.dat", "w");
+   f2=fopen("./b.dat", "w");
+   f3=fopen("./int.dat", "w");
+   f4=fopen("./spec.dat", "w");
+
     if (f1 == NULL)
 	printf("Could not open 'n1.dat'.\n");
 
@@ -360,20 +361,20 @@ void output_file (long i_max)
     nu_crit_corr_5 = pow(B0 / B_field[spec_5], 1.0);
     nu_crit_corr_6 = pow(B0 / B_field[spec_6], 1.0);
             
-    for (ii=1; ii <= nu_channel+1; ii++)
-    {
-        for (jj=1; jj <= nu_channel+1; jj++)
-        {
+    /* for (ii=1; ii <= nu_channel+1; ii++) */
+    /* { */
+    /*     for (jj=1; jj <= nu_channel+1; jj++) */
+    /*     { */
          
-            x_spec_1[ii][jj] = cr[spec_1][jj].nu * nu_crit_corr_1 / cr[spec_1][ii].nu;
-            x_spec_2[ii][jj] = cr[spec_2][jj].nu * nu_crit_corr_2 / cr[spec_2][ii].nu;
-            x_spec_3[ii][jj] = cr[spec_3][jj].nu * nu_crit_corr_3 / cr[spec_3][ii].nu;
-            x_spec_4[ii][jj] = cr[spec_4][jj].nu * nu_crit_corr_4 / cr[spec_4][ii].nu;
-            x_spec_5[ii][jj] = cr[spec_5][jj].nu * nu_crit_corr_5 / cr[spec_5][ii].nu;
-            x_spec_6[ii][jj] = cr[spec_6][jj].nu * nu_crit_corr_6 / cr[spec_6][ii].nu;
+    /*         x_spec_1[ii][jj] = cr[spec_1][jj].nu * nu_crit_corr_1 / cr[spec_1][ii].nu; */
+    /*         x_spec_2[ii][jj] = cr[spec_2][jj].nu * nu_crit_corr_2 / cr[spec_2][ii].nu; */
+    /*         x_spec_3[ii][jj] = cr[spec_3][jj].nu * nu_crit_corr_3 / cr[spec_3][ii].nu; */
+    /*         x_spec_4[ii][jj] = cr[spec_4][jj].nu * nu_crit_corr_4 / cr[spec_4][ii].nu; */
+    /*         x_spec_5[ii][jj] = cr[spec_5][jj].nu * nu_crit_corr_5 / cr[spec_5][ii].nu; */
+    /*         x_spec_6[ii][jj] = cr[spec_6][jj].nu * nu_crit_corr_6 / cr[spec_6][ii].nu; */
                      
-        }
-    }
+    /*     } */
+    /* } */
     
 
 
@@ -445,124 +446,124 @@ void output_file (long i_max)
     }
 
 
-    for (jj=1; jj <= nu_channel; jj++)
-    {
+/*     for (jj=1; jj <= nu_channel; jj++) */
+/*     { */
 
-        i_syn_spec_1[jj] = 0.0;
-        i_syn_spec_2[jj] = 0.0;
-        i_syn_spec_3[jj] = 0.0;
-        i_syn_spec_4[jj] = 0.0;
-        i_syn_spec_5[jj] = 0.0;
-        i_syn_spec_6[jj] = 0.0;
+/*         i_syn_spec_1[jj] = 0.0; */
+/*         i_syn_spec_2[jj] = 0.0; */
+/*         i_syn_spec_3[jj] = 0.0; */
+/*         i_syn_spec_4[jj] = 0.0; */
+/*         i_syn_spec_5[jj] = 0.0; */
+/*         i_syn_spec_6[jj] = 0.0; */
 
-        integrate_true_1 = 1;
-        integrate_true_2 = 1;
-        integrate_true_3 = 1;
-        integrate_true_4 = 1;
-        integrate_true_5 = 1;
-        integrate_true_6 = 1;
+/*         integrate_true_1 = 1; */
+/*         integrate_true_2 = 1; */
+/*         integrate_true_3 = 1; */
+/*         integrate_true_4 = 1; */
+/*         integrate_true_5 = 1; */
+/*         integrate_true_6 = 1; */
 
 
-        for (ii=1; ii <= nu_channel; ii++)
-        {
+/*         for (ii=1; ii <= nu_channel; ii++) */
+/*         { */
 
             
-//            if (jj==100)
-//                printf("x=%g f(x)=%g\n", x_spec_1[ii][jj], synchrotron(x_spec_1[ii][jj]));
+/* //            if (jj==100) */
+/* //                printf("x=%g f(x)=%g\n", x_spec_1[ii][jj], synchrotron(x_spec_1[ii][jj])); */
  
-            A_spec_1 = x_spec_1[ii][jj] * pow(cr[spec_1][ii].E, 2.0) / nu_crit_corr_1;
-            A_spec_2 = x_spec_2[ii][jj] * pow(cr[spec_2][ii].E, 2.0) / nu_crit_corr_2;
-            A_spec_3 = x_spec_3[ii][jj] * pow(cr[spec_3][ii].E, 2.0) / nu_crit_corr_3;
-            A_spec_4 = x_spec_4[ii][jj] * pow(cr[spec_4][ii].E, 2.0) / nu_crit_corr_4;
-            A_spec_5 = x_spec_5[ii][jj] * pow(cr[spec_5][ii].E, 2.0) / nu_crit_corr_5;
-            A_spec_6 = x_spec_6[ii][jj] * pow(cr[spec_6][ii].E, 2.0) / nu_crit_corr_6;
+/*             A_spec_1 = x_spec_1[ii][jj] * pow(cr[spec_1][ii].E, 2.0) / nu_crit_corr_1; */
+/*             A_spec_2 = x_spec_2[ii][jj] * pow(cr[spec_2][ii].E, 2.0) / nu_crit_corr_2; */
+/*             A_spec_3 = x_spec_3[ii][jj] * pow(cr[spec_3][ii].E, 2.0) / nu_crit_corr_3; */
+/*             A_spec_4 = x_spec_4[ii][jj] * pow(cr[spec_4][ii].E, 2.0) / nu_crit_corr_4; */
+/*             A_spec_5 = x_spec_5[ii][jj] * pow(cr[spec_5][ii].E, 2.0) / nu_crit_corr_5; */
+/*             A_spec_6 = x_spec_6[ii][jj] * pow(cr[spec_6][ii].E, 2.0) / nu_crit_corr_6; */
 
 
 
-            if (cr[spec_1][ii].N < 0.0)
-                integrate_true_1 = -1;
-            if (cr[spec_2][ii].N < 0.0)
-                integrate_true_2 = -1;
-            if (cr[spec_3][ii].N < 0.0)
-                integrate_true_3 = -1;
-            if (cr[spec_4][ii].N < 0.0)
-                integrate_true_4 = -1;
-            if (cr[spec_5][ii].N < 0.0)
-                integrate_true_5 = -1;
-            if (cr[spec_6][ii].N < 0.0)
-                integrate_true_6 = -1;
+/*             if (cr[spec_1][ii].N < 0.0) */
+/*                 integrate_true_1 = -1; */
+/*             if (cr[spec_2][ii].N < 0.0) */
+/*                 integrate_true_2 = -1; */
+/*             if (cr[spec_3][ii].N < 0.0) */
+/*                 integrate_true_3 = -1; */
+/*             if (cr[spec_4][ii].N < 0.0) */
+/*                 integrate_true_4 = -1; */
+/*             if (cr[spec_5][ii].N < 0.0) */
+/*                 integrate_true_5 = -1; */
+/*             if (cr[spec_6][ii].N < 0.0) */
+/*                 integrate_true_6 = -1; */
 
 
             
-            if ( (x_spec_1[ii][jj] < 100.0) && (x_spec_1[ii][jj] > 0.001) )
-            {
-                if (integrate_true_1 == 1)
-                    i_syn_spec_1[jj] = i_syn_spec_1[jj] + sqrt(A_spec_1) * cr[spec_1][ii].N *synchrotron(x_spec_1[ii][jj]) * pow(nu_crit_corr_1 * cr[spec_1][jj].nu, -0.5) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * (cr[spec_1][ii+1].nu - cr[spec_1][ii].nu);
-                else
-                    i_syn_spec_1[jj] = i_syn_spec_1[jj];
-            }
+/*             if ( (x_spec_1[ii][jj] < 100.0) && (x_spec_1[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_1 == 1) */
+/*                     i_syn_spec_1[jj] = i_syn_spec_1[jj] + sqrt(A_spec_1) * cr[spec_1][ii].N *synchrotron(x_spec_1[ii][jj]) * pow(nu_crit_corr_1 * cr[spec_1][jj].nu, -0.5) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * (cr[spec_1][ii+1].nu - cr[spec_1][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_1[jj] = i_syn_spec_1[jj]; */
+/*             } */
 
-            /* if (jj==50) */
-            /*     printf("ii=%i, nu=%g, N=%g, x1=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_1][ii].nu, cr[spec_1][ii].N, x_spec_1[ii][jj], synchrotron(x_spec_1[ii][jj]), sqrt(A_spec_1) * cr[spec_1][ii].N *synchrotron(x_spec_1[ii][jj]) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * (cr[spec_1][ii+1].nu - cr[spec_1][ii].nu), i_syn_spec_1[ii], integrate_true_1); */
-
-
-            if ( (x_spec_2[ii][jj] < 100.0) && (x_spec_2[ii][jj] > 0.001) )
-            {
-                if (integrate_true_2 == 1)
-                    i_syn_spec_2[jj] = i_syn_spec_2[jj] + sqrt(A_spec_2) * cr[spec_2][ii].N *synchrotron(x_spec_2[ii][jj]) * pow(nu_crit_corr_2 * cr[spec_2][jj].nu, -0.5) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * (cr[spec_2][ii+1].nu - cr[spec_2][ii].nu);
-                else
-                    i_syn_spec_2[jj] = i_syn_spec_2[jj];
-
-                /* if (jj==114) */
-                /*     printf("ii=%i, nu=%g, N=%g, x2=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_2][ii].nu, cr[spec_2][ii].N, x_spec_2[ii][jj], synchrotron(x_spec_2[ii][jj]), sqrt(A_spec_2) * cr[spec_2][ii].N *synchrotron(x_spec_2[ii][jj]) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * (cr[spec_2][ii+1].nu - cr[spec_2][ii].nu), i_syn_spec_2[ii], integrate_true_2); */
-
-            }
+/*             /\* if (jj==50) *\/ */
+/*             /\*     printf("ii=%i, nu=%g, N=%g, x1=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_1][ii].nu, cr[spec_1][ii].N, x_spec_1[ii][jj], synchrotron(x_spec_1[ii][jj]), sqrt(A_spec_1) * cr[spec_1][ii].N *synchrotron(x_spec_1[ii][jj]) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * (cr[spec_1][ii+1].nu - cr[spec_1][ii].nu), i_syn_spec_1[ii], integrate_true_1); *\/ */
 
 
-            /* if (jj==114) */
-            /*     printf("ii=%i, nu=%g, N=%g, x2=%g, syn=%g, switch=%i\n", ii, cr[spec_2][ii].nu, cr[spec_2][ii].N, x_spec_2[ii][jj], synchrotron(0.007), integrate_true_2); */
+/*             if ( (x_spec_2[ii][jj] < 100.0) && (x_spec_2[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_2 == 1) */
+/*                     i_syn_spec_2[jj] = i_syn_spec_2[jj] + sqrt(A_spec_2) * cr[spec_2][ii].N *synchrotron(x_spec_2[ii][jj]) * pow(nu_crit_corr_2 * cr[spec_2][jj].nu, -0.5) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * (cr[spec_2][ii+1].nu - cr[spec_2][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_2[jj] = i_syn_spec_2[jj]; */
+
+/*                 /\* if (jj==114) *\/ */
+/*                 /\*     printf("ii=%i, nu=%g, N=%g, x2=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_2][ii].nu, cr[spec_2][ii].N, x_spec_2[ii][jj], synchrotron(x_spec_2[ii][jj]), sqrt(A_spec_2) * cr[spec_2][ii].N *synchrotron(x_spec_2[ii][jj]) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * pow(nu_crit_corr_2 * cr[spec_2][ii].nu, -0.5) * (cr[spec_2][ii+1].nu - cr[spec_2][ii].nu), i_syn_spec_2[ii], integrate_true_2); *\/ */
+
+/*             } */
 
 
-            if ( (x_spec_3[ii][jj] < 100.0) && (x_spec_3[ii][jj] > 0.001) )
-            {
-                if (integrate_true_3 == 1)
-                    i_syn_spec_3[jj] = i_syn_spec_3[jj] + sqrt(A_spec_3) * cr[spec_3][ii].N *synchrotron(x_spec_3[ii][jj]) * pow(nu_crit_corr_3 * cr[spec_3][jj].nu, -0.5) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * (cr[spec_3][ii+1].nu - cr[spec_3][ii].nu);
-                else
-                    i_syn_spec_3[jj] = i_syn_spec_3[jj];
+/*             /\* if (jj==114) *\/ */
+/*             /\*     printf("ii=%i, nu=%g, N=%g, x2=%g, syn=%g, switch=%i\n", ii, cr[spec_2][ii].nu, cr[spec_2][ii].N, x_spec_2[ii][jj], synchrotron(0.007), integrate_true_2); *\/ */
 
-                /* if (jj==133) */
-                /*     printf("ii=%i, nu=%g, N=%g, x3=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_3][ii].nu, cr[spec_3][ii].N, x_spec_3[ii][jj], synchrotron(x_spec_3[ii][jj]), sqrt(A_spec_3) * cr[spec_3][ii].N *synchrotron(x_spec_3[ii][jj]) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * (cr[spec_3][ii+1].nu - cr[spec_3][ii].nu), i_syn_spec_3[jj], integrate_true_3); */
+
+/*             if ( (x_spec_3[ii][jj] < 100.0) && (x_spec_3[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_3 == 1) */
+/*                     i_syn_spec_3[jj] = i_syn_spec_3[jj] + sqrt(A_spec_3) * cr[spec_3][ii].N *synchrotron(x_spec_3[ii][jj]) * pow(nu_crit_corr_3 * cr[spec_3][jj].nu, -0.5) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * (cr[spec_3][ii+1].nu - cr[spec_3][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_3[jj] = i_syn_spec_3[jj]; */
+
+/*                 /\* if (jj==133) *\/ */
+/*                 /\*     printf("ii=%i, nu=%g, N=%g, x3=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_3][ii].nu, cr[spec_3][ii].N, x_spec_3[ii][jj], synchrotron(x_spec_3[ii][jj]), sqrt(A_spec_3) * cr[spec_3][ii].N *synchrotron(x_spec_3[ii][jj]) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * pow(nu_crit_corr_3 * cr[spec_3][ii].nu, -0.5) * (cr[spec_3][ii+1].nu - cr[spec_3][ii].nu), i_syn_spec_3[jj], integrate_true_3); *\/ */
 
                 
-            }
+/*             } */
 
-            if ( (x_spec_4[ii][jj] < 100.0) && (x_spec_4[ii][jj] > 0.001) )
-            {
-                if (integrate_true_4 == 1)
-                    i_syn_spec_4[jj] = i_syn_spec_4[jj] + sqrt(A_spec_4) * cr[spec_4][ii].N *synchrotron(x_spec_4[ii][jj]) * pow(nu_crit_corr_4 * cr[spec_4][jj].nu, -0.5) * pow(nu_crit_corr_4 * cr[spec_4][ii].nu, -0.5) * (cr[spec_4][ii+1].nu - cr[spec_4][ii].nu);
-                else
-                    i_syn_spec_4[jj] = i_syn_spec_4[jj];
-            }
+/*             if ( (x_spec_4[ii][jj] < 100.0) && (x_spec_4[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_4 == 1) */
+/*                     i_syn_spec_4[jj] = i_syn_spec_4[jj] + sqrt(A_spec_4) * cr[spec_4][ii].N *synchrotron(x_spec_4[ii][jj]) * pow(nu_crit_corr_4 * cr[spec_4][jj].nu, -0.5) * pow(nu_crit_corr_4 * cr[spec_4][ii].nu, -0.5) * (cr[spec_4][ii+1].nu - cr[spec_4][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_4[jj] = i_syn_spec_4[jj]; */
+/*             } */
 
-            if ( (x_spec_5[ii][jj] < 100.0) && (x_spec_5[ii][jj] > 0.001) )
-            {
-                if (integrate_true_5 == 1)
-                    i_syn_spec_5[jj] = i_syn_spec_5[jj] + sqrt(A_spec_5) * cr[spec_5][ii].N *synchrotron(x_spec_5[ii][jj]) * pow(nu_crit_corr_5 * cr[spec_5][jj].nu, -0.5) * pow(nu_crit_corr_5 * cr[spec_5][ii].nu, -0.5) * (cr[spec_5][ii+1].nu - cr[spec_5][ii].nu);
-                else
-                    i_syn_spec_5[jj] = i_syn_spec_5[jj];
-            }
+/*             if ( (x_spec_5[ii][jj] < 100.0) && (x_spec_5[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_5 == 1) */
+/*                     i_syn_spec_5[jj] = i_syn_spec_5[jj] + sqrt(A_spec_5) * cr[spec_5][ii].N *synchrotron(x_spec_5[ii][jj]) * pow(nu_crit_corr_5 * cr[spec_5][jj].nu, -0.5) * pow(nu_crit_corr_5 * cr[spec_5][ii].nu, -0.5) * (cr[spec_5][ii+1].nu - cr[spec_5][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_5[jj] = i_syn_spec_5[jj]; */
+/*             } */
 
-            if ( (x_spec_6[ii][jj] < 100.0) && (x_spec_6[ii][jj] > 0.001) )
-            {
-                if (integrate_true_6 == 1)
-                    i_syn_spec_6[jj] = i_syn_spec_6[jj] + sqrt(A_spec_6) * cr[spec_6][ii].N *synchrotron(x_spec_6[ii][jj]) * pow(nu_crit_corr_6 * cr[spec_6][jj].nu, -0.5) * pow(nu_crit_corr_6 * cr[spec_6][ii].nu, -0.5) * (cr[spec_6][ii+1].nu - cr[spec_6][ii].nu);
-                else
-                    i_syn_spec_6[jj] = i_syn_spec_6[jj];
-            }
+/*             if ( (x_spec_6[ii][jj] < 100.0) && (x_spec_6[ii][jj] > 0.001) ) */
+/*             { */
+/*                 if (integrate_true_6 == 1) */
+/*                     i_syn_spec_6[jj] = i_syn_spec_6[jj] + sqrt(A_spec_6) * cr[spec_6][ii].N *synchrotron(x_spec_6[ii][jj]) * pow(nu_crit_corr_6 * cr[spec_6][jj].nu, -0.5) * pow(nu_crit_corr_6 * cr[spec_6][ii].nu, -0.5) * (cr[spec_6][ii+1].nu - cr[spec_6][ii].nu); */
+/*                 else */
+/*                     i_syn_spec_6[jj] = i_syn_spec_6[jj]; */
+/*             } */
 
-        }
+/*         } */
         
-    }
+/*     } */
    
 
      fprintf(f1, "# z[kpc], N1, N2, N1_norm, N2_norm, alpha\n");
@@ -643,10 +644,10 @@ void output_file (long i_max)
         /* i_syn5[ii] = pow(cr[1][ii].nu / cr[1][1].nu, -alpha5); */
         /* i_syn6[ii] = pow(cr[1][ii].nu / cr[1][1].nu, -alpha6); */
         
-
+/*
         fprintf(f4, "%10g %10g %10g %10g %10g %10g %10g\n",
                 cr[1][ii].nu, i_syn_spec_1[ii]/i_syn_spec_1[nu_spec_ref], i_syn_spec_2[ii]/i_syn_spec_2[nu_spec_ref], i_syn_spec_3[ii]/i_syn_spec_3[nu_spec_ref], i_syn_spec_4[ii]/i_syn_spec_4[nu_spec_ref], i_syn_spec_5[ii]/i_syn_spec_5[nu_spec_ref], i_syn_spec_6[ii]/i_syn_spec_6[nu_spec_ref]);
-        
+*/        
         
     }
     
