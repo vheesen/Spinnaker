@@ -5,30 +5,31 @@ pi = 3.141565492#
 sigma_t = 6.6524616e-25#[cm^2]
 m_electron = 9.1093897e-28#[g]
 e_elem = 1.60217733e-19#
-grid_size = 200#<400
-grid_delta = 1#
-z_halo = 10.0e3#kpc
+grid_size = 200#<=400; Number of grip points in z
+grid_delta = 1#Every x_th grid point is written in output file
+z_halo = 10.0e3#Halo size [kpc]
 mode_0 = 1#Advection: 1; Diffusion: 2
 mode_1 = 1#
 mode_2 = 1#
-D0 = 2e24#diffusion coefficient
-D1 = 0.6e24#diffusion coefficient
-D2 = 7.0e24#diffusion coefficient
-mu_diff = 0.5#
-v0 = 200.0e3#Convection speed in zone 0
-v1 = 980.0e5#Condection speed in zone 1
-v2 = 980.0e5#Condection speed in zone 2
-nu_low = 1.4e9#lower frequency in units of Hz
-nu_high = 4.7e9#upper frequency in units of Hz
-nu_channel = 400#
-gamma_in = 2.0#2.97 north
-B0 = 10.e-6#magnetic field strength in units of Gauss
+D0 = 2.0e24#Diffusion coefficient in zone 0 [cm^2 s^-1]
+D1 = 0.6e24#Diffusion coefficient in zone 1 [cm^2 s^-1]
+D2 = 7.0e24#Diffusion coefficient in zone 2 [cm^2 s^-1]
+mu_diff = 0.5#Energy dependence D=D_{0,1,2}*E^mu_diff
+v0 = 200.0e5#Advection speed in zone 0 [cm s^-1]
+v1 = 980.0e5#Advection speed in zone 1 [cm s^-1]
+v2 = 980.0e5#Advection speed in zone 2 [cm s^-1]
+nu_low = 1.4e9#Lower frequency [Hz]
+nu_high = 4.7e9#Upper frequency [Hz]
+nu_channel = 400#<=400; Number of grid points in frequency
+gamma_in = 2.0#Injection CRe index
+B0 = 10.e-6#magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 rad_field = 0.0#=U_rad/U_B
-z0 = 0.#Transition from zone0 to zone 1
-h_B1 = 1.e4#scaleheight1 of the B-field in kpc
-z1 = 100.0#change of scaleheight in kpc
+z0 = 0.#Transition from zone 0 to zone 1 [kpc]
+h_B1 = 1.e4#Scaleheight of the B-field in zone 1 [kpc]
+z1 = 100.0#Scaleheight of the B-field in zone 2 [kpc]
 h_B2 = 5.5#scaleheight2 of the B-field in kpc
-power_law = 0#1: power_law B distribution, 0: exponential
+#Below is the option so have a power-law B distribution for jets
+power_law = 0#exponential B-field:0; power-law B-field:1
 R0 = 6.#Radius of the jet at z0 in kpc
 R1 = 10.#Radius of the jet at z1 in kpc
 R2 = 15.#Radius of the jet at z_halo in kpc

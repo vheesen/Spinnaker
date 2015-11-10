@@ -220,3 +220,56 @@ double synchrotron (double x)
 
 
 }
+
+
+void synchrotron_spectrum (int k, int i_spec)
+
+{
+    
+    int integrate_true;
+    double nu_crit_corr;
+    double x_spec[402][402];
+    double A_spec;
+
+    int ii, jj;
+    
+    nu_crit_corr = pow(B0 / B_field[i_spec], 1.0);
+
+    for (ii=1; ii <= nu_channel+1; ii++)
+    {
+        for (jj=1; jj <= nu_channel+1; jj++)
+        {
+            
+            x_spec[ii][jj] = cr[i_spec][jj].nu * nu_crit_corr / cr[i_spec][ii].nu;
+                     
+        }
+    }
+    
+    for (jj=1; jj <= nu_channel; jj++)
+    {
+
+        i_syn_spec[k][jj] = 0.0;
+        integrate_true = 1;
+        
+        for (ii=1; ii <= nu_channel; ii++)
+        {
+
+            A_spec = x_spec[ii][jj] * pow(cr[i_spec][ii].E, 2.0) / nu_crit_corr;
+            
+            if (cr[i_spec][ii].N < 0.0)
+                integrate_true = -1;
+            
+            
+            if ( (x_spec[ii][jj] < 100.0) && (x_spec[ii][jj] > 0.001) )
+            {
+                if (integrate_true == 1)
+                    i_syn_spec[k][jj] = i_syn_spec[k][jj] + sqrt(A_spec) * cr[i_spec][ii].N *synchrotron(x_spec[ii][jj]) * pow(nu_crit_corr * cr[i_spec][jj].nu, -0.5) * pow(nu_crit_corr * cr[i_spec][ii].nu, -0.5) * (cr[i_spec][ii+1].nu - cr[i_spec][ii].nu);
+                else
+                    i_syn_spec[k][jj] = i_syn_spec[k][jj];
+            }
+        }
+        
+        
+    }
+     
+}

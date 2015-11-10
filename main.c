@@ -50,7 +50,7 @@ int main()
 
         if (cr[i][1].z / parsec / 1.e3 < z0)
             mode = mode_0;
-        if ((cr[i][1].z / parsec / 1.e3 >= z0) && (z / parsec / 1.e3 < z1 ))
+        if ((cr[i][1].z / parsec / 1.e3 >= z0) && (cr[i][1].z / parsec / 1.e3 < z1 ))
             mode = mode_1;
         if (cr[i][1].z / parsec / 1.e3 >= z1)
             mode = mode_2;

@@ -23,14 +23,16 @@ double z_red;//Redshift
 long nu_channel;
 double nu_gyro;
 double u_b;
-double delta_z, z, z_halo, z_halo_parsec, parsec, delta_nu, delta_nu_factor;
+double delta_z, z_halo, z_halo_parsec, parsec, delta_nu, delta_nu_factor;
 double v0, v1, v2, b;
 double diff_0, D0, D1, D2, mu_diff;
 double nu_low, nu_high;
 double h_B1, h_B2, z0, z1, R0, R1, R2;//Magnetic field setup
 double bz[402][402];
 double u_CMB;
-double B_field[402], u_B[402]; 
+double B_field[402], u_B[402];
+double i_syn_spec[7][402];
+
 
 
 
