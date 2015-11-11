@@ -273,6 +273,7 @@ void output_file (long i_max)
     FILE *f2;
     FILE *f3;
     FILE *f4;
+    FILE *f5;
     int ii, jj, kk;
     int nu_1, nu_2, nu_3, nu_spec_ref;
     double intensity_nu1[402], intensity_nu2[402], i_syn1[402], i_syn2[402];
@@ -321,6 +322,7 @@ void output_file (long i_max)
    f2=fopen("./b.dat", "w");
    f3=fopen("./int.dat", "w");
    f4=fopen("./spec.dat", "w");
+   f5=fopen("./ne_spec.dat", "w");
 
     if (f1 == NULL)
 	printf("Could not open 'n1.dat'.\n");
@@ -483,7 +485,7 @@ void output_file (long i_max)
         {
 
 
-            fprintf(f1, "%10e %10e %10e %10e %10e %10e\n",
+            fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e\n",
                     cr[ii][1].z / parsec / 1000.0, cr[ii][nu_1].N, cr[ii][nu_2].N,
                     cr[ii][nu_1].N / cr[1][nu_1].N,
                     cr[ii][nu_2].N / cr[1][nu_2].N,
@@ -508,12 +510,21 @@ void output_file (long i_max)
         
     }
     
+    for (ii=1; ii <= nu_channel; ii++)
+    {
+
+        fprintf(f5, "%10e %10e %10e %10e %10e %10e %10e\n",
+                cr[spec_1][ii].E, cr[spec_1][ii].N, cr[spec_2][ii].N, cr[spec_3][ii].N, cr[spec_4][ii].N, cr[spec_5][ii].N, cr[spec_6][ii].N);        
+        
+    }
+    
    
 
     fclose(f1);
     fclose(f2);
     fclose(f3);
     fclose(f4);
+    fclose(f5);
 }
 
 
