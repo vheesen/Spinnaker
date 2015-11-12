@@ -8,44 +8,29 @@ e_elem = 1.60217733e-19#
 grid_size = 200#<=400; Number of grip points in z
 grid_delta = 1#Every x_th grid point is written in output file
 z_halo = 10.0e3#Halo size [kpc]
-mode_0 = 1#Advection: 1; Diffusion: 2
-mode_1 = 1#
-mode_2 = 1#
+mode_0 = 1#Transport mode in zone 0: Advection: 1; Diffusion: 2
+mode_1 = 1#Transport mode in zone 1
+mode_2 = 1#Transport mode in zone 2
 D0 = 2.0e24#Diffusion coefficient in zone 0 [cm^2 s^-1]
 D1 = 0.6e24#Diffusion coefficient in zone 1 [cm^2 s^-1]
 D2 = 7.0e24#Diffusion coefficient in zone 2 [cm^2 s^-1]
-mu_diff = 0.5#Energy dependence D=D_{0,1,2}*E^mu_diff
+mu_diff = 0.5#Energy dependence D=D_{0,1,2}*E_GeV^mu_diff
 v0 = 200.0e5#Advection speed in zone 0 [cm s^-1]
-v1 = 980.0e5#Advection speed in zone 1 [cm s^-1]
-v2 = 980.0e5#Advection speed in zone 2 [cm s^-1]
+v1 = 150.0e5#Advection speed in zone 1 [cm s^-1]
+v2 = 150.0e5#Advection speed in zone 2 [cm s^-1]
 nu_low = 1.4e9#Lower frequency [Hz]
 nu_high = 4.7e9#Upper frequency [Hz]
 nu_channel = 400#<=400; Number of grid points in frequency
-gamma_in = 2.0#Injection CRe index
+gamma_in = 3.0#Injection CRe index
 B0 = 10.e-6#magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
-rad_field = 0.0#=U_rad/U_B
+rad_field = 0.313#=U_IRF/U_B (radiation energy density, excluding CMB)
 z0 = 0.#Transition from zone 0 to zone 1 [kpc]
-h_B1 = 1.e4#Scaleheight of the B-field in zone 1 [kpc]
-z1 = 100.0#Scaleheight of the B-field in zone 2 [kpc]
-h_B2 = 5.5#scaleheight2 of the B-field in kpc
+h_B1 = 0.8#Scaleheight of the B-field in zone 1 [kpc]
+z1 = 1.0#Transition from zone 1 to zone 2 [kpc]
+h_B2 = 5.5#Scaleheight of the B-field in zone 2 [kpc]
 #Below is the option so have a power-law B distribution for jets
 power_law = 0#exponential B-field:0; power-law B-field:1
 R0 = 6.#Radius of the jet at z0 in kpc
 R1 = 10.#Radius of the jet at z1 in kpc
 R2 = 15.#Radius of the jet at z_halo in kpc
-z_red=0.0#Redshift; time delation is not yet implemented, leave z=0
-###--------------------------------------------------------------------------
-#Some fitting functions for gnuplot
-#f(x)=a*exp(-x/b)
-#fit [0.1:0.8] f(x) 'int.dat' u 1:2 via a,b
-#fit [2:6] f(x) 'int.dat' u 1:2 via a,b
-#Fitting the spectral index
-#f1(x)=a+b*x+c*x**2.+d*x**3.+e*x**4.
-#fit[220:600][0.5:2] f1(x) 'int.dat' u 1:4 via a,b,c,d,e
-###Scale height model
-#fs(x)=a+b*x+c*x**2.+d*x**3.
-#fit [2:6] fs(x) 'int.dat' u 1:(log10($2)) via a,b,c,d
-#replot 10**(fs(x))
-#f(x)=a*x+b
-#fit [7:10] f(x) 'spec.dat' u (log10($1)):(log10($2))
-#replot x**a*10**b
+z_red=0.0#Redshift; time delation is not yet implemented, leave z_red=0
