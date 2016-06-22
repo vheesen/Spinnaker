@@ -3,6 +3,7 @@
 #include "runge_kutta.h"
 #include "read_parameters.h"
 #include "synchrotron.h"
+#include "magnetic_field.h"
 
 /***********************************************************************/
 /* Runge Kutta 2nd order, see Numerical Recipies §16*/

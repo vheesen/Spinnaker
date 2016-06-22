@@ -11,12 +11,14 @@
 /*global integer variables*/
 long i, j;
 long choice_rk, mode, mode_0, mode_1, mode_2, power_law;
+long adiabatic_losses, model, model_north, galaxy_mode;
+
 
 double pi, c_light, sigma_t, m_electron, e_elem, gamma_in;
 double rad_field;//=U_rad/U_B
-double B0;//in units of mikro Gauss
+double B0, B1, B2;//in units of mikro Gauss
 double z_red;//Redshift
-
+double t_ad;
 
 
 /* Definitions for the Cosmic Ray propagation code */
@@ -27,10 +29,10 @@ double delta_z, z_halo, z_halo_parsec, parsec, delta_nu, delta_nu_factor;
 double v0, v1, v2, b;
 double diff_0, D0, D1, D2, mu_diff;
 double nu_low, nu_high;
-double h_B1, h_B2, z0, z1, R0, R1, R2;//Magnetic field setup
+double h_B0, h_B1, h_B2, z0, z1, DF0, beta0, beta1, beta2;//Magnetic field setup
 double bz[402][402];
 double u_CMB;
-double B_field[402], u_B[402];
+double B_field[402], u_B[402], v_z[402];
 double i_syn_spec[7][402];
 
 
@@ -90,6 +92,16 @@ struct syn_emission
 };
 
 struct syn_emission syn[60];
+
+struct model
+{
+    double z;
+    double B_field;
+    double velocity;
+
+};
+
+struct model mod[86];
 
 
 #endif

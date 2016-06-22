@@ -3,6 +3,7 @@
 #include "runge_kutta.h"
 #include "read_parameters.h"
 #include "synchrotron.h"
+#include "magnetic_field.h"
 /**********************************************************************/
 
 
@@ -10,34 +11,53 @@ double dN_dz (double z, double N, double E, double gamma, double dN_dE)
 {
  
     double db_dE;
-//    double t_ad = z_halo/v0 * 3.0;
-//    double t_ad = 100.0e6 * 3.14e7;
-    double v_z;
 
-            
-    b = 4.0 / 3.0 * sigma_t * c_light * 
-        pow ((E / (m_electron * pow(c_light, 2))), 2) * (u_B[i] * (1.0 + rad_field) + u_CMB);
+
+    if (adiabatic_losses == 1)
+        b = 4.0 / 3.0 * sigma_t * c_light * 
+            pow ((E / (m_electron * pow(c_light, 2))), 2) *
+            (u_B[i] * (1.0 + rad_field) + u_CMB) + E / t_ad;
+
+    else
+        b = 4.0 / 3.0 * sigma_t * c_light * 
+            pow ((E / (m_electron * pow(c_light, 2))), 2) *
+            (u_B[i] * (1.0 + rad_field) + u_CMB);
+    
+    
     bz[i][j]= 4.0 / 3.0 * sigma_t * c_light * 
         pow ((E / (m_electron * pow(c_light, 2))), 2) * u_B[i];
-    db_dE = 2.0 * b / E;
 
-// This is the derivative of the power-law distribution. Can be used as an alternative.
-//    dN_dE = -gamma * N / E;
-    
-//    v_z = v0 * (1.0 + z/z_halo);
+    if (adiabatic_losses == 1)
+        db_dE = 8.0 / 3.0 * sigma_t * c_light * 
+            pow ((E / (m_electron * pow(c_light, 2))), 2) *
+            (u_B[i] * (1.0 + rad_field) + u_CMB)  / E + 1./t_ad;
+    else
+        db_dE = 2.0 * b / E;
+
+
+/* Set up the velocity distribution */
     if (z / parsec / 1.e3 < z0)
-        v_z = v0 * (1. - z / parsec / 1.e3 / 180.);
+    {
+        if (model == 1 && model_north == 1)
+            v_z[i] = velocity_field_north(cr[i][1].z / parsec / 1.e3);
+        if (model == 1 && model_north == 0)
+            v_z[i] = velocity_field_south(cr[i][1].z / parsec / 1.e3);
+        else
+            v_z[i] = v0;
+        
+    }
+    
     if ((z / parsec / 1.e3 >= z0) && (z / parsec / 1.e3 < z1 ))
-        v_z = v1;
+        v_z[i] = v1;
     if (z / parsec / 1.e3 >= z1)
-        v_z = v2;
+        v_z[i] = v2;
 
     /* if (j==122) */
     /*     printf("i=%i z=%g E=%g t=%g b*t/E=%g\n", i, z, E, z/v1/3.14e13, b*z/v1/E); */
     
 
  
-    return ((db_dE * N + b * dN_dE) / v_z);
+    return ((db_dE * N + b * dN_dE) / v_z[i]);
     
 
 }
@@ -136,9 +156,10 @@ void dN_dE (void)
 /****************************************************************************/
 struct grid_1d setup_initial_grid (void)
 {
-    double B_CMB, R;
-   
-    
+    double B_CMB, R, R0, R1, R2;
+
+    R0 = DF0 / 2.0;
+      
     B_CMB = 3.2e-6;
 
     
@@ -188,50 +209,108 @@ struct grid_1d setup_initial_grid (void)
     }
 
 
+    
     for (i=0; i <= grid_size + 1; i++)
     {
 
         
-        if (cr[i][1].z / parsec / 1.e3 < z0)
-            B_field[i] = B0 * exp(-cr[i][1].z / parsec / 1.e3 / 190.);
+/* Magnetic field strength strength setup */
+        if (power_law == 1)
+        {
 
+            R1 = R0 + sin(beta0 / 2. / 180. * pi) * z0 * parsec * 1.e3;
+
+            R2 = R1 + sin(beta1 / 2. / 180. * pi) * (z1 - z0) * parsec * 1.e3;
+            
+        }
+
+       
+//Zone0        
+        if (cr[i][1].z / parsec / 1.e3 < z0)
+        {
+
+            if (power_law == 1)
+            {
+                R = R0 + sin(beta0/ 2. / 180. * pi) * cr[i][1].z;
+                
+                B_field[i] = B0 * pow(R0 / R, 2.);
+
+            }
+
+            else
+                B_field[i] = B0 * exp(-cr[i][1].z / parsec / 1.e3 / h_B0);
+            
+            if (model == 1 && model_north == 1)
+                B_field[i] = magnetic_field_north(cr[i][1].z / parsec / 1.e3);
+            if (model == 1 && model_north == 0)
+                B_field[i] = magnetic_field_south(cr[i][1].z / parsec / 1.e3);
+
+
+        }
+        
+//Zone1
         if ((cr[i][1].z / parsec / 1.e3 >= z0) && (cr[i][1].z / parsec / 1.e3 <= z1))
         {
             
-            B_field[i] = B0 * exp(-z0 / 190.) * exp(-(cr[i][1].z / parsec / 1.e3 - z0) / h_B1);
+            B_field[i] = B0 * exp(-z0 / h_B0) * exp(-(cr[i][1].z / parsec / 1.e3 - z0) / h_B1);
 
             if (power_law == 1)
 
             {
-                R = R0 + (R1 - R0) * (cr[i][1].z / parsec / 1.e3 - z0) / (z1 - z0);
-                                    
-                B_field[i] = B0 * exp(-z0 / 190.) * pow(R0 / R, 2.);
+
+                R = R1 + sin(beta1/ 2. / 180. * pi) * (cr[i][1].z - z0 * parsec * 1.e3);
+                
+                B_field[i] = B0 * pow(R0 / R1, 2.) * pow(R1 / R, 2.);
+
             }
+
+            if (galaxy_mode == 1)
+
+            {
+
+                B_field[i] = B1 * exp(-(cr[i][1].z / parsec / 1.e3) / h_B1) + (B0-B1) * exp(-(cr[i][1].z / parsec / 1.e3) / h_B2);;
+                
+            }
+               
             
             
         }
         
+//Zone2        
         if (cr[i][1].z / parsec / 1.e3 >= z1)
         {
             
-            B_field[i] = B0 * exp(-z0 / 190.) * exp(-(z1-z0) / h_B1) * exp(-(cr[i][1].z / parsec / 1.e3 - z1) / h_B2);
+            B_field[i] = B0 * exp(-z0 / h_B0) * exp(-(z1-z0) / h_B1) * exp(-(cr[i][1].z / parsec / 1.e3 - z1) / h_B2);
 
             if (power_law == 1)
 
             {
 
-                R = R1 + (R2 - R1) * (cr[i][1].z / parsec / 1.e3 - z1) / (z_halo_parsec / 1.e3- z1);
-                
-                B_field[i] = B0 * exp(-z0 / 190.) * pow(R0 / R1, 2.) * pow(R1 / R, 2.);
+                R = R2 +  sin(beta2 / 2. / 180. * pi) * (cr[i][1].z - z1 * parsec * 1.e3);
+
+                B_field[i] = B0 * pow(R0 / R1, 2.) * pow(R1 / R2, 2.) * pow(R2 / R, 2.);
+
+            }
+
+            if (galaxy_mode == 1)
+
+            {
+
+                B_field[i] = B1 * exp(-(cr[i][1].z / parsec / 1.e3) / h_B1) + (B0-B1) * exp(-(cr[i][1].z / parsec / 1.e3) / h_B2);;
                 
             }
+
             
+
 
         }
         
 
         u_B[i] = 1.0 / 8.0 / pi * pow (B_field[i], 2.0);
     }
+
+    printf("Area at z0 = %g cm^2\n", pi * R1 * R1);
+    
 
     
 /* Compute energy from observed frequency*/
@@ -491,10 +570,10 @@ void output_file (long i_max)
                     cr[ii][nu_2].N / cr[1][nu_2].N,
                     cr[ii][(int)((nu_1+nu_2)/2.0)].alpha);
             
-            fprintf(f2, "%10e %10e %10e\n",
-                    cr[ii][1].z / parsec / 1000.0, B_field[ii], B_field[ii] / B_field[1]);
+            fprintf(f2, "%10e %10e %10e %10e\n",
+                    cr[ii][1].z / parsec / 1000.0, B_field[ii], B_field[ii] / B_field[1], v_z[ii]);
             fprintf(f3, "%10e %10e %10e %10e %10e %10e %10e\n",
-                    cr[ii][1].z / parsec / 1000.0, intensity_nu1[ii] / intensity_nu1[1], intensity_nu2[ii] / intensity_nu1[1], -log(intensity_nu1[ii]/intensity_nu2[ii])/log(cr[1][nu_1].nu/cr[1][nu_2].nu),  i_syn1[ii] / i_syn1[1],  i_syn2[ii] / i_syn2[1], -log(i_syn1[ii]/i_syn2[ii]) / log(nu_low/nu_high) + (gamma_in-1.0)/2.0);
+                    cr[ii][1].z / parsec / 1000.0, intensity_nu1[ii] / intensity_nu1[1], intensity_nu2[ii] / intensity_nu2[1], -log(intensity_nu1[ii]/intensity_nu2[ii])/log(cr[1][nu_1].nu/cr[1][nu_2].nu),  i_syn1[ii] / i_syn1[1],  i_syn2[ii] / i_syn2[1], -log(i_syn1[ii]/i_syn2[ii]) / log(nu_low/nu_high) + (gamma_in-1.0)/2.0);
 
             
             
