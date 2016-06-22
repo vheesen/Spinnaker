@@ -8,7 +8,7 @@ SPINNAKER is a 1-D cosmic-ray transport code that numerically solves equations f
 
 Homepage: http://www.southampton.ac.uk/~vh1n11/Spinnaker.html
 
-Reference: Heesen, Dettmar, Krause, Beck and Stein 2015, MNRAS, submitted
+Reference: Heesen, Dettmar, Krause, Beck and Stein 2016, MNRAS, 458, 322
 
 ============
 
