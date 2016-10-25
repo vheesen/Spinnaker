@@ -4,6 +4,7 @@
 #include "read_parameters.h"
 #include "synchrotron.h"
 #include "magnetic_field.h"
+#include "adiabatic.h"
 /**********************************************************************/
 
 
@@ -12,12 +13,69 @@ double dN_dz (double z, double N, double E, double gamma, double dN_dE)
  
     double db_dE;
 
+/* Set up the velocity distribution */
+    if (z / parsec / 1.e3 < z0)
+    {
+        if (model == 1)
+        {
+            
+            if (model_north == 1)
+                v_z[i] = velocity_field_north(cr[i][1].z / parsec / 1.e3);
+            else
+                v_z[i] = velocity_field_south(cr[i][1].z / parsec / 1.e3);
+        }
 
+        else
+            v_z[i] = v0;
+        
+    }
+
+    
+    
+    if ((z / parsec / 1.e3 >= z0) && (z / parsec / 1.e3 < z1 ))
+        v_z[i] = v1;
+    
+    if (z / parsec / 1.e3 >= z1)
+        v_z[i] = v2;
+    
+
+// * 1.e46 / pi / pow(radius_north(cr[i][1].z / parsec / 1.e3), 2.0);    
+//  * pow(2.* radius_south(cr[i][1].z / parsec / 1.e3) / parsec / 1.e3 / 42.98, -2.0)
+
+    if (adiabatic_losses == 1)
+      {
+          if (z / parsec / 1.e3 < z0)
+              t_ad = 3.e17;
+          else
+          {
+              if (model_north == 1) 
+              {
+                  if(fabs(dr_dz_north(z)) > 0.0)
+                      t_ad = 1.5 * pow(v_z[i] / radius_north(cr[i][1].z / parsec / 1.e3) * dr_dz_north(cr[i][1].z / parsec / 1.e3), -1.0);
+                  else
+                      t_ad = 3.e17;
+              }
+              else
+              {
+                  if (fabs(dr_dz_south(z)) > 0.0)
+                      t_ad = 1.5 * pow(v_z[i] / radius_south(cr[i][1].z / parsec / 1.e3) * dr_dz_south(cr[i][1].z / parsec / 1.e3), -1.0);
+                  else
+                      t_ad = 3.e17;
+              }
+              if (t_ad < 0.)
+                  t_ad = 3.e17;
+          }
+      }
+    
+
+    /* if ((z / parsec / 1.e3 >= z0) && (j==100)) */
+    /*     printf("z=%g nu=%g t_ad=%g radius=%g dr_dz=%g\n", z / 3.09e21, cr[i][j].nu, t_ad / 3.14e13, radius_north(cr[i][1].z / parsec / 1.e3) / 3.09e21 * 2., dr_dz_north(cr[i][1].z / parsec / 1.e3)); */
+
+ 
     if (adiabatic_losses == 1)
         b = 4.0 / 3.0 * sigma_t * c_light * 
             pow ((E / (m_electron * pow(c_light, 2))), 2) *
             (u_B[i] * (1.0 + rad_field) + u_CMB) + E / t_ad;
-
     else
         b = 4.0 / 3.0 * sigma_t * c_light * 
             pow ((E / (m_electron * pow(c_light, 2))), 2) *
@@ -34,29 +92,7 @@ double dN_dz (double z, double N, double E, double gamma, double dN_dE)
     else
         db_dE = 2.0 * b / E;
 
-
-/* Set up the velocity distribution */
-    if (z / parsec / 1.e3 < z0)
-    {
-        if (model == 1 && model_north == 1)
-            v_z[i] = velocity_field_north(cr[i][1].z / parsec / 1.e3);
-        if (model == 1 && model_north == 0)
-            v_z[i] = velocity_field_south(cr[i][1].z / parsec / 1.e3);
-        else
-            v_z[i] = v0;
-        
-    }
-    
-    if ((z / parsec / 1.e3 >= z0) && (z / parsec / 1.e3 < z1 ))
-        v_z[i] = v1;
-    if (z / parsec / 1.e3 >= z1)
-        v_z[i] = v2;
-
-    /* if (j==122) */
-    /*     printf("i=%i z=%g E=%g t=%g b*t/E=%g\n", i, z, E, z/v1/3.14e13, b*z/v1/E); */
-    
-
- 
+  
     return ((db_dE * N + b * dN_dE) / v_z[i]);
     
 
@@ -271,8 +307,13 @@ struct grid_1d setup_initial_grid (void)
                 B_field[i] = B1 * exp(-(cr[i][1].z / parsec / 1.e3) / h_B1) + (B0-B1) * exp(-(cr[i][1].z / parsec / 1.e3) / h_B2);;
                 
             }
-               
+
             
+//            B_field[i] = B0 * exp(-z0 / h_B0) * 51. / 2. / radius_north(cr[i][1].z / parsec / 1.e3) * parsec * 1.e3;
+//            B_field[i] = B0 * (1. / (1. + (cr[i][1].z / parsec / 1.e3) * (cr[i][1].z / parsec / 1.e3) / 150. / 150.));
+            
+
+
             
         }
         
@@ -299,7 +340,8 @@ struct grid_1d setup_initial_grid (void)
                 B_field[i] = B1 * exp(-(cr[i][1].z / parsec / 1.e3) / h_B1) + (B0-B1) * exp(-(cr[i][1].z / parsec / 1.e3) / h_B2);;
                 
             }
-
+//            B_field[i] = B0 * exp(-z0 / h_B0) * 51. / 2. / radius_north(cr[i][1].z / parsec / 1.e3) * parsec * 1.e3;
+//            B_field[i] = B0 * (1. / (1. + (cr[i][1].z / parsec / 1.e3) * (cr[i][1].z / parsec / 1.e3) / 150. / 150.));
             
 
 
@@ -353,11 +395,14 @@ void output_file (long i_max)
     FILE *f3;
     FILE *f4;
     FILE *f5;
-    int ii, jj, kk;
+    FILE *f6;
+    
+    int ii, jj, kk, ii_mod;
     int nu_1, nu_2, nu_3, nu_spec_ref;
     double intensity_nu1[402], intensity_nu2[402], i_syn1[402], i_syn2[402];
     double x1[402][402], x2[402][402];
-    double integrate_true;
+    double intensity_interp1, intensity_interp2;
+    long integrate_true_1, integrate_true_2;
     
     
     nu_1 = (int) ((nu_low - 0.001e9) / delta_nu);
@@ -402,7 +447,8 @@ void output_file (long i_max)
    f3=fopen("./int.dat", "w");
    f4=fopen("./spec.dat", "w");
    f5=fopen("./ne_spec.dat", "w");
-
+   f6=fopen("./int_interp.dat", "w");
+   
     if (f1 == NULL)
 	printf("Could not open 'n1.dat'.\n");
 
@@ -443,8 +489,8 @@ void output_file (long i_max)
             
         /* } */
 
-        integrate_true = 1;
-
+        integrate_true_1 = 1;
+        integrate_true_2 = 1;
         
         for (jj=1; jj <= nu_channel; jj++)
         {
@@ -453,36 +499,44 @@ void output_file (long i_max)
             A2 = x2[ii][jj] * pow(cr[ii][jj].E, 2.0) / nu_crit_corr;
 
 
-
+/*
             if (ii==100 && jj==100)
-                printf ("A1= %g\n", A1);
+            printf ("A1= %g\n", A1);*/
 
-            if (cr[ii][jj].N < 0.0)
-                    integrate_true = -1;
+            if ((x1[ii][jj] < 10.0) && (x1[ii][jj] > 0.001) && cr[ii][jj].N < 0.0)
+                    integrate_true_1 = -1;
+            
             
             if ( (x1[ii][jj] < 100.0) && (x1[ii][jj] > 0.001) )
             {
-                
-                if (integrate_true == 1)
+                                    
+                if (integrate_true_1 == 1 && cr[ii][jj].N > 0.0)
                     intensity_nu1[ii] = intensity_nu1[ii] + sqrt(A1) * cr[ii][jj].N *synchrotron(x1[ii][jj]) * pow(nu_crit_corr * cr[1][nu_1].nu, -0.5) * pow(nu_crit_corr * cr[1][jj].nu, -0.5) * (cr[ii][jj+1].nu - cr[ii][jj].nu);
                 else
                     intensity_nu1[ii] = intensity_nu1[ii];
                 
+/*
 
-
-                /* if (ii==50) */
-                /*     printf("jj=%i, N=%g, x1=%g, syn=%g, delta_int=%g, int_nu1=%g\n", jj, cr[ii][jj].N, x1[ii][jj], synchrotron(x1[ii][jj]), cr[ii][jj].N * synchrotron(x1[ii][jj]), intensity_nu1[ii]); */
+                if (ii==101)
+                printf("jj=%i, N=%g, x1=%g, syn=%g, delta_int=%g, int_nu1=%g, int_true=%i\n", jj, cr[ii][jj].N, x1[ii][jj], synchrotron(x1[ii][jj]), cr[ii][jj].N * synchrotron(x1[ii][jj]), intensity_nu1[ii], integrate_true_1);*/
                 
             }
 
+            if ((x2[ii][jj] < 10.0) && (x2[ii][jj] > 0.001) && (cr[ii][jj].N < 0.0))
+                    integrate_true_2 = -1;
+
             if ( (x2[ii][jj] < 100.0) && (x2[ii][jj] > 0.001))
             {
-                if (integrate_true == 1)
+                
+                if (integrate_true_2 == 1 && cr[ii][jj].N > 0.0)
                     intensity_nu2[ii] = intensity_nu2[ii] + sqrt(A2) * cr[ii][jj].N *synchrotron(x2[ii][jj]) * pow(nu_crit_corr * cr[1][nu_2].nu, -0.5) * pow(nu_crit_corr * cr[1][jj].nu, -0.5) * (cr[ii][jj+1].nu - cr[ii][jj].nu);
                 else
                     intensity_nu2[ii] = intensity_nu2[ii];
+            
+/*            
 
-
+            if (ii==184)
+            printf("jj=%i, N=%g, x2=%g, syn=%g, delta_int=%g, int_nu2=%g, int_true=%i\n", jj, cr[ii][jj].N, x2[ii][jj], synchrotron(x2[ii][jj]), cr[ii][jj].N * synchrotron(x2[ii][jj]), intensity_nu2[ii], integrate_true_2);*/
 
                                     /* intensity_nu2[ii] = intensity_nu2[ii] - -0.5 * sqrt(A2) * cr[ii][jj].N *synchrotron(x2[ii][jj]) * pow(x2[ii][jj], -1.5) * (x2[ii][jj+1] - x2[ii][jj]); */
  
@@ -491,7 +545,9 @@ void output_file (long i_max)
                 /*     printf("jj=%i, N=%g, x2=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", jj, cr[ii][jj].N, x2[ii][jj], synchrotron(x2[ii][jj]), sqrt(A2) * cr[ii][jj].N * synchrotron(x2[ii][jj]) * pow(nu_crit_corr * cr[1][nu_2].nu, -0.5) * pow(nu_crit_corr * cr[1][jj].nu, -0.5) * (cr[ii][jj+1].nu - cr[ii][jj].nu), intensity_nu2[ii], integrate_true); */
 
             }
+            
         }
+        
     }
 
     /* printf("ii=%i, nu=%g, N=%g, x1=%g, syn=%g, delta_int=%g, int_nu1=%g, switch=%i\n", ii, cr[spec_1][ii].nu, cr[spec_1][ii].N, x_spec_1[ii][jj], synchrotron(x_spec_1[ii][jj]), sqrt(A_spec_1) * cr[spec_1][ii].N *synchrotron(x_spec_1[ii][jj]) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * pow(nu_crit_corr_1 * cr[spec_1][ii].nu, -0.5) * (cr[spec_1][ii+1].nu - cr[spec_1][ii].nu), i_syn_spec_1[ii], integrate_true_1); */
@@ -573,7 +629,7 @@ void output_file (long i_max)
             fprintf(f2, "%10e %10e %10e %10e\n",
                     cr[ii][1].z / parsec / 1000.0, B_field[ii], B_field[ii] / B_field[1], v_z[ii]);
             fprintf(f3, "%10e %10e %10e %10e %10e %10e %10e\n",
-                    cr[ii][1].z / parsec / 1000.0, intensity_nu1[ii] / intensity_nu1[1], intensity_nu2[ii] / intensity_nu2[1], -log(intensity_nu1[ii]/intensity_nu2[ii])/log(cr[1][nu_1].nu/cr[1][nu_2].nu),  i_syn1[ii] / i_syn1[1],  i_syn2[ii] / i_syn2[1], -log(i_syn1[ii]/i_syn2[ii]) / log(nu_low/nu_high) + (gamma_in-1.0)/2.0);
+                    cr[ii][1].z / parsec / 1000.0, intensity_nu1[ii] / intensity_nu1[1], intensity_nu2[ii] / intensity_nu1[1], -log(intensity_nu1[ii]/intensity_nu2[ii])/log(cr[1][nu_1].nu/cr[1][nu_2].nu),  i_syn1[ii] / i_syn1[1],  i_syn2[ii] / i_syn2[1], -log(i_syn1[ii]/i_syn2[ii]) / log(nu_low/nu_high) + (gamma_in-1.0)/2.0);
 
             
             
@@ -596,14 +652,44 @@ void output_file (long i_max)
                 cr[spec_1][ii].E, cr[spec_1][ii].N, cr[spec_2][ii].N, cr[spec_3][ii].N, cr[spec_4][ii].N, cr[spec_5][ii].N, cr[spec_6][ii].N);        
         
     }
+
+    for (ii=1; ii <= i_max; ii++)
+    {
+        set_interpolate_values (cr[ii][1].z / parsec / 1000.0, ii);
+    }
+
     
    
+/*   for (ii=1; ii <= 36; ii++)
+       printf("mod=%i, z=%g\n", mod[ii].ii, cr[mod[ii].ii][1].z / parsec / 1000.0);
+*/
+   
+   
+    for (ii=1; ii <= 36; ii++)
+   {
+       ii_mod = mod[ii].ii;
+       intensity_interp1 = interpolated_value (intensity_nu1[ii_mod], intensity_nu1[ii_mod-1], intensity_nu1[ii_mod+1], ii, ii_mod);
+       intensity_interp2 = interpolated_value (intensity_nu2[ii_mod], intensity_nu2[ii_mod-1], intensity_nu2[ii_mod+1], ii, ii_mod);
+       
+   
+       fprintf(f6, "%10e %10e %10e %10e\n",
+               mod[ii].z, intensity_interp1 / intensity_nu1[1], intensity_interp2 / intensity_nu1[1], -log(intensity_interp1/intensity_interp2)/log(cr[1][nu_1].nu/cr[1][nu_2].nu) );
+       
+       
+       
+       
+   }
+
+
+
+      
 
     fclose(f1);
     fclose(f2);
     fclose(f3);
     fclose(f4);
     fclose(f5);
+    fclose(f6);
 }
 
 

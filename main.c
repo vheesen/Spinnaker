@@ -4,6 +4,7 @@
 #include "read_parameters.h"
 #include "synchrotron.h"
 #include "magnetic_field.h"
+#include "adiabatic.h"
 
 
 /***********************************************************************/

@@ -35,9 +35,6 @@ double u_CMB;
 double B_field[402], u_B[402], v_z[402];
 double i_syn_spec[7][402];
 
-
-
-
 /** Definitions for the Runge-Kutta**/
 long grid_size, grid_delta;
 
@@ -98,7 +95,9 @@ struct model
     double z;
     double B_field;
     double velocity;
-
+    double radius;
+    int ii;
+    
 };
 
 struct model mod[86];
