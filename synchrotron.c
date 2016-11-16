@@ -3,8 +3,7 @@
 #include "runge_kutta.h"
 #include "read_parameters.h"
 #include "synchrotron.h"
-#include "magnetic_field.h"
-#include "adiabatic.h"
+#include "jet.h"
 
 /***********************************************************************/
 /* Runge Kutta 2nd order, see Numerical Recipies §16*/
@@ -273,5 +272,69 @@ void synchrotron_spectrum (int k, int i_spec)
         
         
     }
-     
+
 }
+
+
+double synchrotron_intensity (double nu, int ii)
+
+{
+
+    double intensity_nu;
+    double x[402];
+    double nu_crit_corr;
+    double A;
+    int jj;
+    
+    
+    
+/* B_field[0]?*/
+    
+    A = (nu / 1.0e9) / (0.0168 * B_field[1] / 1.0e-10);
+
+    for (jj=0; jj <= nu_channel+1; jj++)
+    {
+        nu_crit_corr = pow(B0 / B_field[ii], 1.0);
+        x[jj] = nu * nu_crit_corr / cr[ii][jj].nu;
+            
+    }
+
+    intensity_nu = 0.0;
+
+ 
+
+    for (jj=0; jj <= nu_channel; jj++)
+    {
+        nu_crit_corr = pow(B0 / B_field[ii], 1.0);
+        A = x[jj] * pow(cr[ii][jj].E, 2.0) / nu_crit_corr;
+        
+        /* if ((x[jj] < 10.0) && (x[jj] > 0.001) && cr[ii][jj].N < 0) */
+        /*     integrate_true = -1; */
+
+            
+        if ( (x[jj] < 100.0) && (x[jj] > 0.001) )
+        {
+                                    
+            if (cr[ii][jj].integrate_true == 1)
+                intensity_nu = intensity_nu + sqrt(A) * cr[ii][jj].N * synchrotron(x[jj]) * pow(nu_crit_corr * nu, -0.5) * pow(nu_crit_corr * cr[1][jj].nu, -0.5) * (cr[ii][jj+1].nu - cr[ii][jj].nu);
+            else
+                intensity_nu = intensity_nu;
+                
+            /* if (ii==350) */
+            /*     printf("Hier,\n"); */
+
+
+            /* if (ii==290) */
+            /*     printf("z=%g, jj=%i, N=%g, x=%g, syn=%g, delta_int=%g, int_nu=%g, int_true=%li\n", cr[ii][jj].z/parsec/1.e3, jj, cr[ii][jj].N, x[jj], synchrotron(x[jj]), cr[ii][jj].N * synchrotron(x[jj]), intensity_nu, cr[ii][jj].integrate_true); */
+                    
+            }
+
+        }
+
+    return intensity_nu;
+    
+    
+}
+
+
+

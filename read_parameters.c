@@ -3,8 +3,7 @@
 #include "runge_kutta.h"
 #include "read_parameters.h"
 #include "synchrotron.h"
-#include "magnetic_field.h"
-#include "adiabatic.h"
+#include "jet.h"
 
 /*************************************************************************/
 float get_int_parameter(struct int_parameter param, FILE *f)
@@ -164,34 +163,32 @@ void read_parameters(void)
 	exit(0);
     }
 
+/* Include some fundamental constants */
+    c_light = 2.99792458e10;//[cm s^-1]
+    parsec = 3.085677582e18;//[cm]
+    pi = 3.141565492;
+    sigma_t = 6.6524616e-25;//[cm^2]
+    m_electron = 9.1093897e-28;//[g]
+    e_elem = 1.60217733e-19;
 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "c_light");
-    c_light = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "parsec");
-    parsec = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "pi");
-    pi = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "sigma_t");
-    sigma_t = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "m_electron");
-    m_electron = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "e_elem");
-    e_elem = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "grid_size");
     grid_size = get_int_parameter (parami, f);
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "nu_channel");
+    nu_channel = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "grid_delta");
     grid_delta = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "z_halo");
     z_halo_parsec = get_float_parameter(paramf, f);
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "nu_low");
+    nu_low = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "nu_high");
+    nu_high = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "mode_0");
     mode_0 = get_int_parameter (parami, f);
@@ -217,20 +214,8 @@ void read_parameters(void)
     strcpy(paramf.string_search, "v0");
     v0 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "v1");
-    v1 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "v2");
-    v2 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "nu_low");
-    nu_low = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "nu_high");
-    nu_high = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "nu_channel");
-    nu_channel = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "h_v");
+    h_v = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "gamma_in");
     gamma_in = get_float_parameter(paramf, f);
@@ -277,14 +262,18 @@ void read_parameters(void)
     strcpy(parami.string_search, "adiabatic_losses");
     adiabatic_losses = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "t_ad");
-    t_ad = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "model");
     model = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "model_north");
     model_north = get_int_parameter(parami, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "update_model");
+    update_model = get_int_parameter(parami, f); 
+/*--------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "factor_model");
+    factor_model = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "galaxy_mode");
     galaxy_mode = get_int_parameter(parami, f); 
@@ -294,6 +283,12 @@ void read_parameters(void)
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "B2");
     B2 = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "hB_factor");
+    hB_factor = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "v_factor");
+    v_factor = get_float_parameter(paramf, f); 
 /****************************************************************************/
 
 //    printf("magnetic flux = %g\n", magnetic_flux);
@@ -315,8 +310,18 @@ void read_parameters(void)
 
     printf("z0=%g\n", z0);
 
-//Convert adiabatic loss time scale from Myr to s    
-    t_ad = 3.15e13 * t_ad;
+    h_B1 = pow(10., hB_factor) * h_B1;
+    h_B2 = pow(10., hB_factor) * h_B2;
+    v0= pow(10., v_factor) * v0;
+
+
+    if (model_north == 1)
+        set_radius_north ();
+    else
+        set_radius_south ();
+
+    
+    
     
 
     fclose(f);

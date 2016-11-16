@@ -3,51 +3,25 @@
 #include "runge_kutta.h"
 #include "read_parameters.h"
 #include "synchrotron.h"
-#include "magnetic_field.h"
-#include "adiabatic.h"
-
+#include "jet.h"
 
 /***********************************************************************/
 int main()
 {
-    int ii;
+    int rk_energy;
     
     read_parameters ();
 
     setup_initial_grid ();
-    /* printf ("Choose propagation mode:\n"); */
-    /* printf ("1 = convection\n"); */
-    /* printf ("2 = diffusion\n"); */
-    /* scanf("%d",&mode); getchar(); */
 
     choice_rk = 4;
     
-
-    /* for (ii=1; ii<=3; ii++) */
-	/* { */
-	/*     printf("Choose order of Runge Kutta:   1, 2, 4\n"); */
-	/*     scanf("%d",&choice_rk); getchar(); */
-	    
-	    
-	/*     if (choice_rk == 1 || choice_rk == 2 || choice_rk == 4) */
-	/*     { */
-    /*         printf("Compute Runge-Kuttta %d-th order.\n", choice_rk); */
-    /*         break; */
-	/*     } */
-	/*     printf("Not allowed!\n"); */
-	
-	/*     if (ii==3) */
-	/*     { */
-    /*         printf("Not possible.\n"); */
-    /*         printf ("Stop.\n"); */
-    /*         exit(0); */
-	/*     } */
-	/* } */
-
+    rk_energy = 1;
+    
 
     
    
-    for (i=1; i <= grid_size; i++)
+    for (i=0; i <= grid_size; i++)
     {
 
         if (cr[i][1].z / parsec / 1.e3 < z0)
@@ -72,7 +46,7 @@ int main()
                 dN_dE();
                 dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
                 cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
-                cr[i+1][j].N = cr[1][j].N * pow((1.0 - b * cr[i+1][j].z / cr[i+1][j].E / v1), (gamma_in - 2.0));
+                cr[i+1][j].N = cr[1][j].N * pow((1.0 - b * cr[i+1][j].z / cr[i+1][j].E / v_z[i]), (gamma_in - 2.0));
                   
             }
         }
@@ -101,56 +75,192 @@ int main()
                 
             
 
-        if (choice_rk == 4)
+        if ((choice_rk == 4) && (rk_energy != 1))
         {
                
-            for (j=1; j <= nu_channel+1; j++)
+            for (j=0; j <= nu_channel+1; j++)
             {
                     
-                gamma_cr();
-                dN_dE();
-                cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
-
-                if (mode == 1)
-                    rk_4_conv (delta_z);
-                else
-                    rk_4 (delta_z);
-
+                if (j == 0)
+                {
                     
-//                    cr[i+1][j].N = Newton_conv();
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                    {
+                        gamma_cr();
+                        dN_dE();
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
+                    
+                        if (mode == 1)
+                            rk_4_conv (delta_z);
+                        else
+                            rk_4 (delta_z);
 
+                    }
+                
+                    else
                         
+                    {
+                        cr[i+1][j].N = cr[i][j].N;
+                        cr[i][j].integrate_true = -1;
+                    }
+
+                }
+
+                else
+                {
                     
+                    if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                    {
+
+                        gamma_cr();
+                        dN_dE();
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                     
+                        if (mode == 1)
+                            rk_4_conv (delta_z);
+                        else
+                            rk_4 (delta_z);
+                    
+                    }
+
+                    else
+                    {
+                        cr[i+1][j].N = cr[i][j].N;
+                        cr[i][j].integrate_true = -1;
+                    }
+
+                }
+                
+                if ( cr[i+1][j].N < 0. )
+                    cr[i+1][j].integrate_true = -1;
+                
             }
 
-//This is the version with a Runge-Kutta also in the energy direction. But does not have improved solutions.                
-/*
-                
-                for (j=0; j <= nu_channel+1; j++)
-                {
-                    dN_dE();
-                    gamma_ext();
-                    cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
-                    rk_4_conv_1 (delta_z);
-                }
-                for (j=1; j <= nu_channel; j++)
-                    rk_4_conv_2 (delta_z);
-                for (j=0; j <= nu_channel+1; j++)
-                    rk_4_conv_2 (delta_z);
-                for (j=1; j <= nu_channel; j++)
-                    rk_4_conv_3 (delta_z);
-                for (j=0; j <= nu_channel+1; j++)
-                    rk_4_conv_3 (delta_z);
-                for (j=1; j <= nu_channel; j++)
-                    rk_4_conv_4 (delta_z);
-                for (j=0; j <= nu_channel+1; j++)
-                    rk_4_conv_4 (delta_z);
-*/
-                    
         }
-    }
+        
+/*This is the version with a Runge-Kutta also in the energy direction. But does not have improved solutions.                */
+    
+        if ((choice_rk == 4) && (rk_energy == 1) && (mode == 1))
+        {
+                    
+            for (j=0; j <= nu_channel+1; j++)
+            {
+                if (j == 0)
+                {
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                    {
+                        dN_dE();
+                        gamma_cr();
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
+                        rk_4_conv_1 (delta_z);
 
+                    }
+
+                }
+
+                else
+                {
+                    if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                    {
+                        dN_dE();
+                        gamma_cr();
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
+                        rk_4_conv_1 (delta_z);
+                    }
+                    
+                }
+                
+            }
+
+            for (j=1; j <= nu_channel; j++)
+            {
+                 if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                     rk_4_conv_2 (delta_z);
+            }
+            
+            for (j=0; j <= nu_channel+1; j++)
+            {
+                if (j == 0)
+                {
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                        rk_4_conv_2 (delta_z);
+                }
+
+                else
+                {
+                   if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                       rk_4_conv_2 (delta_z);
+                }
+                
+            }
+
+            for (j=1; j <= nu_channel; j++)
+            {
+                 if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                     rk_4_conv_3 (delta_z);
+            }
+            
+            for (j=0; j <= nu_channel+1; j++)
+            {
+                if (j == 0)
+                {
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                        rk_4_conv_3 (delta_z);
+                }
+
+                else
+                {
+                   if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                       rk_4_conv_3 (delta_z);
+                }
+            
+            }
+            
+            for (j=1; j <= nu_channel; j++)
+            {
+                 if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                    rk_4_conv_4 (delta_z); 
+            }
+
+            for (j=0; j <= nu_channel+1; j++)
+            {
+                if (j == 0)
+                {
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                        rk_4_conv_4 (delta_z);
+
+                    else
+                    {
+                        cr[i+1][j].N = cr[i][j].N;
+                        cr[i][j].integrate_true = -1;
+                    }
+
+                }
+
+                else
+                {
+                   if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                       rk_4_conv_4 (delta_z);
+
+                   else
+                   {
+                       cr[i+1][j].N = cr[i][j].N;
+                       cr[i][j].integrate_true = -1;
+                   }
+
+                }
+            
+            }
+
+            for (j=0; j <= nu_channel+1; j++)
+            {
+                if ( cr[i+1][j].N < 0. )
+                    cr[i+1][j].integrate_true = -1;
+            }
+            
+        }
+
+    }
     
       
     
