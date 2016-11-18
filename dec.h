@@ -8,41 +8,45 @@
 #ifndef DEC_H
 #define DEC_H
 
-/*global integer variables*/
-long i, j;
-long choice_rk, mode, mode_0, mode_1, mode_2, power_law;
-long adiabatic_losses, galaxy_mode;
+/*Global integer variables*/
+int i, j;
+
+/*Definitions for the parameters read from file*/
+int grid_size, nu_channel, grid_delta;
+double z_halo;
+double nu_1, nu_2, nu_3, nu_4;
+int mode;
+double gamma_in, rad_field, V0;
+int constant_velocity;
+double h_V;
+int adiabatic_losses;
+double D0, mu_diff;
+int galaxy_mode;
+double z1, B0, B1, h_B1, h_B2;
+int model, model_north, update_model;
+double factor_model;
+int power_law;
+double beta, R0;
 
 
-double pi, c_light, sigma_t, m_electron, e_elem, gamma_in;
-double rad_field;//=U_rad/U_B
-double B0, B1, B2;//in units of mikro Gauss
-double z_red;//Redshift
+/*Physical constants used*/
+double pi, c_light, sigma_t, m_electron, e_elem, kpc;
 
 
-/* Definitions for the Cosmic Ray propagation code */
-long nu_channel;
-double nu_gyro;
-double u_b;
-double delta_z, z_halo, z_halo_parsec, parsec, delta_nu, delta_nu_factor;
-double v0, h_v, b, v_factor;
-double diff_0, D0, D1, D2, mu_diff;
-double nu_low, nu_high;
-double h_B0, h_B1, h_B2, z0, z1, DF0, beta0, beta1, beta2, hB_factor;//Magnetic field setup
-double bz[402][402];
-double u_CMB;
-double B_field[402], u_B[402], v_z[402], t_ad[402], t_ad_r[402], t_ad_v[402];
+/* Definitions for the cosmic ray propagation code */
+double delta_z, z_halo_kpc, delta_nu, delta_nu_factor;
+double u_CMB, b;
+double B_field[402], u_B[402];
+double v_z[402], t_ad[402], t_ad_r[402], t_ad_v[402];
 double i_syn_spec[7][402];
 
 
 /* Modifications for the jet model*/
 double factor_model;
-long model, model_north, update_model;
+int model, model_north, update_model, number_of_data_points;
 
 
 /** Definitions for the Runge-Kutta**/
-long grid_size, grid_delta;
-
 struct ODE
 {
     double h;
@@ -55,26 +59,22 @@ struct ODE
 };
 struct ODE rk;
 
+/** Definitions for the two-dimentionsal grid**/
 struct grid_1d
 {
-    double z, delta_z;//in parsec
-    double E;//electron energy in units of GeV
+    double z, delta_z;
+    double E;
     double y, N;
-    double nu;//in units of MHz
-//    double alpha; //computed spectral index alpha(nu_low, nu_high)
-//    double gamma;//computed energy index gamma(nu_low, nu_high)
-    double Q;//source term for cosmic ray acceleration
-    double alpha, gamma, dN_dE, dgamma_dE, gamma_rk, dN_dE_rk;
+    double nu;
+    double alpha, gamma, dN_dE, gamma_rk, dN_dE_rk;
     double k1_N, k2_N, k3_N, k4_N;
-    long integrate_true;
-    
+    int integrate_true;
 };
 
 struct grid_1d cr[402][402];
 
 
-/* parameter file */ 
-
+/* Definitions for parameter file */ 
 struct float_parameter 
 {
     char string_search[100];
@@ -85,18 +85,20 @@ struct float_parameter
 struct int_parameter
 {
     char string_search[100];
-    long value;
+    int value;
     char string_file[100];
 };
 
+/* Definitions for calculation of synchrotron intensities */ 
 struct syn_emission
 {
     double f, g;
-    double x;//nu/nu_crit
+    double x;
 };
 
 struct syn_emission syn[60];
 
+/* Definitions for the jet model */ 
 struct model
 {
     double z;
@@ -105,7 +107,6 @@ struct model
     double radius;
     double intensity, intensity2, alpha;
     int ii;
-    
 };
 
 struct model mod[86], mod2[60];

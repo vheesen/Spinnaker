@@ -165,12 +165,13 @@ void read_parameters(void)
 
 /* Include some fundamental constants */
     c_light = 2.99792458e10;//[cm s^-1]
-    parsec = 3.085677582e18;//[cm]
+    kpc = 3.085677582e21;//[cm]
     pi = 3.141565492;
     sigma_t = 6.6524616e-25;//[cm^2]
     m_electron = 9.1093897e-28;//[g]
     e_elem = 1.60217733e-19;
 
+/*Setup of the 2-dimensional grid*/
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "grid_size");
     grid_size = get_int_parameter (parami, f);
@@ -182,85 +183,72 @@ void read_parameters(void)
     grid_delta = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "z_halo");
-    z_halo_parsec = get_float_parameter(paramf, f);
+    z_halo_kpc = get_float_parameter(paramf, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "nu_low");
-    nu_low = get_float_parameter(paramf, f); 
+/*Output frequencies*/
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "nu_high");
-    nu_high = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "nu_1");
+    nu_1 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "mode_0");
-    mode_0 = get_int_parameter (parami, f);
+    strcpy(paramf.string_search, "nu_2");
+    nu_2 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "mode_1");
-    mode_1 = get_int_parameter (parami, f);
+    strcpy(paramf.string_search, "nu_3");
+    nu_3 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "mode_2");
-    mode_2 = get_int_parameter (parami, f);
+    strcpy(paramf.string_search, "nu_4");
+    nu_4 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "D0");
-    D0 = get_float_parameter(paramf, f);  
+/*Setup of the advection and diffusion model*/
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "D1");
-    D1 = get_float_parameter(paramf, f);  
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "D2");
-    D2 = get_float_parameter(paramf, f);  
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "mu_diff");
-    mu_diff = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "v0");
-    v0 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "h_v");
-    h_v = get_float_parameter(paramf, f); 
+    strcpy(parami.string_search, "mode");
+    mode = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "gamma_in");
     gamma_in = get_float_parameter(paramf, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "B0");
-    B0 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "rad_field");
     rad_field = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "h_B0");
-    h_B0 = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "V0");
+    V0 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "z0");
-    z0 = get_float_parameter(paramf, f); 
+    strcpy(parami.string_search, "constant_velocity");
+    constant_velocity = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "h_B1");
-    h_B1 = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "h_V");
+    h_V = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "adiabatic_losses");
+    adiabatic_losses = get_int_parameter(parami, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "D0");
+    D0 = get_float_parameter(paramf, f);  
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "mu_diff");
+    mu_diff = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+/*Magnetic field setup*/
+/*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "galaxy_mode");
+    galaxy_mode = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "z1");
     z1 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "B0");
+    B0 = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "B1");
+    B1 = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "h_B1");
+    h_B1 = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "h_B2");
     h_B2 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "power_law");
-    power_law = get_int_parameter (parami, f);
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "DF0");
-    DF0 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "beta0");
-    beta0 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "beta1");
-    beta1 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "beta2");
-    beta2 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "z_red");
-    z_red = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "adiabatic_losses");
-    adiabatic_losses = get_int_parameter(parami, f); 
+/*#Use a magnetic field model (needs edit of the source files)*/
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "model");
     model = get_int_parameter(parami, f); 
@@ -271,27 +259,19 @@ void read_parameters(void)
     strcpy(parami.string_search, "update_model");
     update_model = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "factor_model");
     factor_model = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "galaxy_mode");
-    galaxy_mode = get_int_parameter(parami, f); 
+    strcpy(parami.string_search, "power_law");
+    power_law = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "B1");
-    B1 = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "beta");
+    beta = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "B2");
-    B2 = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "hB_factor");
-    hB_factor = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "v_factor");
-    v_factor = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "R0");
+    R0 = get_float_parameter(paramf, f); 
 /****************************************************************************/
-
-//    printf("magnetic flux = %g\n", magnetic_flux);
+    z_halo = z_halo_kpc * kpc;
     
     if (nu_channel < 2)
     {
@@ -300,30 +280,32 @@ void read_parameters(void)
 	exit (0); 
     }
 
-    if (nu_high <= nu_low)
+    if (nu_2 <= nu_1)
 	{
-	    printf ("Error: nu_high <= nu_low. Stop.\n");
+	    printf ("Error: nu_2 <= nu_1. Stop.\n");
 	    exit(0);
 	}
 
-    z_halo = z_halo_parsec * parsec;
+    if (power_law == 1)
+    {
+        if (model_north == 1)
+            number_of_data_points = set_radius_north ();
+        else
+            number_of_data_points = set_radius_south ();
+    }
 
-    printf("z0=%g\n", z0);
-
-    h_B1 = pow(10., hB_factor) * h_B1;
-    h_B2 = pow(10., hB_factor) * h_B2;
-    v0= pow(10., v_factor) * v0;
-
-
-    if (model_north == 1)
-        set_radius_north ();
-    else
-        set_radius_south ();
+    if ((model == 1) && (update_model == 1))
+        read_intensity_model ();
+    
+    if (mod[number_of_data_points].z > z_halo_kpc)
+    {
+        printf("Halo size is smaller than model size. Stop.\n");
+        printf("Halo_size = %g kpc, Model size = %g kpc\n",  z_halo_kpc, mod[number_of_data_points].z);
+        exit(0);
+    }
 
     
-    
-    
-
+        
     fclose(f);
 
 }

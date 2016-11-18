@@ -1,0 +1,48 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww12100\viewh14280\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 16 November 2016
+\b \
+Improvement to the jet model and stability of the code
+\b0 \
+\
+Improvement to the jet model:\
+- Include adiabatic gains due to deceleration of the jet\
+- Include a velocity model, dependent on jet radius\
+- Output of ne.dat is now interpolated in frequency\
+- The intensities are now interpolated for non-equidistant grid points\
+- The magnetic field model can now be fitted to the intensities\
+\
+Improvements to stability:\
+- Check when N<0, so to not calculate dN_dE\
+- Calculate dV_dz and dr_dz with boundary improvement\
+- Check whether N<0 and stop Runge Kutta integration\
+- Include the Runge Kutta in energy direction. The convergence of ne.dat improves from linear to quadratic.\
+\
+Change to the code:\
+- Merge of adiabatic.c and magnetic_field.c\
+\
+To be done:\
+- Clean-up of the code\
+- Check in the energy Runge Kutta for negative N at intermediate steps\
+\
+18 November 2016\
+
+\b Clean-up of the code
+\b0 \
+\
+Changes to the code:\
+- Removed the Runge Kutta in energy direction. This did not work so well in tests with a constant magnetic field and a flat injection spectral index (gamma_inj=2.1).\
+- Combined the options in the parameter file into a more structured file\
+- Removed the old intensities and spectral indices without the synchrotron spectrum integration\
+- Removed the \
+\
+To be done:\
+- Include an option to read out the spectra at certain positions in the parameter file\
+- Improve the accuracy of the grid points in frequency: nu1, nu2, nu3 and nu4\
+- Check that the adiabatic losses are working even if there is no model for the radius\
+- Include a radius model for galaxies from the flux tube approximation\
+- Add Arpad\'92s graphical interface from python}

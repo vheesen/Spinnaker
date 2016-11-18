@@ -18,7 +18,7 @@ double synchrotron (double x)
 {
 
     double x_diff, x_min, intensity;
-    long i_syn, i_syn_min;
+    int i_syn, i_syn_min;
 
     syn[0].x =  0.00;
     syn[1].x =  0.01; 

@@ -8,7 +8,7 @@
 /***********************************************************************/
 int main()
 {
-    int rk_energy;
+    int choice_rk, rk_energy;
     
     read_parameters ();
 
@@ -16,45 +16,63 @@ int main()
 
     choice_rk = 4;
     
-    rk_energy = 1;
+    rk_energy = -1;
     
-
-    
-   
     for (i=0; i <= grid_size; i++)
     {
-
-        if (cr[i][1].z / parsec / 1.e3 < z0)
-            mode = mode_0;
-        if ((cr[i][1].z / parsec / 1.e3 >= z0) && (cr[i][1].z / parsec / 1.e3 < z1 ))
-            mode = mode_1;
-        if (cr[i][1].z / parsec / 1.e3 >= z1)
-            mode = mode_2;
-
-//        printf ("z = %g, mode = %i\n", cr[i][1].z / parsec, mode);
-        
-
-        //        mode = 1;
-        
             
         if (choice_rk == 1)
         {
                 
-            for (j=1; j <= nu_channel; j++)
+            for (j=0; j <= nu_channel+1; j++)
             {
-                gamma_cr();
-                dN_dE();
-                dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
-                cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
-                cr[i+1][j].N = cr[1][j].N * pow((1.0 - b * cr[i+1][j].z / cr[i+1][j].E / v_z[i]), (gamma_in - 2.0));
-                  
+                
+                if (j == 0)
+                {
+                    if ( ( (cr[i][j+1].N > 0.) && (cr[i][j].N > 0) ) && (cr[i][j+1].N  < cr[i][j].N > 0) )
+                    {
+                        gamma_cr();
+                        dN_dE();
+                        dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
+                        cr[i+1][j].N = cr[0][j].N * pow((1.0 - b * cr[i+1][0].z / cr[0][j].E / v_z[i]), (gamma_in - 2.0));
+                    }
+
+                    else
+                    {
+                        cr[i+1][j].N = cr[i][j].N;
+                        cr[i][j].integrate_true = -1;
+                    }
+                }
+
+                else
+                {
+                    if ( ( (cr[i][j].N > 0.) && (cr[i][j-1].N > 0) ) && (cr[i][j].N  < cr[i][j-1].N ) )
+                    {
+                        gamma_cr();
+                        dN_dE();
+                        dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
+                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
+                        cr[i+1][j].N = cr[0][j].N * pow((1.0 - b * cr[i+1][0].z / cr[0][j].E / v_z[i]), (gamma_in - 2.0));
+                    }
+                    
+                    else
+                    {
+                        cr[i+1][j].N = cr[i][j].N;
+                        cr[i][j].integrate_true = -1;
+                    }
+                }
+
+                if ( cr[i+1][j].N < 0. )
+                    cr[i+1][j].integrate_true = -1;
             }
         }
+        
 
-        if (choice_rk == 2)
+        else if (choice_rk == 2)
         {
                
-            for (j=1; j <= nu_channel+1; j++)
+            for (j=0; j <= nu_channel+1; j++)
             {
                     
                 gamma_cr();
@@ -75,7 +93,7 @@ int main()
                 
             
 
-        if ((choice_rk == 4) && (rk_energy != 1))
+        else if ((choice_rk == 4) && (rk_energy != 1))
         {
                
             for (j=0; j <= nu_channel+1; j++)
@@ -140,7 +158,7 @@ int main()
         
 /*This is the version with a Runge-Kutta also in the energy direction. But does not have improved solutions.                */
     
-        if ((choice_rk == 4) && (rk_energy == 1) && (mode == 1))
+        else if ((choice_rk == 4) && (rk_energy == 1) && (mode == 1))
         {
                     
             for (j=0; j <= nu_channel+1; j++)
