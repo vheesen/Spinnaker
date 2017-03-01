@@ -17,7 +17,7 @@ double z_halo;
 double nu_1, nu_2, nu_3, nu_4;
 int mode;
 double gamma_in, rad_field, V0;
-int constant_velocity;
+int velocity_field;
 double h_V;
 int adiabatic_losses;
 double D0, mu_diff;
@@ -25,7 +25,6 @@ int galaxy_mode;
 double z1, B0, B1, h_B1, h_B2;
 int model, model_north, update_model;
 double factor_model;
-int power_law;
 double beta, R0;
 
 

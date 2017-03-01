@@ -288,17 +288,18 @@ struct grid_1d setup_initial_grid (void)
 
 /* Set up the velocity distribution */
         
-        if (constant_velocity == 1)
+        if (velocity_field == 0)
             v_z[i] = V0;
 
+        else if (velocity_field == -1)
+            v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
+        else if (velocity_field == 1)
+            v_z[i] = V0 * exp(- cr[i][0].z / kpc / h_V);
         else
         {
-            if (power_law == 1)
-                v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
-            else
-                v_z[i] = V0 * exp(- cr[i][0].z / kpc / h_V);
+            printf("Wrong velocity field\n");
+            exit(0);
         }
-        
     }
 
 
@@ -362,7 +363,8 @@ void output_file (int i_max)
     double intensity_nu1[402], intensity_nu2[402], intensity_nu3[402], intensity_nu4[402];
     double x1[402][402], x2[402][402];
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
-    
+    double t_adv, v_z_interp;
+        
     
     nu1 = (int) (log(nu_1 / 0.001e9) / log(delta_nu_factor));
     nu2 = (int) (log(nu_2 / 0.001e9) / log(delta_nu_factor));
@@ -387,12 +389,12 @@ void output_file (int i_max)
 
 /*    JP model test */
 
-    int spec_1 = 0;
-    int spec_2 = 40;
-    int spec_3 = 80;
-    int spec_4 = 120;
-    int spec_5 = 160;
-    int spec_6 = 200;
+    int spec_1 = 12;
+    int spec_2 = 51;
+    int spec_3 = 104;
+    int spec_4 = 153;
+    int spec_5 = 215;
+    int spec_6 = 300;
     
 
     
@@ -475,10 +477,13 @@ void output_file (int i_max)
  
     
     fprintf(f1, "# z[kpc], N(nu_1), N(nu_2), N(nu_1_crit), N(nu_2_crit)\n");
-    fprintf(f2, "# z[kpc], B [G], Area [cm^2], V [cm s^-1], t_ad [s], t_ad_R [s], t_ad_V [s]\n");
-    fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2)\n");
+    fprintf(f2, "# z[kpc], B [G], Area [cm^2], V [cm s^-1], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
+    fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
+
+    t_adv = 0.;
+    
     
     for (ii=0; ii <= i_max; ii++)
     {
@@ -499,22 +504,20 @@ void output_file (int i_max)
 /* Output file: ne.dat */
             fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
                     cr[ii][0].z / kpc,
-                    interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N,
-                                          cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
-                    interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N,
-                                          cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
-                    interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N,
-                                          cr[ii][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1,
-                                          nu1_crit[ii]) /
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
                     interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
-                                          cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1,
-                                          nu1_crit[ii]),
-                    interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N,
-                                          cr[ii][nu2_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_2,
-                                          nu2_crit[ii]) /
-                    interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N,
-                                          cr[0][nu2_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_2,
-                                          nu2_crit[ii]) );
+                                          cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                    interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
             
            /* fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e\n", */
            /*         cr[ii][0].z / kpc, */
@@ -525,14 +528,16 @@ void output_file (int i_max)
            /*         cr[ii][(int)((nu1+nu2)/2.0)].alpha); */
            
 /* Output file: b.dat */
-            fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e\n",
-                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii] );
+            fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
+                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
             fprintf(f8, "%10e \n", B_field[ii] );
 
 
 /* Output file: int.dat */
-            fprintf(f3, "%10e %10e %10e %10e %10e %10e \n",
-                    cr[ii][0].z / kpc, intensity_nu1[ii] / intensity_nu1[0], intensity_nu2[ii] / intensity_nu1[0],  intensity_nu3[ii] / intensity_nu1[0],  intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2) );
+            fprintf(f3, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
+                    cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
+
+            t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
             
         }
 	
@@ -554,7 +559,7 @@ void output_file (int i_max)
     {
 
         fprintf(f5, "%10e %10e %10e %10e %10e %10e %10e\n",
-                cr[spec_1][ii].E, cr[spec_1][ii].N, cr[spec_2][ii].N, cr[spec_3][ii].N, cr[spec_4][ii].N, cr[spec_5][ii].N, cr[spec_6][ii].N);        
+                cr[0][ii].nu, cr[spec_1][ii].N, cr[spec_2][ii].N, cr[spec_3][ii].N, cr[spec_4][ii].N, cr[spec_5][ii].N, cr[spec_6][ii].N);        
         
     }
 
@@ -568,12 +573,14 @@ void output_file (int i_max)
     for (ii=0; ii <= number_of_data_points; ii++)
     {
         ii_mod = mod[ii].ii;
-        intensity_interp1 = interpolated_value (intensity_nu1[ii_mod], intensity_nu1[ii_mod-1], intensity_nu1[ii_mod+1], ii, ii_mod);
-        intensity_interp2 = interpolated_value (intensity_nu2[ii_mod], intensity_nu2[ii_mod-1], intensity_nu2[ii_mod+1], ii, ii_mod);
-        intensity_interp3 = interpolated_value (intensity_nu3[ii_mod], intensity_nu3[ii_mod-1], intensity_nu3[ii_mod+1], ii, ii_mod);
-        intensity_interp4 = interpolated_value (intensity_nu4[ii_mod], intensity_nu4[ii_mod-1], intensity_nu4[ii_mod+1], ii, ii_mod);
-        fprintf(f6, "%10e %10e %10e %10e %10e %10e\n",
-                mod[ii].z, intensity_interp1 / intensity_nu1[0], intensity_interp2 / intensity_nu1[0], intensity_interp3 / intensity_nu1[0], intensity_interp4 / intensity_nu1[0], -log(intensity_interp1/intensity_interp2)/log(nu_1/nu_2) );
+        v_z_interp = interpolated_value (v_z[ii_mod], v_z[ii_mod-1], v_z[ii_mod+1], ii, ii_mod);
+        intensity_interp1 = V0 / v_z_interp * interpolated_value (intensity_nu1[ii_mod], intensity_nu1[ii_mod-1], intensity_nu1[ii_mod+1], ii, ii_mod);
+        intensity_interp2 = V0 / v_z_interp * interpolated_value (intensity_nu2[ii_mod], intensity_nu2[ii_mod-1], intensity_nu2[ii_mod+1], ii, ii_mod);
+        intensity_interp3 = V0 / v_z_interp * interpolated_value (intensity_nu3[ii_mod], intensity_nu3[ii_mod-1], intensity_nu3[ii_mod+1], ii, ii_mod);
+        intensity_interp4 = V0 / v_z_interp * interpolated_value (intensity_nu4[ii_mod], intensity_nu4[ii_mod-1], intensity_nu4[ii_mod+1], ii, ii_mod);
+
+        fprintf(f6, "%10e %10e %10e %10e %10e %10e %10e\n",
+                mod[ii].z, intensity_interp1 / intensity_nu1[0], intensity_interp2 / intensity_nu1[0], intensity_interp3 / intensity_nu1[0], intensity_interp4 / intensity_nu1[0], -log(intensity_interp1/intensity_interp2)/log(nu_1/nu_2), v_z_interp);
         fprintf(f7, "%10e\n", intensity_interp2 / intensity_nu1[0]);
     }
 

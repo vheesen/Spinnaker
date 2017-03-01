@@ -236,9 +236,9 @@ void synchrotron_spectrum (int k, int i_spec)
     
     nu_crit_corr = pow(B0 / B_field[i_spec], 1.0);
 
-    for (ii=1; ii <= nu_channel+1; ii++)
+    for (ii=0; ii <= nu_channel+1; ii++)
     {
-        for (jj=1; jj <= nu_channel+1; jj++)
+        for (jj=0; jj <= nu_channel+1; jj++)
         {
             
             x_spec[ii][jj] = cr[i_spec][jj].nu * nu_crit_corr / cr[i_spec][ii].nu;
@@ -246,27 +246,31 @@ void synchrotron_spectrum (int k, int i_spec)
         }
     }
     
-    for (jj=1; jj <= nu_channel; jj++)
+    for (jj=0; jj <= nu_channel; jj++)
     {
 
         i_syn_spec[k][jj] = 0.0;
         integrate_true = 1;
         
-        for (ii=1; ii <= nu_channel; ii++)
+        for (ii=0; ii <= nu_channel; ii++)
         {
 
             A_spec = x_spec[ii][jj] * pow(cr[i_spec][ii].E, 2.0) / nu_crit_corr;
             
-            if (cr[i_spec][ii].N < 0.0)
-                integrate_true = -1;
+            /* if (cr[i_spec][ii].N < 0.0) */
+            /*     integrate_true = -1; */
             
             
             if ( (x_spec[ii][jj] < 100.0) && (x_spec[ii][jj] > 0.001) )
             {
-                if (integrate_true == 1)
+                if (cr[i_spec][ii].integrate_true == 1)
                     i_syn_spec[k][jj] = i_syn_spec[k][jj] + sqrt(A_spec) * cr[i_spec][ii].N *synchrotron(x_spec[ii][jj]) * pow(nu_crit_corr * cr[i_spec][jj].nu, -0.5) * pow(nu_crit_corr * cr[i_spec][ii].nu, -0.5) * (cr[i_spec][ii+1].nu - cr[i_spec][ii].nu);
                 else
                     i_syn_spec[k][jj] = i_syn_spec[k][jj];
+
+                /* if (k==6) */
+                /*     printf("z=%g, jj=%i, N=%g, x=%g, syn=%g, delta_int=%g, int_nu=%g, int_true=%i\n", cr[i_spec][jj].z/kpc, jj, cr[i_spec][ii].N, x_spec[ii][jj], synchrotron(x_spec[ii][jj]), cr[i_spec][ii].N * synchrotron(x_spec[ii][jj]), i_syn_spec[k][jj], cr[i_spec][ii].integrate_true); */
+
             }
         }
         
@@ -324,8 +328,8 @@ double synchrotron_intensity (double nu, int ii)
             /*     printf("Hier,\n"); */
 
 
-            /* if (ii==290) */
-            /*     printf("z=%g, jj=%i, N=%g, x=%g, syn=%g, delta_int=%g, int_nu=%g, int_true=%li\n", cr[ii][jj].z/parsec/1.e3, jj, cr[ii][jj].N, x[jj], synchrotron(x[jj]), cr[ii][jj].N * synchrotron(x[jj]), intensity_nu, cr[ii][jj].integrate_true); */
+            /* if (ii==265) */
+            /*     printf("z=%g, jj=%i, N=%g, x=%g, syn=%g, delta_int=%g, int_nu=%g, int_true=%i\n", cr[ii][jj].z/kpc, jj, cr[ii][jj].N, x[jj], synchrotron(x[jj]), cr[ii][jj].N * synchrotron(x[jj]), intensity_nu, cr[ii][jj].integrate_true); */
                     
             }
 
