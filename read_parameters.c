@@ -283,20 +283,22 @@ void read_parameters(void)
 	    exit(0);
 	}
 
-    if (model_north == 1)
-        number_of_data_points = set_radius_north ();
-    else
-        number_of_data_points = set_radius_south ();
-
-    if ((model == 1) && (update_model == 1))
-        read_intensity_model ();
-    if ((model == 1) && (mod[number_of_data_points].z > z_halo_kpc))
+    if (model == 1)
     {
-        printf("Halo size is smaller than model size. Stop.\n");
-        printf("Halo_size = %g kpc, Model size = %g kpc\n",  z_halo_kpc, mod[number_of_data_points].z);
-        exit(0);
+        
+        if (model_north == 1)
+            number_of_data_points = set_radius_north ();
+        else
+            number_of_data_points = set_radius_south ();
+        if (update_model == 1)
+            read_intensity_model ();
+        if  (mod[number_of_data_points].z > z_halo_kpc)
+        {
+            printf("Halo size is smaller than model size. Stop.\n");
+            printf("Halo_size = %g kpc, Model size = %g kpc\n",  z_halo_kpc, mod[number_of_data_points].z);
+            exit(0);
+        }
     }
-
     
         
     fclose(f);

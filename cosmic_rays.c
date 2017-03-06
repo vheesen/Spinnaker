@@ -199,7 +199,7 @@ void adiabatic (void)
 /****************************************************************************/
 struct grid_1d setup_initial_grid (void)
 {
-    double B_CMB, dr_dz;
+    double B_CMB;
 
     B_CMB = 3.2e-6;
     
@@ -341,6 +341,7 @@ struct grid_1d setup_initial_grid (void)
 
     for (i=1; i <= grid_size; i++)
         set_interpolate_values (cr[i][1].z / kpc, i);
+
     
     return cr[i][j];
     
@@ -477,7 +478,10 @@ void output_file (int i_max)
  
     
     fprintf(f1, "# z[kpc], N(nu_1), N(nu_2), N(nu_1_crit), N(nu_2_crit)\n");
-    fprintf(f2, "# z[kpc], B [G], Area [cm^2], V [cm s^-1], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
+    if (model == 1)
+        fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
+    else
+        fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], ");
     fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
@@ -502,36 +506,66 @@ void output_file (int i_max)
             
 
 /* Output file: ne.dat */
-            fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
-                    cr[ii][0].z / kpc,
-                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                    interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
-                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                    interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
-                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                    interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
-                                          pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
-                    interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
-                                          cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
-                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                    interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
-                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
-                    interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
-                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
-            
-           /* fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e\n", */
-           /*         cr[ii][0].z / kpc, */
-           /*         cr[ii][nu1].N / cr[0][nu1].N, */
-           /*         cr[ii][nu2].N / cr[0][nu1].N, */
-           /*         cr[ii][nu1_crit[ii]].N / cr[0][nu1_crit[ii]].N, */
-           /*         cr[ii][nu2_crit[ii]].N / cr[0][nu2_crit[ii]].N, */
-           /*         cr[ii][(int)((nu1+nu2)/2.0)].alpha); */
-           
-/* Output file: b.dat */
-            fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
-                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
-            fprintf(f8, "%10e \n", B_field[ii] );
+            if (model == 1)
+            {
+                
+                fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
+                        cr[ii][0].z / kpc,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                        interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                              cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                        interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
+            }
 
+            else
+
+            {
+                
+                fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
+                        cr[ii][0].z / kpc,
+                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
+                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N,
+                                                             cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N,
+                                                                  cr[ii][nu1_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                        interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                              cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N,
+                                                             cr[ii][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                        interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
+            
+            }
+            
+/*            fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e\n", */
+/*                    cr[ii][0].z / kpc, */
+/*                    cr[ii][nu1].N / cr[0][nu1].N, */
+/*                    cr[ii][nu2].N / cr[0][nu1].N, */
+/*                    cr[ii][nu1_crit[ii]].N / cr[0][nu1_crit[ii]].N, */
+/*                    cr[ii][nu2_crit[ii]].N / cr[0][nu2_crit[ii]].N, */
+/*                    cr[ii][(int)((nu1+nu2)/2.0)].alpha); */
+           
+/* /\* Output file: b.dat *\/ */
+            if (model == 1)
+                fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
+                        cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
+            else
+                fprintf(f2, "%10e %10e %10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii]);
+            
+            fprintf(f8, "%10e \n", B_field[ii] );
+            
 
 /* Output file: int.dat */
             fprintf(f3, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
