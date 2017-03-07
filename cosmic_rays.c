@@ -365,6 +365,8 @@ void output_file (int i_max)
     double x1[402][402], x2[402][402];
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
     double t_adv, v_z_interp;
+    double grid_print_modulo;
+    
         
     
     nu1 = (int) (log(nu_1 / 0.001e9) / log(delta_nu_factor));
@@ -500,8 +502,13 @@ void output_file (int i_max)
        
         
 //        if((ii-(int)(grid_delta/2.0))%grid_delta == 0)
+
+        if (first_data_point_at_0kpc == 1)
+            grid_print_modulo = 1.0;
+        else
+            grid_print_modulo = 2.0;
                     
-        if((ii-(int)(grid_delta))%grid_delta == 0)
+        if((ii-(int)(grid_delta/grid_print_modulo))%grid_delta == 0)
         {
             
 

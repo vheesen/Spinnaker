@@ -12,7 +12,7 @@
 int i, j;
 
 /*Definitions for the parameters read from file*/
-int grid_size, nu_channel, grid_delta;
+int grid_size, nu_channel, grid_delta, first_data_point_at_0kpc;
 double z_halo;
 double nu_1, nu_2, nu_3, nu_4;
 int mode;

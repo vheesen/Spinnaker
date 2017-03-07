@@ -171,6 +171,7 @@ void read_parameters(void)
     m_electron = 9.1093897e-28;//[g]
     e_elem = 1.60217733e-19;
 
+/*--------------------------------------------------------------------------*/
 /*Setup of the 2-dimensional grid*/
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "grid_size");
@@ -184,6 +185,9 @@ void read_parameters(void)
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "z_halo");
     z_halo_kpc = get_float_parameter(paramf, f);
+/*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "first_data_point_at_0kpc");
+    first_data_point_at_0kpc = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
 /*Output frequencies*/
 /*--------------------------------------------------------------------------*/
