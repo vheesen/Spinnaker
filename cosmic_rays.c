@@ -168,20 +168,29 @@ void adiabatic (void)
     if (i == grid_size + 1)
         dV_dz = (v_z[i] - v_z[i-1]) / (cr[i][0].z - cr[i-1][0].z);
 
-    if ((i > 0) && (i < grid_size + 1))
-        dr_dz = (radius(cr[i+1][0].z / kpc) - radius(cr[i-1][0].z / kpc) ) / (cr[i+1][0].z - cr[i-1][0].z);
-    if (i == 0)
-        dr_dz = (radius(cr[i+1][0].z / kpc) - radius(cr[i][0].z / kpc) ) / (cr[i+1][0].z - cr[i][0].z);
-    if (i == grid_size + 1)
-        dr_dz = (radius(cr[i][0].z / kpc) - radius(cr[i-1][0].z / kpc) ) / (cr[i][0].z - cr[i-1][0].z);
-
-
+    if (model == 1)
+    {
+        
+        if ((i > 0) && (i < grid_size + 1))
+            dr_dz = (radius(cr[i+1][0].z / kpc) - radius(cr[i-1][0].z / kpc) ) / (cr[i+1][0].z - cr[i-1][0].z);
+        if (i == 0)
+            dr_dz = (radius(cr[i+1][0].z / kpc) - radius(cr[i][0].z / kpc) ) / (cr[i+1][0].z - cr[i][0].z);
+        if (i == grid_size + 1)
+            dr_dz = (radius(cr[i][0].z / kpc) - radius(cr[i-1][0].z / kpc) ) / (cr[i][0].z - cr[i-1][0].z);
+    }
+    
 
     if (adiabatic_losses == 1)
     {
-
-        if (fabs(dr_dz) > 0.)
-            t_ad_r[i] = pow(2./3. * dr_dz * v_z[i] / radius(cr[i][1].z / kpc), -1.0);
+        if (model == 1)
+        {
+            
+            if (fabs(dr_dz) > 0.)
+                t_ad_r[i] = pow(2./3. * dr_dz * v_z[i] / radius(cr[i][1].z / kpc), -1.0);
+            else
+                t_ad_r[i] = 3.e17;
+        }
+        
         else
             t_ad_r[i] = 3.e17;
 
@@ -292,12 +301,26 @@ struct grid_1d setup_initial_grid (void)
             v_z[i] = V0;
 
         else if (velocity_field == -1)
-            v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
+        {
+            if (model == 1)
+                v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
+            else
+            {
+                printf("Power-law velocity field is only possible if a radius model is set.\n");
+                printf("Stop.\n");
+                exit(0);
+                
+            }
+
+        }
+        
+            
         else if (velocity_field == 1)
             v_z[i] = V0 * exp(- cr[i][0].z / kpc / h_V);
         else
         {
-            printf("Wrong velocity field\n");
+            printf("Wrong velocity field.\n");
+            printf("Stop.\n");
             exit(0);
         }
     }
@@ -339,8 +362,14 @@ struct grid_1d setup_initial_grid (void)
            cr[i][j].integrate_true = 1;
    }
 
-    for (i=1; i <= grid_size; i++)
-        set_interpolate_values (cr[i][1].z / kpc, i);
+    if (model == 1)
+    {
+        
+        for (i=1; i <= grid_size; i++)
+            set_interpolate_values (cr[i][1].z / kpc, i);
+
+    }
+    
 
     
     return cr[i][j];
@@ -406,9 +435,14 @@ void output_file (int i_max)
     f3=fopen("./int.dat", "w");
     f4=fopen("./spec.dat", "w");
     f5=fopen("./ne_spec.dat", "w");
-    f6=fopen("./int_interp.dat", "w");
-    f7=fopen("./int_interp2.dat", "w");
-    f8=fopen("./b2.dat", "w");
+    if (model == 1)
+    {
+        
+        f6=fopen("./int_interp.dat", "w");
+        f7=fopen("./int_interp2.dat", "w");
+        f8=fopen("./b2.dat", "w");
+    }
+    
    
     if (f1 == NULL)
         printf("Could not open 'n1.dat'.\n");
@@ -483,7 +517,7 @@ void output_file (int i_max)
     if (model == 1)
         fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
     else
-        fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], ");
+        fprintf(f2, "# z[kpc], B [G], V [cm s^-1]\n");
     fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
@@ -566,12 +600,16 @@ void output_file (int i_max)
            
 /* /\* Output file: b.dat *\/ */
             if (model == 1)
+            {
                 fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
                         cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
+                fprintf(f8, "%10e \n", B_field[ii] );
+            }
+            
             else
                 fprintf(f2, "%10e %10e %10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii]);
             
-            fprintf(f8, "%10e \n", B_field[ii] );
+
             
 
 /* Output file: int.dat */
@@ -605,39 +643,47 @@ void output_file (int i_max)
     }
 
 
-    for (ii=1; ii <= i_max; ii++)
-        set_interpolate_values (cr[ii][0].z / kpc, ii);
+    if (model == 1)
+    {
+        
+        for (ii=1; ii <= i_max; ii++)
+            set_interpolate_values (cr[ii][0].z / kpc, ii);
 
 //    printf("Number = %i\n", number_of_data_points);
     
 
-    for (ii=0; ii <= number_of_data_points; ii++)
-    {
-        ii_mod = mod[ii].ii;
-        v_z_interp = interpolated_value (v_z[ii_mod], v_z[ii_mod-1], v_z[ii_mod+1], ii, ii_mod);
-        intensity_interp1 = V0 / v_z_interp * interpolated_value (intensity_nu1[ii_mod], intensity_nu1[ii_mod-1], intensity_nu1[ii_mod+1], ii, ii_mod);
-        intensity_interp2 = V0 / v_z_interp * interpolated_value (intensity_nu2[ii_mod], intensity_nu2[ii_mod-1], intensity_nu2[ii_mod+1], ii, ii_mod);
-        intensity_interp3 = V0 / v_z_interp * interpolated_value (intensity_nu3[ii_mod], intensity_nu3[ii_mod-1], intensity_nu3[ii_mod+1], ii, ii_mod);
-        intensity_interp4 = V0 / v_z_interp * interpolated_value (intensity_nu4[ii_mod], intensity_nu4[ii_mod-1], intensity_nu4[ii_mod+1], ii, ii_mod);
+        for (ii=0; ii <= number_of_data_points; ii++)
+        {
+            ii_mod = mod[ii].ii;
+            v_z_interp = interpolated_value (v_z[ii_mod], v_z[ii_mod-1], v_z[ii_mod+1], ii, ii_mod);
+            intensity_interp1 = V0 / v_z_interp * interpolated_value (intensity_nu1[ii_mod], intensity_nu1[ii_mod-1], intensity_nu1[ii_mod+1], ii, ii_mod);
+            intensity_interp2 = V0 / v_z_interp * interpolated_value (intensity_nu2[ii_mod], intensity_nu2[ii_mod-1], intensity_nu2[ii_mod+1], ii, ii_mod);
+            intensity_interp3 = V0 / v_z_interp * interpolated_value (intensity_nu3[ii_mod], intensity_nu3[ii_mod-1], intensity_nu3[ii_mod+1], ii, ii_mod);
+            intensity_interp4 = V0 / v_z_interp * interpolated_value (intensity_nu4[ii_mod], intensity_nu4[ii_mod-1], intensity_nu4[ii_mod+1], ii, ii_mod);
 
-        fprintf(f6, "%10e %10e %10e %10e %10e %10e %10e\n",
-                mod[ii].z, intensity_interp1 / intensity_nu1[0], intensity_interp2 / intensity_nu1[0], intensity_interp3 / intensity_nu1[0], intensity_interp4 / intensity_nu1[0], -log(intensity_interp1/intensity_interp2)/log(nu_1/nu_2), v_z_interp);
-        fprintf(f7, "%10e\n", intensity_interp2 / intensity_nu1[0]);
+            fprintf(f6, "%10e %10e %10e %10e %10e %10e %10e\n",
+                    mod[ii].z, intensity_interp1 / intensity_nu1[0], intensity_interp2 / intensity_nu1[0], intensity_interp3 / intensity_nu1[0], intensity_interp4 / intensity_nu1[0], -log(intensity_interp1/intensity_interp2)/log(nu_1/nu_2), v_z_interp);
+            fprintf(f7, "%10e\n", intensity_interp2 / intensity_nu1[0]);
+        }
+
     }
-
     
-
 
     fclose(f1);
     fclose(f2);
     fclose(f3);
     fclose(f4);
     fclose(f5);
-    fclose(f6);
-    fclose(f7);
-    fclose(f8);
 
+    if (model == 1)
+    {
+        
+        fclose(f6);
+        fclose(f7);
+        fclose(f8);
 
+    }
+    
     
 }
 
