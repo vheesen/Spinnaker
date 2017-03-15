@@ -4,7 +4,6 @@
 #include "read_parameters.h"
 #include "synchrotron.h"
 #include "jet.h"
-
 /***********************************************************************/
 int set_radius_north ( void )
 
@@ -928,8 +927,17 @@ void read_magnetic_field_model (void)
   int ii;
   double value[100];
 
-
-  myfile=fopen("b2.dat", "r");
+  if( access( "b2.dat", F_OK ) != -1 )
+  {
+    myfile=fopen("b2.dat", "r");
+  }
+  else
+  {
+      printf("File b2.dat does not exist.\n");
+      printf("Stop.\n");
+      exit(0);
+  }
+  
 
   for(ii = 0; ii <= grid_size+1; ii++)
   {

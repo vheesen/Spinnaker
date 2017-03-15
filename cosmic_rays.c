@@ -6,6 +6,8 @@
 #include "jet.h"
 
 /**********************************************************************/
+/*First derivative of N with respect to z*/
+/*Advection equation for cosmic rays*/
 
 
 double dN_dz (double z, double N, double E, double gamma, double dN_dE)
@@ -168,7 +170,7 @@ void adiabatic (void)
     if (i == grid_size + 1)
         dV_dz = (v_z[i] - v_z[i-1]) / (cr[i][0].z - cr[i-1][0].z);
 
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
     {
         
         if ((i > 0) && (i < grid_size + 1))
@@ -182,7 +184,7 @@ void adiabatic (void)
 
     if (adiabatic_losses == 1)
     {
-        if (model == 1)
+        if (model == 1 || initialize_model == 1)
         {
             
             if (fabs(dr_dz) > 0.)
@@ -255,10 +257,9 @@ struct grid_1d setup_initial_grid (void)
 
 /* Magnetic field strength setup */
 
-    if (model == 1)
+    if (model == 1 &&  initialize_model != 1)
     {
         read_magnetic_field_model();
-
         for (i=0; i <= grid_size + 1; i++)
             B_field[i] = magnetic_field (cr[i][0].z / kpc);
     }
@@ -302,14 +303,13 @@ struct grid_1d setup_initial_grid (void)
 
         else if (velocity_field == -1)
         {
-            if (model == 1)
+            if (model == 1 || initialize_model == 1)
                 v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
             else
             {
                 printf("Power-law velocity field is only possible if a radius model is set.\n");
                 printf("Stop.\n");
                 exit(0);
-                
             }
 
         }
@@ -362,7 +362,7 @@ struct grid_1d setup_initial_grid (void)
            cr[i][j].integrate_true = 1;
    }
 
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
     {
         
         for (i=1; i <= grid_size; i++)
@@ -435,7 +435,7 @@ void output_file (int i_max)
     f3=fopen("./int.dat", "w");
     f4=fopen("./spec.dat", "w");
     f5=fopen("./ne_spec.dat", "w");
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
     {
         
         f6=fopen("./int_interp.dat", "w");
@@ -514,7 +514,7 @@ void output_file (int i_max)
  
     
     fprintf(f1, "# z[kpc], N(nu_1), N(nu_2), N(nu_1_crit), N(nu_2_crit)\n");
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
         fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
     else
         fprintf(f2, "# z[kpc], B [G], V [cm s^-1]\n");
@@ -547,7 +547,7 @@ void output_file (int i_max)
             
 
 /* Output file: ne.dat */
-            if (model == 1)
+            if (model == 1 || initialize_model == 1)
             {
                 
                 fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
@@ -599,21 +599,25 @@ void output_file (int i_max)
 /*                    cr[ii][(int)((nu1+nu2)/2.0)].alpha); */
            
 /* /\* Output file: b.dat *\/ */
-            if (model == 1)
+            if (model == 1 || initialize_model == 1)
             {
-                fprintf(f2, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
+                fprintf(f2, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                         cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
                 fprintf(f8, "%10e \n", B_field[ii] );
             }
             
             else
-                fprintf(f2, "%10e %10e %10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii]);
+                fprintf(f2, "% 10e % 10e % 10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii]);
             
 
             
 
 /* Output file: int.dat */
-            fprintf(f3, "%10e %10e %10e %10e %10e %10e %10e %10e \n",
+            if (integrate_over_radius == 1 && model == 1)
+                fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                        cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0],  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
+            else
+                fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                     cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
 
             t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
@@ -627,7 +631,7 @@ void output_file (int i_max)
     for (ii=1; ii <= nu_channel; ii++)
     {
 
-        fprintf(f4, "%10e %10e %10e %10e %10e %10e %10e\n",
+        fprintf(f4, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e\n",
                 cr[0][ii].nu, i_syn_spec[1][ii]/i_syn_spec[1][nu_spec_ref], i_syn_spec[2][ii]/i_syn_spec[2][nu_spec_ref], i_syn_spec[3][ii]/i_syn_spec[3][nu_spec_ref], i_syn_spec[4][ii]/i_syn_spec[4][nu_spec_ref], i_syn_spec[5][ii]/i_syn_spec[5][nu_spec_ref], i_syn_spec[6][ii]/i_syn_spec[6][nu_spec_ref]);        
         
     }
@@ -637,13 +641,13 @@ void output_file (int i_max)
     for (ii=1; ii <= nu_channel; ii++)
     {
 
-        fprintf(f5, "%10e %10e %10e %10e %10e %10e %10e\n",
+        fprintf(f5, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e\n",
                 cr[0][ii].nu, cr[spec_1][ii].N, cr[spec_2][ii].N, cr[spec_3][ii].N, cr[spec_4][ii].N, cr[spec_5][ii].N, cr[spec_6][ii].N);        
         
     }
 
 
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
     {
         
         for (ii=1; ii <= i_max; ii++)
@@ -675,7 +679,7 @@ void output_file (int i_max)
     fclose(f4);
     fclose(f5);
 
-    if (model == 1)
+    if (model == 1 || initialize_model == 1)
     {
         
         fclose(f6);

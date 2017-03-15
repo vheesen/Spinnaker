@@ -9,16 +9,17 @@ grid_delta = 10#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
 first_data_point_at_0kpc = -1#First data point at z=0 kpc? 1:yes -1: no
 #----------------------------------------------------------------------------
-#Output frequencies
+#Output 
 #----------------------------------------------------------------------------
 nu_1 = 1.37e9# [Hz]
 nu_2 = 4.86e9# [Hz]
 nu_3 = 6.20e9# [Hz]
 nu_4 = 8.40e9# [Hz]
+mode = 1#Advection: 1; Diffusion: 2
+integrate_over_radius = 1#1: integrate emissivity over radius
 #----------------------------------------------------------------------------
 #Setup of the advection and diffusion model
 #----------------------------------------------------------------------------
-mode = 1#Advection: 1; Diffusion: 2
 gamma_in = 2.7#Injection CRe index
 rad_field = 0.1#Radiation energy density = U_IRF/U_B
 V0 = 300.0e5#Advection speed [cm s^-1]
@@ -40,6 +41,7 @@ h_B2 = 5.0#Scaleheight of the B-field in zone 2 [kpc]
 #Use a magnetic field model (needs edit of the source files)
 #----------------------------------------------------------------------------
 model = -1#-1: no model, 1: model (which needs edit of the source files)
+initialize_model = -1#Initialze magnetic field model
 model_north = 1#Use northern part of the model
 update_model = -1#Rescale magnetic field model
 factor_model = 3.65#Model normalization

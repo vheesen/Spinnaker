@@ -189,7 +189,7 @@ void read_parameters(void)
     strcpy(parami.string_search, "first_data_point_at_0kpc");
     first_data_point_at_0kpc = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
-/*Output frequencies*/
+/*Output */
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "nu_1");
     nu_1 = get_float_parameter(paramf, f); 
@@ -203,10 +203,13 @@ void read_parameters(void)
     strcpy(paramf.string_search, "nu_4");
     nu_4 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-/*Setup of the advection and diffusion model*/
-/*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "mode");
     mode = get_int_parameter (parami, f);
+/*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "integrate_over_radius");
+    integrate_over_radius = get_int_parameter (parami, f);
+/*--------------------------------------------------------------------------*/
+/*Setup of the advection and diffusion model*/
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "gamma_in");
     gamma_in = get_float_parameter(paramf, f);
@@ -257,6 +260,9 @@ void read_parameters(void)
     strcpy(parami.string_search, "model");
     model = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "initialze_model");
+    initialize_model = get_int_parameter(parami, f); 
+/*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "model_north");
     model_north = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
@@ -287,7 +293,8 @@ void read_parameters(void)
 	    exit(0);
 	}
 
-    if (model == 1)
+    
+    if (model == 1 || initialize_model == 1)
     {
         
         if (model_north == 1)
