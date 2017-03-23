@@ -189,6 +189,9 @@ void read_parameters(void)
     strcpy(parami.string_search, "first_data_point_at_0kpc");
     first_data_point_at_0kpc = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
+    strcpy(parami.string_search, "normalize_intensities");
+    normalize_intensities = get_int_parameter (parami, f);
+/*--------------------------------------------------------------------------*/
 /*Output */
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "nu_1");
