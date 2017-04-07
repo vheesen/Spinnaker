@@ -306,12 +306,7 @@ struct grid_1d setup_initial_grid (void)
             if (model == 1 || initialize_model == 1)
                 v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
             else
-            {
-                printf("Power-law velocity field is only possible if a radius model is set.\n");
-                printf("Stop.\n");
-                exit(0);
-            }
-
+                v_z[i] = V0 * pow(R0 / kpc + cr[i][0].z / kpc / h_V, beta);
         }
         
             
@@ -683,7 +678,7 @@ void output_file (int i_max)
 
             fprintf(f6, "%10e %10e %10e %10e %10e %10e %10e\n",
                     mod[ii].z, intensity_interp1 / intensity_nu1[0], intensity_interp2 / intensity_nu1[0], intensity_interp3 / intensity_nu1[0], intensity_interp4 / intensity_nu1[0], -log(intensity_interp1/intensity_interp2)/log(nu_1/nu_2), v_z_interp);
-            fprintf(f7, "%10e\n", intensity_interp2 / intensity_nu1[0]);
+            fprintf(f7, "%10e\n", intensity_interp1 / intensity_nu1[0]);
         }
 
     }
