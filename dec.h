@@ -14,7 +14,7 @@ int i, j;
 
 /*Definitions for the parameters read from file*/
 int grid_size, nu_channel, grid_delta, first_data_point_at_0kpc;
-int integrate_over_radius , normalize_intensities;
+int epsilon, normalize_intensities;
 double z_halo;
 double nu_1, nu_2, nu_3, nu_4;
 int mode;
@@ -26,7 +26,7 @@ double D0, mu_diff;
 int galaxy_mode;
 double z1, B0, B1, h_B1, h_B2;
 int model, initialize_model, model_north, update_model;
-double factor_model;
+double xi;
 double beta, R0;
 
 
@@ -106,7 +106,7 @@ struct model
     double B_field;
     double velocity;
     double radius;
-    double intensity, intensity2, alpha;
+    double epsilon, kappa, alpha;
     int ii;
 };
 

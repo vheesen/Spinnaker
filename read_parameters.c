@@ -209,8 +209,8 @@ void read_parameters(void)
     strcpy(parami.string_search, "mode");
     mode = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(parami.string_search, "integrate_over_radius");
-    integrate_over_radius = get_int_parameter (parami, f);
+    strcpy(parami.string_search, "epsilon");
+    epsilon = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
 /*Setup of the advection and diffusion model*/
 /*--------------------------------------------------------------------------*/
@@ -272,8 +272,8 @@ void read_parameters(void)
     strcpy(parami.string_search, "update_model");
     update_model = get_int_parameter(parami, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "factor_model");
-    factor_model = get_float_parameter(paramf, f); 
+    strcpy(paramf.string_search, "xi");
+    xi = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "beta");
     beta = get_float_parameter(paramf, f); 
