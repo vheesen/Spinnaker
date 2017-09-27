@@ -306,12 +306,7 @@ struct grid_1d setup_initial_grid (void)
             if (model == 1 || initialize_model == 1)
                 v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
             else
-            {
-                printf("Power-law velocity field is only possible if a radius model is set.\n");
-                printf("Stop.\n");
-                exit(0);
-            }
-
+                v_z[i] = V0 * pow(R0 / kpc + cr[i][0].z / kpc / h_V, beta);
         }
         
             
@@ -327,8 +322,7 @@ struct grid_1d setup_initial_grid (void)
 
 
     
-/* Compute energy from observed frequency*/
-/* make the assumption that all energy of a electron at energy E is emitted at a single frequency*/
+/* Compute CRE energy in units of ergs from observed frequency */
     for (j=0; j <= nu_channel + 1; j++)
     {
         for (i=0; i <= grid_size + 1; i++)
@@ -412,10 +406,10 @@ void output_file (int i_max)
     /* printf ("nu3=%i nu_3=%g nu_3(+1)=%g nu_3(-1)=%g\n", nu3, cr[0][nu3].nu, cr[0][nu3-1].nu, cr[0][nu3+1].nu); */
     /* printf ("nu4=%i nu_4=%g nu_4(+1)=%g nu_4(-1)=%g\n", nu4, cr[0][nu4].nu, cr[0][nu4-1].nu, cr[0][nu4+1].nu); */
 
-    printf ("nu1=%i nu_1=%g\n", nu1, cr[0][nu1].nu);
-    printf ("nu2=%i nu_2=%g\n", nu2, cr[0][nu2].nu);
-    printf ("nu3=%i nu_3=%g\n", nu3, cr[0][nu3].nu);
-    printf ("nu4=%i nu_4=%g\n", nu4, cr[0][nu4].nu);
+    printf ("nu1=%i nu_1=%g Hz E1=%g GeV\n", nu1, cr[0][nu1].nu, cr[0][nu1].E / 1.6e-3);
+    printf ("nu2=%i nu_2=%g Hz E2=%g GeV\n", nu2, cr[0][nu2].nu, cr[0][nu2].E / 1.6e-3);
+    printf ("nu3=%i nu_3=%g Hz E3=%g GeV\n", nu3, cr[0][nu3].nu, cr[0][nu3].E / 1.6e-3);
+    printf ("nu4=%i nu_4=%g Hz E4=%g GeV\n", nu4, cr[0][nu4].nu, cr[0][nu4].E / 1.6e-3);
 
     double gamma_mean, nu_crit_corr;
 
@@ -521,7 +515,10 @@ void output_file (int i_max)
         fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
     else
         fprintf(f2, "# z[kpc], B [G], V [cm s^-1]\n");
-    fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
+    if (epsilon == 1)
+        fprintf(f3, "# z[kpc], epsilon(nu_1), epsilon(nu_2), epsilon(nu_3), epsilon(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
+    else
+        fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_2-nu_4)\n");
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
 
@@ -620,10 +617,11 @@ void output_file (int i_max)
                 
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
+                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
                 else
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
+                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu2[ii]/intensity_nu4[ii])/log(nu_2/nu_4) );
+                    
             }
             
 /* Output file: int.dat */
@@ -667,7 +665,7 @@ void output_file (int i_max)
     if (model == 1 || initialize_model == 1)
     {
         
-        for (ii=1; ii <= i_max; ii++)
+        for (ii=0; ii <= i_max; ii++)
             set_interpolate_values (cr[ii][0].z / kpc, ii);
 
 //    printf("Number = %i\n", number_of_data_points);

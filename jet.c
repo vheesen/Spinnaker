@@ -852,7 +852,7 @@ void set_interpolate_values (double z, int ii)
     
  
     z_min = 100.0;
-    for (counter = 1; counter <= number_of_data_points; counter++)
+    for (counter = 0; counter <= number_of_data_points; counter++)
     {
         z_diff = fabs(z - mod[counter].z);
        
@@ -863,9 +863,17 @@ void set_interpolate_values (double z, int ii)
         }
     }
 
-
-    if ( ( fabs(cr[ii][0].z / kpc -  mod[counter_min].z) <= fabs(cr[ii-1][0].z / kpc -  mod[counter_min].z) ) && ( fabs(cr[ii][0].z / kpc -  mod[counter_min].z) <= fabs(cr[ii+1][0].z / kpc -  mod[counter_min].z) ) )
+    if (ii == 0)
+    {
         mod[counter_min].ii = ii;
+    }
+
+    else
+    {
+        
+        if ( ( fabs(cr[ii][0].z / kpc -  mod[counter_min].z) <= fabs(cr[ii-1][0].z / kpc -  mod[counter_min].z) ) && ( fabs(cr[ii][0].z / kpc -  mod[counter_min].z) <= fabs(cr[ii+1][0].z / kpc -  mod[counter_min].z) ) )
+            mod[counter_min].ii = ii;
+    }
 
     /* if (ii==35) */
     /*     printf("ii=%i, z=%g, diff1=%g, diff2=%g, diff3=%g\n", mod[counter_min].ii, mod[counter_min].z, fabs(cr[ii][0].z / kpc -  mod[counter_min].z), fabs(cr[ii-1][0].z / kpc -  mod[counter_min].z) , fabs(cr[ii+1][0].z / kpc -  mod[counter_min].z) );   */
