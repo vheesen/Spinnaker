@@ -17,7 +17,7 @@ nu_2 = 4.86e9# [Hz]
 nu_3 = 6.20e9# [Hz]
 nu_4 = 8.40e9# [Hz]
 mode = 1#Advection: 1; Diffusion: 2
-epsilon = 1#1:write emissivities instead of intensities (only if model=1)
+epsilon = -1#1:write emissivities instead of intensities (only if model=1)
 #----------------------------------------------------------------------------
 #Setup of the advection and diffusion model
 #----------------------------------------------------------------------------
@@ -46,7 +46,6 @@ initialize_model = -1#Initialze magnetic field model
 model_north = 1#Use northern part of the model
 update_model = -1#Rescale magnetic field model
 xi = 3.65#Model normalization
-power_law = 1#Use power-law for velocity? 1:yes 0:no (exponential)
 beta = -0.75#Power-law index for the velocity, V = V0 * (R/R0)^-beta
 R0 = 1.04e22#Jet radius at the base [cm]
 #EOF*************************************************************************
