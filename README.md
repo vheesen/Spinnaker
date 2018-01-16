@@ -18,6 +18,6 @@ Papers that use the code:
 
 ============
 
-Documentation (coming)
+Documentation
 
-In order to run SPINNAKER you will have to compile it by running compile.sh, which created the file spectral.x. This is an executalbe that can be run by ./spectral.x. You may have to do 'chmod u+x compile.sh' and 'chmod u+x spectral.x'.
+In order to run SPINNAKER you will have to compile it by running compile.sh, which created the file spectral.x. This is an executalbe that can be run by ./spectral.x. You may have to do 'chmod u+x compile.sh' and 'chmod u+x spectral.x'. Some preliminary documentation can be found in the 'doc' folder.
