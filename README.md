@@ -11,7 +11,10 @@ Homepage: http://www.heesens.de/Spinnaker.html
 Reference: Heesen, Dettmar, Krause, Beck and Stein 2016, MNRAS, 458, 322
 
 Papers that use the code:
-- Heesen et al. 2017, MNRAS accepted, arXiv:1710.09746. Application to a radio galaxy. Extension to a quasi-1D model with varying radius and velocity, including adiabatic losses.
+- Heesen et al. 2018a, MNRAS, 474, 5049. Application to a radio galaxy. Extension to a quasi-1D model with varying radius and velocity, including adiabatic losses.
+- Heesen et al. 2018b, MNRAS accepted. Application to 12 late-type edge-on galaxies.
+- Heesen et al. 2018c, MNRAS submitted. Application to IC 10, a nearby starburst dwarf irregular galaxy.
+- Schmidt et al. 2018, in prep. Application to CHANG-ES galaxies NGC 891 and 4565.
 
 ============
 
