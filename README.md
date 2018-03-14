@@ -34,6 +34,6 @@ The input files that you wish to fit your parameters to needs to have the follow
 z; I; Delta_I
 ....
 
-where 1 refers to the distance from the center in parsec, I is the intensity at that point and Delta_I the uncertainty of I. The unit of I and Delta_I does not matter because it is normalized to 1 anyway.
+where z refers to the distance from the center in parsec, I is the intensity at that point and Delta_I the uncertainty of I. The unit of I and Delta_I does not matter because it is normalized to 1 anyway. At least two input files are needed at two different frequencies.
 
 Futher documentation about Spinteractive is forthcoming.
