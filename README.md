@@ -19,11 +19,12 @@ Papers that use the code:
 - Stein et al. 2018, in prep. Application to CHANG-ES data of the galaxies NGC 4013, 4217, and 4666.
 
 PhD theses that use the code:
+- Schmidt 2016, University of Bonn, http://hss.ulb.uni-bonn.de/2016/4488/4488.htm
 - Stein 2017, Ruhr-University Bochum, https://hss-opus.ub.ruhr-uni-bochum.de/opus4/frontdoor/index/index/start/3/rows/10/sortfield/score/sortorder/desc/searchtype/simple/query/Stein/docId/5556
 
 ============
 
-*Documentation*
+Documentation
 
 In order to run SPINNAKER you will have to compile it by running compile.sh, which created the file spectral.x. This is an executalbe that can be run by ./spectral.x. You may have to do 'chmod u+x compile.sh' and 'chmod u+x spectral.x'. Some preliminary documentation can be found in the 'doc' folder.
 
