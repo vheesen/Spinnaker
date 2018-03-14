@@ -5,17 +5,28 @@
 #include "synchrotron.h"
 #include "jet.h"
 
-/***********************************************************************/
-int main()
+/****************************************************************************/
+/* Command line argument that reads the name of the parameter file*/
+int main(int argc,char* argv[])
 {
-    int choice_rk, rk_energy;
+    int choice_rk, rk_energy, counter;
+
+    if(argc == 1)
+        strcpy (parameter_file_name,"parameters");
+    else
+        strcpy (parameter_file_name,argv[1]);
+
     
+/* Read the parameters from a file */
     read_parameters ();
 
+/* Setup of the 2D grid in spatial and energy coordinates */    
     setup_initial_grid ();
 
+/* Use the most accurate Runge-Kutta alogrithm of 4th order */    
     choice_rk = 4;
-    
+
+/* Experimental of Runge-Kutta also in energy direction */    
     rk_energy = -1;
     
     for (i=0; i <= grid_size; i++)

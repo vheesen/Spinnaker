@@ -156,10 +156,14 @@ void read_parameters(void)
     struct int_parameter parami;
     struct float_parameter paramf;
 
-    f=fopen("./parameters", "r");
+    printf("Input parameter file = '%s'\n", parameter_file_name);
+
+/* The old version with a static parameter file name    
+    f=fopen("./parameters", "r"); */
+    f=fopen(parameter_file_name, "r");
     if (f == NULL)
     {
-	printf("Cannot open parameter file. Stop.");
+	printf("Cannot open parameter file. Stop.\n");
 	exit(0);
     }
 
