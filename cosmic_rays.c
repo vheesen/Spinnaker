@@ -311,7 +311,7 @@ struct grid_1d setup_initial_grid (void)
         
             
         else if (velocity_field == 1)
-            v_z[i] = V0 * exp(- cr[i][0].z / kpc / h_V);
+            v_z[i] = V0 * exp(cr[i][0].z / kpc / h_V);
         else
         {
             printf("Wrong velocity field.\n");
