@@ -170,7 +170,7 @@ void adiabatic (void)
     if (i == grid_size + 1)
         dV_dz = (v_z[i] - v_z[i-1]) / (cr[i][0].z - cr[i-1][0].z);
 
-    if (model == 1 || initialize_model == 1)
+    if ( velocity_field  == -1 )
     {
         
         if ((i > 0) && (i < grid_size + 1))
@@ -180,22 +180,22 @@ void adiabatic (void)
         if (i == grid_size + 1)
             dr_dz = (radius(cr[i][0].z / kpc) - radius(cr[i-1][0].z / kpc) ) / (cr[i][0].z - cr[i-1][0].z);
     }
+
+    else
+        dr_dz = 0.0;
+    
     
 
     if (adiabatic_losses == 1)
     {
-        if (model == 1 || initialize_model == 1)
-        {
             
-            if (fabs(dr_dz) > 0.)
-                t_ad_r[i] = pow(2./3. * dr_dz * v_z[i] / radius(cr[i][1].z / kpc), -1.0);
-            else
-                t_ad_r[i] = 3.e17;
-        }
-        
+/* Adiabatic losses/gains due to lateral expansion/contraction */
+        if (fabs(dr_dz) > 0.)
+            t_ad_r[i] = pow(2./3. * dr_dz * v_z[i] / radius(cr[i][1].z / kpc), -1.0);
         else
             t_ad_r[i] = 3.e17;
 
+/* Adiabatic losses/gains due to longitudinal expansion/contraction */        
         if (fabs(dV_dz) > 0.)
             t_ad_v[i] = pow(dV_dz / 3., -1.0);
         else
@@ -302,14 +302,12 @@ struct grid_1d setup_initial_grid (void)
             v_z[i] = V0;
 
         else if (velocity_field == -1)
-        {
-            if (model == 1 || initialize_model == 1)
-                v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
-            else
-                v_z[i] = V0 * pow(R0 / kpc + cr[i][0].z / kpc / h_V, beta);
-        }
+            v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
         
-            
+        
+//Old version with radius not set
+//v_z[i] = V0 * pow( (R0 / kpc + cr[i][0].z / kpc / h_V) / R0 * kpc , beta);            
+
         else if (velocity_field == 1)
             v_z[i] = V0 * exp(cr[i][0].z / kpc / h_V);
         else
@@ -422,14 +420,15 @@ void output_file (int i_max)
     int spec_5 = 215;
     int spec_6 = 300;
     
-
-    
-    f1=fopen("./ne.dat", "w");
-    f2=fopen("./b.dat", "w");
+/* 
     if (epsilon == 1)
         f3=fopen("./epsilon.dat", "w");
     else
-        f3=fopen("./int.dat", "w");
+*/
+    
+    f1=fopen("./ne.dat", "w");
+    f2=fopen("./b.dat", "w");
+    f3=fopen("./int.dat", "w");
     f4=fopen("./spec.dat", "w");
     f5=fopen("./ne_spec.dat", "w");
     if (model == 1 || initialize_model == 1)
@@ -509,12 +508,10 @@ void output_file (int i_max)
     }
 
  
+    fprintf(f1, "# z[kpc], n(nu_1), n(nu_2), n(nu_1_crit), n(nu_2_crit), R/R0, V/V0\n");
+
     
-    fprintf(f1, "# z[kpc], N(nu_1), N(nu_2), N(nu_1_crit), N(nu_2_crit)\n");
-    if (model == 1 || initialize_model == 1)
-        fprintf(f2, "# z[kpc], B [G], V [cm s^-1], Area [cm^2], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
-    else
-        fprintf(f2, "# z[kpc], B [G], V [cm s^-1]\n");
+    fprintf(f2, "# z[kpc], B [G], V [cm s^-1], R [cm], t_ad [s], t_ad_R [s], t_ad_V [s], t_adv [s]\n");
     if (epsilon == 1)
         fprintf(f3, "# z[kpc], epsilon(nu_1), epsilon(nu_2), epsilon(nu_3), epsilon(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_3-nu_4)\n");
     else
@@ -547,7 +544,25 @@ void output_file (int i_max)
             
 
 /* Output file: ne.dat */
-            if (model == 1 || initialize_model == 1)
+            fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
+                        cr[ii][0].z / kpc,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                        interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                              cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                        interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                        interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
+
+
+            /*           if (model == 1 || initialize_model == 1)
             {
                 
                 fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
@@ -572,23 +587,47 @@ void output_file (int i_max)
 
             {
                 
-                fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
-                        cr[ii][0].z / kpc,
-                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
-                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N,
-                                                             cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
-                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N,
-                                                                  cr[ii][nu1_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
-                        interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
-                                              cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
-                        V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N,
-                                                             cr[ii][nu2_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
-                        interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
+                if (velocity_field == -1)
+                    fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc,
+                            pow((R0 / kpc + cr[ii][0].z / kpc / h_V) / R0 * kpc, -2.0) * V0 / v_z[ii] *
+                            interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1)
+                            / interpolate_frequency(cr[0][nu1].N, cr[0][nu1-1].N, cr[0][nu1+1].N, nu_1, nu1),
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N,
+                                                                 cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N,
+                                                                 cr[ii][nu1_crit[ii]+1].N,
+                                                                 pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                            interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                                  cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N,
+                                                                 cr[ii][nu2_crit[ii]+1].N,
+                                                                 pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                            interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                                  pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]),
+                            (R0 / kpc + cr[ii][0].z / kpc / h_V) / R0 * kpc, v_z[ii] / V0);
+                else
+                    fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc,
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N,
+                                                                 cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N,
+                                                                 cr[ii][nu1_crit[ii]+1].N,
+                                                                 pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                            interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                                  cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                            V0 / v_z[ii] * interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N,
+                                                                 cr[ii][nu2_crit[ii]+1].N,
+                                                                 pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                            interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                                  pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]));
+                
+                            
             
             }
+
+            */
             
 /*            fprintf(f1, "% 10e % 10e % 10e % 10e % 10e % 10e\n", */
 /*                    cr[ii][0].z / kpc, */
@@ -599,25 +638,33 @@ void output_file (int i_max)
 /*                    cr[ii][(int)((nu1+nu2)/2.0)].alpha); */
            
 /* /\* Output file: b.dat *\/ */
-            if (model == 1 || initialize_model == 1)
-            {
-                fprintf(f2, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                        cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
-                fprintf(f8, "%10e \n", B_field[ii] );
-            }
+            fprintf(f2, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], radius(cr[ii][0].z / kpc), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
             
-            else
-                fprintf(f2, "% 10e % 10e % 10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii]);
+            /* if (model == 1 || initialize_model == 1) */
+            /* { */
+            /*     fprintf(f2, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n", */
+            /*             cr[ii][0].z / kpc, B_field[ii], v_z[ii], pi * pow(radius(cr[ii][0].z / kpc), 2.), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv ); */
+            /*     fprintf(f8, "%10e \n", B_field[ii] ); */
+            /* } */
+            
+            /* else */
+            /*     fprintf(f2, "% 10e % 10e % 10e % 10e\n", cr[ii][0].z / kpc, B_field[ii], v_z[ii], (R0 / kpc + cr[ii][0].z / kpc / h_V) / R0 * kpc); */
             
 
             
-/* Output file: epsilon.dat */
-            if (epsilon == 1 && model == 1)
+/* Output file: int.dat */
+/* Export emissivities */            
+            if ( epsilon == 1 )
             {
+
+                if ( ii == 0 )
+                    printf("radius = %g, R0 = %g\n", radius(cr[ii][0].z / kpc), R0);
+                
                 
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], R0 / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
                 else
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                             cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
@@ -625,6 +672,7 @@ void output_file (int i_max)
             }
             
 /* Output file: int.dat */
+/* Export intensities */              
             else
             {
                 if (normalize_intensities == 1)

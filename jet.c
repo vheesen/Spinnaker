@@ -701,57 +701,81 @@ int set_radius_south ( void )
 double radius (double z)
 
 {
-    
+
     double z_diff, z_min, radius_jet;
     int counter, counter_min;
 
-    z_min = 100.0;
-    for (counter = 0; counter <= number_of_data_points; counter++)
+    if ( model == 1 )
     {
-        z_diff = fabs(z - mod[counter].z);
-       
-        if (z_diff < z_min)
-        {
-            z_min = z_diff;
-            counter_min = counter;
-        }
-    }
-
-    if ( (counter_min > 0) && (counter_min < number_of_data_points) )
-    {
-        if ( z >= mod[counter_min].z )
-            radius_jet = mod[counter_min].radius + (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
-        else
-            radius_jet = mod[counter_min].radius + (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
-    }
-
-    else if (counter_min == 0)
-    {
-        if ( z >= mod[counter_min].z )
-            radius_jet = mod[counter_min].radius + (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
-        else
-            radius_jet = mod[counter_min].radius - (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
-    }
-
-    else if (counter_min == number_of_data_points)
-    {
-        if ( z >= mod[counter_min].z )
-            radius_jet = mod[counter_min].radius - (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
-        else
-            radius_jet = mod[counter_min].radius + (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
-    }
         
-    else
-    {
-        printf("Error in function 'radius'. Stop.\n");
-        exit (0);
-    }
+
+        z_min = 100.0;
+        for (counter = 0; counter <= number_of_data_points; counter++)
+        {
+            z_diff = fabs(z - mod[counter].z);
+       
+            if (z_diff < z_min)
+            {
+                z_min = z_diff;
+                counter_min = counter;
+            }
+        }
+
+        if ( (counter_min > 0) && (counter_min < number_of_data_points) )
+        {
+            if ( z >= mod[counter_min].z )
+                radius_jet = mod[counter_min].radius + (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
+            else
+                radius_jet = mod[counter_min].radius + (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
+        }
+
+        else if (counter_min == 0)
+        {
+            if ( z >= mod[counter_min].z )
+                radius_jet = mod[counter_min].radius + (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
+            else
+                radius_jet = mod[counter_min].radius - (mod[counter_min+1].radius - mod[counter_min].radius) * ( z  - mod[counter_min].z ) / (mod[counter_min+1].z - mod[counter_min].z);
+        }
+
+        else if (counter_min == number_of_data_points)
+        {
+            if ( z >= mod[counter_min].z )
+                radius_jet = mod[counter_min].radius - (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
+            else
+                radius_jet = mod[counter_min].radius + (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
+        }
+        
+        else
+        {
+            printf("Error in function 'radius'. Stop.\n");
+            exit (0);
+        }
     
     /* if ( i == 0 && j == 0) */
     /*     printf("z=%g z_mod=%g, counter_min = %i  radius =%g radius-1=%g radius+1=%g interp=%g\n", z, mod[counter_min].z, counter_min, mod[counter_min].radius, mod[counter_min-1].radius, mod[counter_min+1].radius, radius_jet); */
 
 
+
+
+    }
+
+    else
+
+    {
+
+        if ( velocity_field == -1)
+            radius_jet = R0 / kpc + z / h_V;
+        else
+            radius_jet = R0 / kpc;
+
+
+    }
+    
+        
+
 /* Return jet radius in cm */
+
+        
     return (kpc * radius_jet);
 
 }
