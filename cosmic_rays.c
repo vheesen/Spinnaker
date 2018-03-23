@@ -218,7 +218,7 @@ struct grid_1d setup_initial_grid (void)
     delta_z = z_halo / ((double) grid_size);
      
         
-/* Equal distance grid*/
+/* Equal distance grid in space */
     for (j=0; j <= nu_channel + 1; j++)
     {
         for (i=0; i <= grid_size + 1; i++)
@@ -239,7 +239,7 @@ struct grid_1d setup_initial_grid (void)
     }
 
     
-/*Logarithmic grid in frequency*/
+/* Logarithmic grid in frequency */
 
     delta_nu = (1000.e9 - 0.001e9) / ((double) nu_channel - 1.0);
     delta_nu_factor = exp(log(1000.e9 / 0.001e9) / ((double) nu_channel));
@@ -330,36 +330,40 @@ struct grid_1d setup_initial_grid (void)
         }
     }
 
-/*Setup the energy distribution of the cosmic ray electrons 
-  in the galactic disk*/
-/*use the known injection spectral index gamma_in*/
+/*Setup the energy distribution of the cosmic ray electrons in the galactic disk */
+/* Use the injection spectral index gamma_in */
 
-    cr[1][1].N = 1.0; //arbitrary units
+    cr[0][0].N = 1.0; //arbitrary units
     
 
     for (j=0; j <= nu_channel + 1; j++)
     {
         for (i=0; i <= grid_size + 1; i++)
-            cr[i][j].N = cr[1][1].N * 
-                pow (cr[1][j].E / cr[1][1].E, -gamma_in);
+            cr[i][j].N = cr[0][0].N * 
+                pow (cr[0][j].E / cr[0][0].E, -gamma_in);
     }
 
     
+/* For diffusion, dN/dz = 0 at z = 0 */
+/* This boundary condition ensures diffusion dominates over advection at z = 0 */
+    
+    for ( j = 0; j <= nu_channel + 1; j++ )
+        cr[0][j].y = 0.0;
+    
 
-//    printf ("E(1)=%g\n", cr[1][1].E);
-
+/* The integrate true switch is that the */
     for (j=0; j <= nu_channel + 1; j++)
-   {
-       for (i=0; i <= grid_size + 1; i++)
-           cr[i][j].integrate_true = 1;
-   }
+    {
+        for (i=0; i <= grid_size + 1; i++)
+            cr[i][j].integrate_true = 1;
+    }
 
     if (model == 1 || initialize_model == 1)
     {
         
         for (i=1; i <= grid_size; i++)
             set_interpolate_values (cr[i][1].z / kpc, i);
-
+        
     }
     
 
@@ -545,21 +549,23 @@ void output_file (int i_max)
 
 /* Output file: ne.dat */
             fprintf(f1, "% 10e % 10e % 10e % 10e % 10e \n",
-                        cr[ii][0].z / kpc,
-                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                        interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) / cr[0][nu1].N,
-                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                        interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) / cr[0][nu1].N,
-                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                        interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
-                        interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
-                                              cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
-                        pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
-                        interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
-                        interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
-                                              pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
+                    cr[ii][0].z / kpc,
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu1].N, cr[ii][nu1-1].N, cr[ii][nu1+1].N, nu_1, nu1) /
+                    interpolate_frequency(cr[0][nu1].N, cr[0][nu1-1].N, cr[0][nu1+1].N, nu_1, nu1),
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu2].N, cr[ii][nu2-1].N, cr[ii][nu2+1].N, nu_2, nu2) /
+                    interpolate_frequency(cr[0][nu1].N, cr[0][nu1-1].N, cr[0][nu1+1].N, nu_1, nu1),
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu1_crit[ii]].N, cr[ii][nu1_crit[ii]-1].N, cr[ii][nu1_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]) /
+                    interpolate_frequency(cr[0][nu1_crit[ii]].N, cr[0][nu1_crit[ii]-1].N,
+                                          cr[0][nu1_crit[ii]+1].N, pow(B0 / B_field[ii], 1.0) * nu_1, nu1_crit[ii]),
+                    pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * V0 / v_z[ii] *
+                    interpolate_frequency(cr[ii][nu2_crit[ii]].N, cr[ii][nu2_crit[ii]-1].N, cr[ii][nu2_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) /
+                    interpolate_frequency(cr[0][nu2_crit[ii]].N, cr[0][nu2_crit[ii]-1].N, cr[0][nu2_crit[ii]+1].N,
+                                          pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
 
 
             /*           if (model == 1 || initialize_model == 1)

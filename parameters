@@ -5,9 +5,9 @@
 #----------------------------------------------------------------------------
 grid_size = 200#<=400; Number of grip points in z
 nu_channel = 400#<=400; Number of grid points in frequency
-grid_delta = 10#Every x_th grid point is written to output file
+grid_delta = 1#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
-first_data_point_at_0kpc = -1#First data point at z=0 kpc? 1:yes -1: no
+first_data_point_at_0kpc = 1#First data point at z=0 kpc? 1:yes -1: no
 normalize_intensities = -1#At z=0, I(nu_i)=1, 1:yes -1: no
 #----------------------------------------------------------------------------
 #Output 
@@ -27,7 +27,7 @@ V0 = 300.0e5#Advection speed [cm s^-1]
 velocity_field = 0#0: constant, -1: power-law, 1: exponential
 h_V = 1.#[kpc], V = V0*exp(z/h_V) or V = V0 *(R0/1kpc + z/h_V)^beta
 adiabatic_losses = -1#Yes: 1, No: -1 (only for advection)
-D0 = 2.0e28#Diffusion coefficient [cm^2 s^-1]
+D0 = 3.0e28#Diffusion coefficient [cm^2 s^-1]
 mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
 #----------------------------------------------------------------------------
 #Magnetic field setup

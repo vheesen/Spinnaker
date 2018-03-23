@@ -121,7 +121,6 @@ void rk_4(double h)
 
     k1_y = h * d2N_dz2 (cr[i][j].z, cr[i][j].N, cr[i][j].y, 
 		cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
-    
  
     k1_N = h * (cr[i][j].y + k1_y);
 
@@ -130,8 +129,6 @@ void rk_4(double h)
 			cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
 
     k2_N = h * (cr[i][j].y + k2_y / 2.0);
-
-   
 
     k3_y = h * d2N_dz2 (cr[i][j].z + h / 2.0, cr[i][j].N + k2_N / 2.0, 
 			cr[i][j].y + k2_y / 2.0, 
