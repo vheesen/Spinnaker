@@ -16,7 +16,6 @@ Papers that use the code:
 - Heesen et al. 2018c, MNRAS, 476, 1756. Application to IC 10, a nearby starburst dwarf irregular galaxy, with accelerating wind.
 - Schmidt et al. 2018, in prep. Application to CHANG-ES galaxies NGC 891 and 4565.
 - Heald et al. 2018, in prep. Application to LOFAR and CHANG-ES data of the galaxy NGC 5775.
-- Stein et al. 2018, in prep. Application to CHANG-ES data of the galaxies NGC 4013, 4217, and 4666.
 
 PhD theses that use the code:
 - Schmidt 2016, University of Bonn, http://hss.ulb.uni-bonn.de/2016/4488/4488.htm
