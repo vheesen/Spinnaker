@@ -444,7 +444,6 @@ void output_file (int i_max)
         f7=fopen("./epsilon_interp2.dat", "w");
         f8=fopen("./b2.dat", "w");
     }
-    
    
     if (f1 == NULL)
         printf("Could not open 'n1.dat'.\n");
@@ -570,6 +569,8 @@ void output_file (int i_max)
                                           pow(B0 / B_field[ii], 1.0) * nu_2, nu2_crit[ii]) );
 
 
+
+
             /*           if (model == 1 || initialize_model == 1)
             {
                 
@@ -692,7 +693,8 @@ void output_file (int i_max)
             }
             
             t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
-            
+
+
         }
 	
     }
@@ -766,13 +768,10 @@ void output_file (int i_max)
 
     if (model == 1 || initialize_model == 1)
     {
-        
         fclose(f6);
         fclose(f7);
         fclose(f8);
-
     }
-    
     
 }
 

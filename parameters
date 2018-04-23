@@ -16,7 +16,7 @@ nu_1 = 1.37e9# [Hz]
 nu_2 = 4.86e9# [Hz]
 nu_3 = 6.20e9# [Hz]
 nu_4 = 8.40e9# [Hz]
-mode = 1#Advection: 1; Diffusion: 2
+mode = 1#Advection: 1; Diffusion: 2; Cylindrical diffusion: 3; Radial diffusion: 4
 epsilon = -1#1:write emissivities instead of intensities (only if model=1)
 #----------------------------------------------------------------------------
 #Setup of the advection and diffusion model

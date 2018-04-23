@@ -121,9 +121,13 @@ int main(int argc,char* argv[])
                     
                         if (mode == 1)
                             rk_4_conv (delta_z);
-                        else
+                        else if (mode == 2)
                             rk_4 (delta_z);
-
+                        else if (mode == 3)
+                            rk_4_cylindrical (delta_z);
+                        else
+                            rk_4_radial (delta_z);
+                        
                     }
                 
                     else
@@ -147,9 +151,13 @@ int main(int argc,char* argv[])
                     
                         if (mode == 1)
                             rk_4_conv (delta_z);
-                        else
+                        else if (mode == 2)
                             rk_4 (delta_z);
-                    
+                        else if (mode == 3)
+                            rk_4_cylindrical (delta_z);
+                        else
+                            rk_4_radial (delta_z);
+                                            
                     }
 
                     else

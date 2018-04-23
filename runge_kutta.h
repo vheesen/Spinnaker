@@ -10,6 +10,10 @@ void rk_4(double h);
 
 void rk_4_conv(double h);
 
+void rk_4_cylindrical(double h);
+
+void rk_4_radial(double h);
+
 void rk_4_conv_1(double h);
 
 void rk_4_conv_2(double h);
