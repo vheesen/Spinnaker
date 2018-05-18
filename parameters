@@ -34,6 +34,7 @@ mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
 #Magnetic field setup
 #----------------------------------------------------------------------------
 galaxy_mode = 1#1: thin and thick disc, -1: piece-wise exponential
+#2: constant magnetic field (isotropic turbulent)
 z1 = 10.0#if galaxy_mode=-1, transition from zone 1 to zone 2 [kpc]
 B0 = 13.5e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 B1 = 8.6e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla

@@ -268,20 +268,24 @@ struct grid_1d setup_initial_grid (void)
     {
         
 
-/*For galaxy mode this is a superposition of thin and thick disc. Otherwise it is a piecewise exponential function*/
+/*For galaxy_mode=1 this is a superposition of thin and thick disc.
+  For galaxy_mode = -1 it is a piecewise exponential function
+  For galaxy_mode = 2 the magnetic field is constant (useful for a diffusion kernel) */
         
         for (i=0; i <= grid_size + 1; i++)
         {
 
             if (galaxy_mode == 1)
                 B_field[i] = B1 * exp(-(cr[i][0].z / kpc) / h_B1) + (B0-B1) * exp(-(cr[i][0].z / kpc) / h_B2);
-            else
+            else if (galaxy_mode == -1)
             {
                 if (cr[i][1].z / kpc < z1)
                     B_field[i] = B0 * exp(-cr[i][0].z / kpc / h_B1);
                 else
                     B_field[i] = B0 * exp(-z1 / h_B1) * exp(-(cr[i][0].z / kpc - z1) / h_B2);
             }
+            else
+                B_field[i] = B0;
             
         }
             
@@ -322,12 +326,20 @@ struct grid_1d setup_initial_grid (void)
 
 
     
-/* Compute CRE energy in units of ergs from observed frequency */
+/* Compute CRE energy in units of ergs from observed frequency
+   If calculating edge-on galaxies or jets, the magnetic field
+   is assumed to be ordered and perpendicular to the line of sight
+   If the magnetic field is constant (galaxy_mode = 2),
+   the magnetic field is assumed to be turbulent and isotropic */
+    
     for (j=0; j <= nu_channel + 1; j++)
     {
         for (i=0; i <= grid_size + 1; i++)
         {
-            cr[i][j].E = 1.6e-3 * pow (cr[i][j].nu / 16.1e6 / (B0 / 1.e-6), 0.5);
+            if ( galaxy_mode != 2)
+                cr[i][j].E = 1.6e-3 * pow (cr[i][j].nu / 16.1e6 / (B0 / 1.e-6), 0.5);
+            else
+                cr[i][j].E = 1.6e-3 * pow (cr[i][j].nu / 16.1e6 / (sqrt(2./3.) * B0 / 1.e-6), 0.5);
                         
         }
     }
