@@ -16,7 +16,7 @@ int i, j;
 char parameter_file_name[25];
 int grid_size, nu_channel, grid_delta, first_data_point_at_0kpc;
 int epsilon, normalize_intensities;
-double z_halo;
+double z_halo, FWHM_effective_beam;
 double nu_1, nu_2, nu_3, nu_4;
 int mode;
 double gamma_in, rad_field, V0;
@@ -29,6 +29,9 @@ double z1, B0, B1, h_B1, h_B2;
 int model, initialize_model, model_north, update_model;
 double xi;
 double beta, R0;
+
+/* Output file */
+double intensity_nu1[402], intensity_nu2[402], intensity_nu3[402], intensity_nu4[402];
 
 
 /*Physical constants used*/

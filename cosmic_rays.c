@@ -397,10 +397,10 @@ void output_file (int i_max)
     FILE *f6;
     FILE *f7;
     FILE *f8;
+    FILE *f9;
 
     int ii, jj, kk, ii_mod;
     int nu1, nu2, nu3, nu4, nu_spec_ref, nu1_crit[402], nu2_crit[402];
-    double intensity_nu1[402], intensity_nu2[402], intensity_nu3[402], intensity_nu4[402];
     double x1[402][402], x2[402][402];
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
     double t_adv, v_z_interp;
@@ -456,6 +456,7 @@ void output_file (int i_max)
         f7=fopen("./epsilon_interp2.dat", "w");
         f8=fopen("./b2.dat", "w");
     }
+    f9=fopen("./int_unconv.dat", "w");
    
     if (f1 == NULL)
         printf("Could not open 'n1.dat'.\n");
@@ -685,10 +686,10 @@ void output_file (int i_max)
                 
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], R0 / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0), R0 / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
                 else
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu1 (0),  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu1 (0), kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu1 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
                     
             }
             
@@ -698,9 +699,44 @@ void output_file (int i_max)
             {
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0),  V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
                 else          
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+            }
+            
+            t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
+
+
+        
+
+/* Output file: int_unconv.dat */
+/* Export emissivities */            
+            if ( epsilon == 1 )
+            {
+
+                if ( ii == 0 )
+                    printf("radius = %g, R0 = %g\n", radius(cr[ii][0].z / kpc), R0);
+                
+                
+                if (normalize_intensities == 1)
+                    fprintf(f9, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0], R0 / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                else
+                    fprintf(f9, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0], kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                    
+            }
+            
+/* Output file: int_unconv.dat */
+/* Export intensities */              
+            else
+            {
+                if (normalize_intensities == 1)
+                    fprintf(f9, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu2[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu3[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu4[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
+                else          
+                    fprintf(f9, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                             cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
             }
             
@@ -708,6 +744,8 @@ void output_file (int i_max)
 
 
         }
+
+        
 	
     }
 
@@ -784,7 +822,7 @@ void output_file (int i_max)
         fclose(f7);
         fclose(f8);
     }
-    
+    fclose(f9);
 }
 
 
@@ -809,5 +847,4 @@ double interpolate_frequency (double value, double value_low, double value_high,
 
     
 }
-
 /**********************************************************************/
