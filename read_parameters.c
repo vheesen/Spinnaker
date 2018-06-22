@@ -216,9 +216,6 @@ void read_parameters(void)
     strcpy(parami.string_search, "epsilon");
     epsilon = get_int_parameter (parami, f);
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "FWHM_effective_beam");
-    FWHM_effective_beam = get_float_parameter (paramf, f);
-/*--------------------------------------------------------------------------*/
 /*Setup of the advection and diffusion model*/
 /*--------------------------------------------------------------------------*/
     strcpy(paramf.string_search, "gamma_in");
