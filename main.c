@@ -45,7 +45,6 @@ int main(int argc,char* argv[])
                         gamma_cr();
                         dN_dE();
                         dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                         cr[i+1][j].N = cr[0][j].N * pow((1.0 - b * cr[i+1][0].z / cr[0][j].E / v_z[i]), (gamma_in - 2.0));
                     }
 
@@ -63,7 +62,6 @@ int main(int argc,char* argv[])
                         gamma_cr();
                         dN_dE();
                         dN_dz (cr[i][j].z, cr[i][j].N, cr[i][j].E, cr[i][j].gamma, cr[i][j].dN_dE);
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                         cr[i+1][j].N = cr[0][j].N * pow((1.0 - b * cr[i+1][0].z / cr[0][j].E / v_z[i]), (gamma_in - 2.0));
                     }
                     
@@ -89,7 +87,6 @@ int main(int argc,char* argv[])
                 gamma_cr();
                     
                 dN_dE();
-                cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
 
 //                if (mode == 1)
 //                    rk_2_conv (delta_z);
@@ -117,7 +114,6 @@ int main(int argc,char* argv[])
                     {
                         gamma_cr();
                         dN_dE();
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                     
                         if (mode == 1)
                             rk_4_conv (delta_z);
@@ -147,7 +143,6 @@ int main(int argc,char* argv[])
 
                         gamma_cr();
                         dN_dE();
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                     
                         if (mode == 1)
                             rk_4_conv (delta_z);
@@ -188,7 +183,6 @@ int main(int argc,char* argv[])
                     {
                         dN_dE();
                         gamma_cr();
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                         rk_4_conv_1 (delta_z);
 
                     }
@@ -201,7 +195,6 @@ int main(int argc,char* argv[])
                     {
                         dN_dE();
                         gamma_cr();
-                        cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0;
                         rk_4_conv_1 (delta_z);
                     }
                     
@@ -312,7 +305,6 @@ int main(int argc,char* argv[])
 /*                 { */
 /*                     gamma_cr(); */
 /*                     dN_dE(); */
-/*                     cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0; */
 /*                     rk_2 (delta_z); */
 /*                 } */
 
@@ -324,7 +316,6 @@ int main(int argc,char* argv[])
 /*                 { */
 /*                     gamma_cr(); */
 /*                     dN_dE(); */
-/*                     cr[i][j].alpha = (cr[i][j].gamma - 1.0) / 2.0; */
 /*                     rk_4 (delta_z); */
 /*                 } */
 /* /\* 	 */

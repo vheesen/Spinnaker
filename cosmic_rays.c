@@ -357,6 +357,16 @@ struct grid_1d setup_initial_grid (void)
                 pow (cr[0][j].E / cr[0][0].E, -gamma_in);
     }
 
+/* Advection time */
+    
+    for (j=0; j <= nu_channel + 1; j++)
+    {
+        cr[0][j].t_adv = 0.0;
+        
+        for (i=0; i <= grid_size; i++)
+            cr[i+1][j].t_adv = cr[i][j].t_adv + (cr[i+1][0].z - cr[i][0].z) / v_z[i];
+    }
+    
     
 /* For diffusion, dN/dz = 0 at z = 0 */
 /* This boundary condition ensures diffusion dominates over advection at z = 0 */
@@ -403,7 +413,7 @@ void output_file (int i_max)
     int nu1, nu2, nu3, nu4, nu_spec_ref, nu1_crit[402], nu2_crit[402];
     double x1[402][402], x2[402][402];
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
-    double t_adv, v_z_interp;
+    double v_z_interp;
     double grid_print_modulo;
     
         
@@ -537,9 +547,6 @@ void output_file (int i_max)
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
 
-    t_adv = 0.;
-    
-    
     for (ii=0; ii <= i_max; ii++)
     {
        
@@ -661,7 +668,7 @@ void output_file (int i_max)
            
 /* /\* Output file: b.dat *\/ */
             fprintf(f2, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], radius(cr[ii][0].z / kpc), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], t_adv );
+                    cr[ii][0].z / kpc, B_field[ii], v_z[ii], radius(cr[ii][0].z / kpc), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], cr[ii][0].t_adv );
             
             /* if (model == 1 || initialize_model == 1) */
             /* { */
@@ -705,7 +712,7 @@ void output_file (int i_max)
                             cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
             }
             
-            t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
+            
 
 
         
@@ -740,9 +747,6 @@ void output_file (int i_max)
                             cr[ii][0].z / kpc, V0 / v_z[ii] * intensity_nu1[ii] / intensity_nu1[0], V0 / v_z[ii] * intensity_nu2[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu3[ii] / intensity_nu1[0],  V0 / v_z[ii] * intensity_nu4[ii] / intensity_nu1[0], log(intensity_nu1[ii]/intensity_nu2[ii])/log(nu_1/nu_2), log(intensity_nu2[ii]/intensity_nu3[ii])/log(nu_2/nu_3), log(intensity_nu3[ii]/intensity_nu4[ii])/log(nu_3/nu_4) );
             }
             
-            t_adv = t_adv + (cr[ii+1][0].z - cr[ii][0].z) / v_z[ii];
-
-
         }
 
         

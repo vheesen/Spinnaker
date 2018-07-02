@@ -71,7 +71,7 @@ struct grid_1d
     double E;
     double y, N;
     double nu;
-    double alpha, gamma, dN_dE, gamma_rk, dN_dE_rk;
+    double t_adv, gamma, dN_dE, gamma_rk, dN_dE_rk;
     double k1_N, k2_N, k3_N, k4_N;
     int integrate_true;
 };

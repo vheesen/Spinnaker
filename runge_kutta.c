@@ -66,51 +66,6 @@ void rk_2_conv (double h)
 
   
 }
-
-/***********************************************************************/
-/* Runge Kutta 4th order, see Numerical Recipies §16*/
-/*void rk_4(double h)
-{
-    double k1_y, k2_y, k3_y, k4_y;
-    double k1_N, k2_N, k3_N, k4_N;
-
-    k1_y = h * d2N_dz2 (cr[i][j].z, cr[i][j].N, cr[i][j].y, 
-		cr[i][j].E, cr[i][j].gamma, cr[i][j].alpha,
-		cr[i][j].Q);
-    
- 
-    k1_N = h * (cr[i][j].y + k1_y);
-
-    k2_y = h * d2N_dz2 (cr[i][j].z + h / 2.0, cr[i][j].N + k1_N / 2.0, 
-			cr[i][j].y + k1_y / 2.0, 
-			cr[i][j].E, cr[i][j].gamma, cr[i][j].alpha,
-			cr[i][j].Q);
-
-    k2_N = h * (cr[i][j].y + k2_y / 2.0);
-
-   
-
-    k3_y = h * d2N_dz2 (cr[i][j].z + h / 2.0, cr[i][j].N + k2_N / 2.0, 
-			cr[i][j].y + k2_y / 2.0, 
-			cr[i][j].E, cr[i][j].gamma, cr[i][j].alpha,
-			cr[i][j].Q);
-
-    k3_N = h * (cr[i][j].y + k2_y / 2.0);
-
-    k4_y = h * d2N_dz2 (cr[i][j].z + h, cr[i][j].N + k3_N, 
-			cr[i][j].y + k3_y, 
-			cr[i][j].E, cr[i][j].gamma, cr[i][j].alpha,
-			cr[i][j].Q);
-
-    k4_N = h * (cr[i][j].y + k3_y);
-
-    cr[i+1][j].y = cr[i][j].y + k1_y / 6.0 + k2_y / 3.0 + 
-	k3_y / 3.0 + k4_y / 6.0;
-    cr[i+1][j].N = cr[i][j].N + k1_N / 6.0 + k2_N / 3.0 +
-	k3_N / 3.0 + k4_N / 6.0;
-
-  
-    }*/
 /**********************************************************************/
 /***********************************************************************/
 /* Runge Kutta 4th order, see Numerical Recipies §16*/

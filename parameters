@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------------
 grid_size = 200#<=400; Number of grip points in z
 nu_channel = 400#<=400; Number of grid points in frequency
-grid_delta = 1#Every x_th grid point is written to output file
+grid_delta = 10#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
 first_data_point_at_0kpc = 1#First data point at z=0 kpc? 1:yes -1: no
 normalize_intensities = -1#At z=0, I(nu_i)=1, 1:yes -1: no
