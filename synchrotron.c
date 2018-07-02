@@ -346,8 +346,6 @@ double convolve_intensity_nu1 (int ii_ref)
     double int_conv, sigma_beam;
     int ii;
 
-    FWHM_effective_beam = 1.2;
-    
     sigma_beam = 0.425 * FWHM_effective_beam * kpc;
     
     int_conv = 0.0;
