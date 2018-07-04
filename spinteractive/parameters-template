@@ -7,25 +7,27 @@ grid_size = 200#<=400; Number of grip points in z
 nu_channel = 400#<=400; Number of grid points in frequency
 grid_delta = 1#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
-first_data_point_at_0kpc = -1#First data point at z=0 kpc? 1:yes -1: no
-normalize_intensities = -1#At z=0, I(nu_i)=1, 1:yes -1: no
+first_data_point_at_0kpc = 1#First data point at z=0 kpc? 1:yes -1: no
+normalize_intensities = 1#At z=0, I(nu_i)=1, 1:yes -1: no
 #----------------------------------------------------------------------------
 #Output 
 #----------------------------------------------------------------------------
-nu_1 = 1.4e8# [Hz]
-nu_2 = 1.5e9# [Hz]
+nu_1 = 1.37e9# [Hz]
+nu_2 = 4.86e9# [Hz]
 nu_3 = 6.20e9# [Hz]
 nu_4 = 8.40e9# [Hz]
-mode = 1#Advection: 1; Diffusion: 2
-epsilon = 1#1:write emissivities instead of intensities (only if model=1)
+mode = 1#Advection: 1; Diffusion: 2; Cylindrical diffusion: 3; Radial diffusion: 4
+epsilon = -1#1:write emissivities instead of intensities (only if model=1)
+FWHM_effective_beam = 1.2#Effective beam size as FWHM [kpc]
 #----------------------------------------------------------------------------
 #Setup of the advection and diffusion model
 #----------------------------------------------------------------------------
 gamma_in = 2.7#Injection CRe index
 rad_field = 0.1#Radiation energy density = U_IRF/U_B
 V0 = 300.0e5#Advection speed [cm s^-1]
-velocity_field = 1#0: constant, -1: power-law, 1: exponential
-h_V = 1.#[kpc], V = V0*exp(z/h_V) or V = V0 *(R0/1kpc + z/h_V)^beta
+velocity_field = 0#0: constant, -1: power-law, 1: exponential
+h_V = 1.#[kpc], V = V0*exp(-z/h_V) or V = V0 *(R0/1kpc + z/h_V)^beta
+#velocity_field = 2: power-law with z, V = V0 *(1 + z/h_V)^beta
 adiabatic_losses = -1#Yes: 1, No: -1 (only for advection)
 D0 = 2.0e28#Diffusion coefficient [cm^2 s^-1]
 mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
@@ -33,6 +35,7 @@ mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
 #Magnetic field setup
 #----------------------------------------------------------------------------
 galaxy_mode = 1#1: thin and thick disc, -1: piece-wise exponential
+#2: constant magnetic field (isotropic turbulent)
 z1 = 10.0#if galaxy_mode=-1, transition from zone 1 to zone 2 [kpc]
 B0 = 13.5e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 B1 = 8.6e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
@@ -46,6 +49,6 @@ initialize_model = -1#Initialze magnetic field model
 model_north = 1#Use northern part of the model
 update_model = -1#Rescale magnetic field model
 xi = 3.65#Model normalization
-beta = 0.5#Power-law index for the velocity, V = V0 * (R/R0)^-beta
-R0 = 1.85e22#Jet radius at the base [cm]
+beta = -0.75#Power-law index for the velocity, V = V0 * (R/R0)^-beta
+R0 = 1.04e22#Jet radius at the base [cm]
 #EOF*************************************************************************
