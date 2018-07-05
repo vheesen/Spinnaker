@@ -1054,7 +1054,7 @@ frequency4field.grid(row=6,column=2,sticky=Tk.W)
 frequency4field.insert(Tk.END,def_nu4)
 
 fwhm_var = Tk.DoubleVar()
-fwhm_var.set(1.1)
+fwhm_var.set(def_fwhm)
 FWHMfield = Tk.Entry(master=configframe,width=entrywidth,textvariable=fwhm_var)
 FWHMfield.grid(row=8,column=2,sticky=Tk.W)
 Tk.Label(master=configframe,text='Effective Beam FWHM').grid(row=8,column=0,columnspan=2,sticky=Tk.W+Tk.E)
