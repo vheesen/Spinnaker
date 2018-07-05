@@ -215,7 +215,7 @@ struct grid_1d setup_initial_grid (void)
     B_CMB = 3.2e-6;
     
     u_CMB = 1.0 / 8.0 / pi * pow (B_CMB, 2.0);
-    delta_z = z_halo / ((double) grid_size);
+    delta_z = 2.0 * z_halo / ((double) grid_size);
      
         
 /* Equal distance grid in space */
@@ -483,7 +483,7 @@ void output_file (int i_max)
         }
     }
 
-    for (ii=0; ii <= i_max; ii++)
+    for (ii=0; ii <= grid_size; ii++)
     {
         intensity_nu1[ii] = synchrotron_intensity (nu_1, ii);
         intensity_nu2[ii] = synchrotron_intensity (nu_2, ii);

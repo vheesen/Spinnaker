@@ -320,8 +320,9 @@ void read_parameters(void)
             exit(0);
         }
     }
-    
-        
+
+    grid_size = (int) 2.0 * grid_size;
+            
     fclose(f);
 
 }

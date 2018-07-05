@@ -336,7 +336,7 @@ int main(int argc,char* argv[])
     
     
     
-    output_file (grid_size);    
+    output_file ( (int) (grid_size / 2.0) );    
    
 
     return 0;

@@ -532,8 +532,8 @@ def run():
 	###new gridsize
 	# length of datapoints -1
 	data_length = len(d2[0,:,0])-1
-	lim = 400/data_length
-#	gridsize = lim*data_length
+	lim = 200/data_length
+	gridsize = lim*data_length
 	steps = 1.0*max(d2[0,:,0])/gridsize
 
 	try:
@@ -613,7 +613,7 @@ def run():
 	sim_a12_temp = []
 	sim_a23_temp = []
 	sim_a34_temp = []
-	for i in range(0,len(sim_int1),1):
+	for i in range(0,len(sim_int1)+1,lim):
 		sim_int1_temp.append(sim_int1[i])
 		sim_int2_temp.append(sim_int2[i])
 		sim_int3_temp.append(sim_int3[i])
@@ -762,8 +762,8 @@ def run_noplot(varstochange,vals):
 	###new gridsize
 	# length of datapoints -1
 	data_length = len(d2[0,:,0])-1
-	lim = 400/data_length
-	#gridsize = lim*data_length
+	lim = 200/data_length
+	gridsize = lim*data_length
 
 	try:
 		nu1 = numpy.float(frequency1field.get())
@@ -857,7 +857,7 @@ def run_noplot(varstochange,vals):
 	sim_a23_temp = []
 	sim_a34_temp = []
 
-	for i in range(0,max(int(d2[0,:,0])),1):
+	for i in range(0,max(int(d2[0,:,0]))+1,int(steps*lim)):
 		sim_int1_temp.append(sim_int1[i])
 		sim_int2_temp.append(sim_int2[i])
 		sim_int3_temp.append(sim_int3[i])

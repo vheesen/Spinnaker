@@ -345,28 +345,30 @@ double convolve_intensity_nu1 (int ii_ref)
 
     double int_conv, sigma_beam;
     int ii;
-
+    
     sigma_beam = 0.425 * FWHM_effective_beam * kpc;
     
     int_conv = 0.0;
 
     if (sigma_beam != 0.0)
-    
+    {
+        
+
         for (ii=0; ii <= grid_size; ii++)
         {
 
             int_conv = int_conv + intensity_nu1[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                             ( 2.0 * sigma_beam * sigma_beam ) )
                 / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
-            
+                
             if (ii != 0 )
                 int_conv = int_conv + intensity_nu1[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                                 ( 2.0 * sigma_beam * sigma_beam ) )
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
-            
-            
         }
-
+    }
+    
+        
     else
         int_conv = intensity_nu1[ii_ref];
     
@@ -388,7 +390,8 @@ double convolve_intensity_nu2 (int ii_ref)
     int_conv = 0.0;
 
     if (sigma_beam != 0.0)
-    
+    {
+            
         for (ii=0; ii <= grid_size; ii++)
         {
 
@@ -402,6 +405,8 @@ double convolve_intensity_nu2 (int ii_ref)
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
             
         }
+    }
+    
 
     else
         int_conv = intensity_nu2[ii_ref];
@@ -423,7 +428,8 @@ double convolve_intensity_nu3 (int ii_ref)
     int_conv = 0.0;
 
     if (sigma_beam != 0.0)
-    
+    {
+            
         for (ii=0; ii <= grid_size; ii++)
         {
 
@@ -437,6 +443,8 @@ double convolve_intensity_nu3 (int ii_ref)
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
     
         }
+    }
+    
 
     else
         int_conv = intensity_nu3[ii_ref];
@@ -458,7 +466,8 @@ double convolve_intensity_nu4 (int ii_ref)
     int_conv = 0.0;
 
     if (sigma_beam != 0.0)
-    
+    {
+            
         for (ii=0; ii <= grid_size; ii++)
         {
 
@@ -472,6 +481,8 @@ double convolve_intensity_nu4 (int ii_ref)
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
             
         }
+    }
+    
 
     else
         int_conv = intensity_nu4[ii_ref];

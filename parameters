@@ -3,7 +3,7 @@
 #****************************************************************************
 #Setup of the 2-dimensional grid
 #----------------------------------------------------------------------------
-grid_size = 200#<=400; Number of grip points in z
+grid_size = 200#<=200; Number of grip points in z
 nu_channel = 400#<=400; Number of grid points in frequency
 grid_delta = 10#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
@@ -22,7 +22,7 @@ FWHM_effective_beam = 1.2#Effective beam size as FWHM [kpc]
 #----------------------------------------------------------------------------
 #Setup of the advection and diffusion model
 #----------------------------------------------------------------------------
-gamma_in = 2.65#Injection CRe index
+gamma_in = 2.7#Injection CRe index
 rad_field = 0.11#Radiation energy density = U_IRF/U_B
 V0 = 300.0e5#Advection speed [cm s^-1]
 velocity_field = 0#0: constant, -1: radius power-law, 1: exponential
@@ -39,8 +39,8 @@ galaxy_mode = 1#1: thin and thick disc, -1: piece-wise exponential
 z1 = 10.0#if galaxy_mode=-1, transition from zone 1 to zone 2 [kpc]
 B0 = 13.5e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 B1 = 8.6e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
-h_B1 = 0.7#Scaleheight of the B-field in zone 1 [kpc]
-h_B2 = 5.2#Scaleheight of the B-field in zone 2 [kpc]
+h_B1 = 0.6#Scaleheight of the B-field in zone 1 [kpc]
+h_B2 = 5.0#Scaleheight of the B-field in zone 2 [kpc]
 #----------------------------------------------------------------------------
 #Use a magnetic field model (needs edit of the source files)
 #----------------------------------------------------------------------------
