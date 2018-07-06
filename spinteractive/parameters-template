@@ -12,8 +12,8 @@ normalize_intensities = 1#At z=0, I(nu_i)=1, 1:yes -1: no
 #----------------------------------------------------------------------------
 #Output 
 #----------------------------------------------------------------------------
-nu_1 = 1.37e9# [Hz]
-nu_2 = 4.86e9# [Hz]
+nu_1 = 1.5e9# [Hz]
+nu_2 = 6.0e9# [Hz]
 nu_3 = 6.20e9# [Hz]
 nu_4 = 8.40e9# [Hz]
 mode = 1#Advection: 1; Diffusion: 2; Cylindrical diffusion: 3; Radial diffusion: 4
@@ -25,7 +25,7 @@ FWHM_effective_beam = 1.2#Effective beam size as FWHM [kpc]
 gamma_in = 2.7#Injection CRe index
 rad_field = 0.11#Radiation energy density = U_IRF/U_B
 V0 = 300.0e5#Advection speed [cm s^-1]
-velocity_field = 0#0: constant, -1: radius power-law, 1: exponential V = V0*exp(z/h_V)
+velocity_field = 1#0: constant, -1: radius power-law, 1: exponential V = V0*exp(z/h_V)
 #velocity_field = 2: power-law with z, V = V0 *(1 + (z/h_V)^beta)
 h_V = 1.#[kpc]
 adiabatic_losses = -1#Yes: 1, No: -1 (only for advection)
