@@ -3,7 +3,7 @@
 #****************************************************************************
 #Setup of the 2-dimensional grid
 #----------------------------------------------------------------------------
-grid_size = 200#<=400; Number of grip points in z
+grid_size = 200#<=200; Number of grip points in z
 nu_channel = 400#<=400; Number of grid points in frequency
 grid_delta = 1#Every x_th grid point is written to output file
 z_halo = 8.#Halo size [kpc]
@@ -23,13 +23,13 @@ FWHM_effective_beam = 1.2#Effective beam size as FWHM [kpc]
 #Setup of the advection and diffusion model
 #----------------------------------------------------------------------------
 gamma_in = 2.7#Injection CRe index
-rad_field = 0.1#Radiation energy density = U_IRF/U_B
+rad_field = 0.11#Radiation energy density = U_IRF/U_B
 V0 = 300.0e5#Advection speed [cm s^-1]
-velocity_field = 0#0: constant, -1: power-law, 1: exponential
-h_V = 1.#[kpc], V = V0*exp(-z/h_V) or V = V0 *(R0/1kpc + z/h_V)^beta
-#velocity_field = 2: power-law with z, V = V0 *(1 + z/h_V)^beta
+velocity_field = 0#0: constant, -1: radius power-law, 1: exponential V = V0*exp(z/h_V)
+#velocity_field = 2: power-law with z, V = V0 *(1 + (z/h_V)^beta)
+h_V = 1.#[kpc]
 adiabatic_losses = -1#Yes: 1, No: -1 (only for advection)
-D0 = 2.0e28#Diffusion coefficient [cm^2 s^-1]
+D0 = 3.0e28#Diffusion coefficient [cm^2 s^-1]
 mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
 #----------------------------------------------------------------------------
 #Magnetic field setup
@@ -49,6 +49,6 @@ initialize_model = -1#Initialze magnetic field model
 model_north = 1#Use northern part of the model
 update_model = -1#Rescale magnetic field model
 xi = 3.65#Model normalization
-beta = -0.75#Power-law index for the velocity, V = V0 * (R/R0)^-beta
+beta = 1.0#Power-law index for the velocity, V = V0 * (R/R0)^-beta
 R0 = 1.04e22#Jet radius at the base [cm]
 #EOF*************************************************************************
