@@ -25,15 +25,17 @@ PhD theses that use the code:
 
 Documentation
 
-In order to run SPINNAKER you will have to compile it by running compile.sh, which created the file spectral.x. This is an executalbe that can be run by ./spectral.x. You may have to do 'chmod u+x compile.sh' and 'chmod u+x spectral.x'. Some preliminary documentation can be found in the 'doc' folder.
+To run SPINNAKER, first compile it by running compile.sh. This creates the executable file spectral.x which can be run by ./spectral.x. You may have to run 'chmod u+x compile.sh' and 'chmod u+x spectral.x' if there are permissions errors. 
 
-There is now also an interactive Version of Spinnaker available programmed in Python 'Spinteractive'. This was contributed by Arpad Miskolczi. All you need is spinteractive3.py and parameters-template. You may need to install the following packages: python-tk,  numpy, matplotlib. The rest should be installed by default. It is written for Python 2.7, not 3.
+Some preliminary documentation can be found in the 'doc' folder.
+
+There is now an interactive Python 2.7 version of SPINNAKER called 'Spinteractive'. This was contributed by Arpad Miskolczi. To use Spinteractive, you need spinteractive3.py and parameters-template. You may need to install the following packages: python-tk, numpy, and matplotlib. Other required packages should be installed by default.
 
 The input files that you wish to fit your parameters to needs to have the following format:
 
 z; I; Delta_I
 ....
 
-where z refers to the distance from the center in parsec, I is the intensity at that point and Delta_I the uncertainty of I. The unit of I and Delta_I does not matter because it is normalized to 1 anyway. At least two input files are needed at two different frequencies.
+where z refers to the distance from the center in parsec, I is the intensity at that point and Delta_I the uncertainty of I. The unit of I and Delta_I does not matter because it is normalized to 1. At least two input files are needed at two different frequencies.
 
 Futher documentation about Spinteractive is forthcoming.
