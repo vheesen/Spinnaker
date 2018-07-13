@@ -1573,7 +1573,7 @@ option = Tk.OptionMenu(tab_adv, def_ablossesstr, "Yes", "No" ,command=setdummval
 
 rownum=3
 Tk.Label(tab_adv,text='Velocity Field').grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
-option = Tk.OptionMenu(tab_adv, def_velfield, -1, 0, 1,command=setdummval).grid(row=rownum,column=2)
+option = Tk.OptionMenu(tab_adv, def_velfield, -1, 0, 1, 2, command=setdummval).grid(row=rownum,column=2)
 
 
 #diffusion only options
