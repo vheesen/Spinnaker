@@ -292,7 +292,7 @@ def initial_plot():
 		plotfig.axes[i].grid()
 		pad = (maxx-minx)*0.05/1000.
 #		plotfig.axes[i].set_xlim(minx/1000-pad,maxx/1000+pad)
-		plotfig.axes[i].set_xlim(0.-pad,15.+pad)
+		plotfig.axes[i].set_xlim(0.-pad,max(d2[0,:,0])/1000.+pad)
 		if i%2==0:
 			plotfig.axes[i].yaxis.tick_right()
 
