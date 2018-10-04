@@ -11,6 +11,8 @@ from scipy import stats
 parser = OptionParser()
 parser.add_option("--v", action='store_true',help="Show Spinnaker output. Default = false",default=False,dest='show_spin_out')
 parser.add_option("--d", action='store_true',help="Show debug output. Default = false",default=False,dest='debug_out')
+parser.add_option("--label_size", type='float', help="Label Size", default = 18, dest='labelsize')
+parser.add_option("--tick_label_size", type='int', help="Tick Label Size", default = 12, dest='ticklabelsize')
 (options, args) = parser.parse_args()
 
 plotlabelsize=20
@@ -320,8 +322,9 @@ def initial_plot():
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
 			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
-			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=18)
-			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=18)
+			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=options.labelsize)
+			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
+			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -355,10 +358,13 @@ def initial_plot():
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
 			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
-			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=18)
+			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
 #			plotfig.axes[0].set_ylabel('Normalized Intensity',fontsize=18)
-			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=18,y=1)
-			plotfig.axes[2].set_ylabel('Spectral index',fontsize=18)
+			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
+			plotfig.axes[2].set_ylabel('Spectral index',fontsize=options.labelsize)
+			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
+			plotfig.axes[1].tick_params(labelsize=options.ticklabelsize)
+			plotfig.axes[2].tick_params(labelsize=options.ticklabelsize)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -1626,4 +1632,5 @@ button_mum = Tk.Button(tab_diff, text=u'\N{GREEK SMALL LETTER MU}-', command=lam
 #run()
 root.protocol("WM_DELETE_WINDOW", quitit)
 Tk.mainloop()
+
 
