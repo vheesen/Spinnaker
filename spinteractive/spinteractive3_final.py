@@ -11,25 +11,25 @@ from scipy import stats
 parser = OptionParser()
 parser.add_option("--v", action='store_true',help="Show Spinnaker output. Default = false",default=False,dest='show_spin_out')
 parser.add_option("--d", action='store_true',help="Show debug output. Default = false",default=False,dest='debug_out')
-parser.add_option("--label_size", type='float', help="Label Size", default = 18, dest='labelsize')
-parser.add_option("--tick_label_size", type='int', help="Tick Label Size", default = 12, dest='ticklabelsize')
 (options, args) = parser.parse_args()
 
 plotlabelsize=20
 
 show_spin_out = options.show_spin_out
 debug_out = options.debug_out
+
+
 #define root window
 root = Tk.Tk()
+root.attributes('-zoomed',True)
 bgcolor = '#BFBFBF'
 Tk.Grid.columnconfigure(root,0,weight=1)
 Tk.Grid.rowconfigure(root,0,weight=1)
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-root.geometry("%dx%d+0+0" % (w*0.4, h*0.75))
+root.geometry("%dx%d+0+0" % (w*0.5, h*0.75))
 root.wm_title("Spinteractive v3")
 root.config(bg=bgcolor)
 root.resizable(width=True,height=True)
-#root.geometry("%dx%d+0+0" % (w, h))
 
 mpl.rcParams['xtick.labelsize'] = 18
 mpl.rcParams['ytick.labelsize'] = 18
@@ -141,7 +141,6 @@ except:
 	##########################################################
 
 def plot_dummylegend():
-#	global def_velfield
 	if def_ablossesstr.get()=="Yes":
 		def_ablosses = 1
 	else:
@@ -293,8 +292,7 @@ def initial_plot():
 	for i in range(len(plotfig.axes)):
 		plotfig.axes[i].grid()
 		pad = (maxx-minx)*0.05/1000.
-#		plotfig.axes[i].set_xlim(minx/1000-pad,maxx/1000+pad)
-		plotfig.axes[i].set_xlim(0.-pad,max(d2[0,:,0])/1000.+pad)
+		plotfig.axes[i].set_xlim(0.-pad,15.+pad)
 		if i%2==0:
 			plotfig.axes[i].yaxis.tick_right()
 
@@ -321,10 +319,9 @@ def initial_plot():
 			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0]/1000,numpy.zeros(shape=len(d2[0,:,0])),color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
-			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=options.labelsize)
-			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
-			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
+			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=18)
+			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=18)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -336,10 +333,9 @@ def initial_plot():
 			if haserror:
 				spi1err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[0,:,2]/d2[0,:,1])**2+(d2[1,:,2]/d2[1,:,1])**2)**0.5
 				plotfig.axes[2].errorbar(d2[0,:,0]/1000.,spi1,spi1err,color='green',ls='none')
-#				plotfig.axes[2].scatter(d2[0,:,0]/1000.,spi1,s=50,color='green',label=r'$\alpha$ 1-2')
-				plotfig.axes[2].scatter(d2[0,:,0]/1000.,spi1,s=50,color='green',label=r'$\alpha$')
+				plotfig.axes[2].scatter(d2[0,:,0]/1000.,spi1,s=50,color='green',label=r'$\alpha_{1,2}$')
 			else:
-				plotfig.axes[2].scatter(d2[0,:,0]/1000.,spi1,color='green',label=r'$\alpha$ 1-2')
+				plotfig.axes[2].scatter(d2[0,:,0]/1000.,spi1,color='green',label=r'$\alpha_{1,2}$')
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -351,20 +347,16 @@ def initial_plot():
 			simplot_a12, = plotfig.axes[2].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
-			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
-#			plotfig.axes[0].set_ylabel('Normalized Intensity',fontsize=18)
-			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
-			plotfig.axes[2].set_ylabel('Spectral index',fontsize=options.labelsize)
-			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
-			plotfig.axes[1].tick_params(labelsize=options.ticklabelsize)
-			plotfig.axes[2].tick_params(labelsize=options.ticklabelsize)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
+			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=18)
+			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=18,y=1)
+			plotfig.axes[2].set_ylabel('Spectral index',fontsize=18)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -375,52 +367,52 @@ def initial_plot():
 			spi1 = calc_spi(numpy.float(frequency1field.get()),numpy.float(frequency2field.get()),d2[0,:,1],d2[1,:,1])
 			if haserror:
 				spi1err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[0,:,2]/d2[0,:,1])**2+(d2[1,:,2]/d2[1,:,1])**2)**0.5
-				plotfig.axes[3].errorbar(d2[0,:,0],spi1,spi1err,color='green',label=r'$\alpha$ 1-2',ls='none')
-				plotfig.axes[3].scatter(d2[0,:,0],spi1,s=50)
+				plotfig.axes[3].errorbar(d2[0,:,0]/1000.,spi1,spi1err,color='green',ls='none')
+				plotfig.axes[3].scatter(d2[0,:,0]/1000.,spi1,s=50,color='green',label=r'$\alpha_{1,2}$')
 			else:
-				plotfig.axes[3].scatter(d2[0,:,0],spi1,color='green',label=r'$\alpha$')
-			plotfig.axes[3].legend(scatterpoints=1,fontsize=22)
+				plotfig.axes[3].scatter(d2[0,:,0]/1000.,spi1,color='green',label=r'$\alpha_{1,2}$')
 		except:
 			if debug_out:
 				traceback.print_exc()
 			pass
 
+
 		try:
+
 			spi2 = calc_spi(numpy.float(frequency2field.get()),numpy.float(frequency3field.get()),d2[1,:,1],d2[2,:,1])
+			spi2err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
 			if haserror:
 				spi2err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
-				plotfig.axes[4].errorbar(d2[0,:,0],spi2,spi2err,color='green',label=r'$\alpha$ 2-3',ls='none')
-				plotfig.axes[4].scatter(d2[0,:,0],spi2,s=50)
+				plotfig.axes[4].errorbar(d2[0,:,0]/1000.,spi2,spi2err,color='green',ls='none')
+				plotfig.axes[4].scatter(d2[0,:,0]/1000.,spi2,s=50,color='green',label=r'$\alpha_{2,3}$')
 			else:
-				plotfig.axes[4].scatter(d2[0,:,0],spi2,color='green',label=r'$\alpha$ 2-3')
-			plotfig.axes[4].legend(scatterpoints=1,fontsize=22)
+				plotfig.axes[4].scatter(d2[0,:,0]/1000.,spi2,color='green',label=r'$\alpha_{2,3}$')
 		except:
 			if debug_out:
 				traceback.print_exc()
 			pass
 
 		try:
-			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_i2, = plotfig.axes[1].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_i3, = plotfig.axes[2].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_a12, = plotfig.axes[3].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_a23, = plotfig.axes[4].plot(d2[0,:,0],spi2,color='red',label=r'Sim')
+			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0]/1000.,spi1*0,color='red',label=r'Sim')
+			simplot_i2, = plotfig.axes[1].plot(d2[0,:,0]/1000.,spi1*0,color='red',label=r'Sim')
+			simplot_i3, = plotfig.axes[2].plot(d2[0,:,0]/1000.,spi1*0,color='red',label=r'Sim')
+			simplot_a12, = plotfig.axes[3].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
+			simplot_a23, = plotfig.axes[4].plot(d2[0,:,0]/1000.,spi2,color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[3].get_xlim()
 			ylim = plotfig.axes[3].get_ylim()
-			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[4].get_xlim()
 			ylim = plotfig.axes[4].get_ylim()
-			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
-
+			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -432,73 +424,73 @@ def initial_plot():
 			spi1 = calc_spi(numpy.float(frequency1field.get()),numpy.float(frequency2field.get()),d2[0,:,1],d2[1,:,1])
 			if haserror:
 				spi1err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[0,:,2]/d2[0,:,1])**2+(d2[1,:,2]/d2[1,:,1])**2)**0.5
-				plotfig.axes[4].errorbar(d2[0,:,0],spi1,spi1err,color='green',label=r'$\alpha$ 1-2',ls='none')
-				plotfig.axes[4].scatter(d2[0,:,0],spi1,s=50,color='green')
+				plotfig.axes[4].errorbar(d2[0,:,0]/1000.,spi1,spi1err,color='green',ls='none')
+				plotfig.axes[4].scatter(d2[0,:,0]/1000.,spi1,s=50,color='green',label=r'$\alpha$')
 			else:
-				plotfig.axes[4].scatter(d2[0,:,0],spi1,color='green',label=r'$\alpha$ 1-2')
-			plotfig.axes[4].legend(scatterpoints=1)
+				plotfig.axes[4].scatter(d2[0,:,0]/1000.,spi1,color='green',label=r'$\alpha$ 1-2')
 		except:
 			if debug_out:
 				traceback.print_exc()
 			pass
 
+
 		try:
+
 			spi2 = calc_spi(numpy.float(frequency2field.get()),numpy.float(frequency3field.get()),d2[1,:,1],d2[2,:,1])
 			if haserror:
-				spi2err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
-				plotfig.axes[5].errorbar(d2[0,:,0],spi2,spi2err,color='green',label=r'$\alpha$ 2-3')
-				plotfig.axes[5].scatter(d2[0,:,0],spi2,s=50,color='green')
+				spi2err = (1/numpy.log(numpy.float(frequency2field.get())/numpy.float(frequency3field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
+				plotfig.axes[5].errorbar(d2[0,:,0]/1000.,spi2,spi2err,color='green',ls='none')
+				plotfig.axes[5].scatter(d2[0,:,0]/1000.,spi2,s=50,color='green',label=r'$\alpha$')
 			else:
-				plotfig.axes[5].scatter(d2[0,:,0],spi2,color='green',label=r'$\alpha$ 2-3',ls='none')
-			plotfig.axes[5].legend(scatterpoints=1)
-		except:
-			if debug_out:	
-				traceback.print_exc()
-			pass
-
-		try:
-			spi3 = calc_spi(numpy.float(frequency3field.get()),numpy.float(frequency4field.get()),d2[2,:,1],d2[3,:,1])
-			if haserror:
-				spi3err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[2,:,2]/d2[2,:,1])**2+(d2[3,:,2]/d2[3,:,1])**2)**0.5
-				plotfig.axes[6].errorbar(d2[0,:,0],spi3,spi3err,color='green',label=r'$\alpha$ 2-4')
-				plotfig.axes[6].scatter(d2[0,:,0],spi3,s=50,color='green')
-			else:
-				plotfig.axes[6].plot(d2[0,:,0],spi3,color='green',label=r'$\alpha$ 2-4',ls='none')
-			plotfig.axes[6].legend(scatterpoints=1)
+				plotfig.axes[5].scatter(d2[0,:,0]/1000.,spi2,color='green',label=r'$\alpha$ 2-3')
 		except:
 			if debug_out:
 				traceback.print_exc()
 			pass
 
 		try:
-			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_i2, = plotfig.axes[1].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_i3, = plotfig.axes[2].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_i4, = plotfig.axes[3].plot(d2[0,:,0],spi1,color='red',label=r'Sim')
-			simplot_a12, = plotfig.axes[4].plot(d2[0,:,0],spi1,color='red',label=r'Sim 1-2')
-			simplot_a23, = plotfig.axes[5].plot(d2[0,:,0],spi2,color='red',label=r'Sim 2-3')
-			simplot_a34, = plotfig.axes[6].plot(d2[0,:,0],spi3,color='red',label=r'Sim 3-4')
+
+			spi3 = calc_spi(numpy.float(frequency3field.get()),numpy.float(frequency4field.get()),d2[2,:,1],d2[3,:,1])
+			if haserror:
+				spi3err = (1/numpy.log(numpy.float(frequency3field.get())/numpy.float(frequency4field.get())))*((d2[2,:,2]/d2[2,:,1])**2+(d2[3,:,2]/d2[3,:,1])**2)**0.5
+				plotfig.axes[6].errorbar(d2[0,:,0]/1000.,spi3,spi3err,color='green',ls='none')
+				plotfig.axes[6].scatter(d2[0,:,0]/1000.,spi3,s=50,color='green',label=r'$\alpha$')
+			else:
+				plotfig.axes[6].scatter(d2[0,:,0]/1000.,spi3,color='green',label=r'$\alpha$ 3-4')
+		except:
+			if debug_out:
+				traceback.print_exc()
+			pass
+
+		try:
+			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
+			simplot_i2, = plotfig.axes[1].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
+			simplot_i3, = plotfig.axes[2].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
+			simplot_i4, = plotfig.axes[3].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
+			simplot_a12, = plotfig.axes[4].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim 1-2')
+			simplot_a23, = plotfig.axes[5].plot(d2[0,:,0]/1000.,spi2,color='red',label=r'Sim 2-3')
+			simplot_a34, = plotfig.axes[6].plot(d2[0,:,0]/1000.,spi3,color='red',label=r'Sim 3-4')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[3].get_xlim()
 			ylim = plotfig.axes[3].get_ylim()
-			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[4].get_xlim()
 			ylim = plotfig.axes[4].get_ylim()
-			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[5].get_xlim()
 			ylim = plotfig.axes[5].get_ylim()
-			chiplot_6, = plotfig.axes[5].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_6, = plotfig.axes[5].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[6].get_xlim()
 			ylim = plotfig.axes[6].get_ylim()
-			chiplot_7, = plotfig.axes[6].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_7, = plotfig.axes[6].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 
 		except:
 			if debug_out:
@@ -552,7 +544,6 @@ def run():
 	gridsize = len(d2[0,:,0])-1
 
 	###new gridsize
-	# length of datapoints -1
 	data_length = len(d2[0,:,0])-1
 	lim = 200/data_length
 	gridsize = lim*data_length
@@ -617,7 +608,6 @@ def run():
 		os.system('./spectral.x')
 	else:
 		os.popen('./spectral.x')
-
 	simdata = numpy.loadtxt('int.dat')
 	sim_int1 = simdata[:,1]
 	sim_int2 = simdata[:,2]
@@ -656,9 +646,6 @@ def run():
 
 	chi_array = numpy.zeros(shape=d2.shape[0]+d2.shape[0]-1)
 
-#	if haserror:
-#		print 'has'
-
 	for i in range(d2.shape[0]):
 		handles, labels = plotfig.axes[i].get_legend_handles_labels()
 		labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
@@ -667,8 +654,7 @@ def run():
 	if d2.shape[0]==1:
 		simplot_i1.set_ydata(sim_int1)
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
-#		print round(chi_array[0],4)
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
 
 
 	if d2.shape[0]==2:
@@ -678,8 +664,8 @@ def run():
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
 		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[1,:,1]))
 		chi_array[2] = chisq(spi1,sim_a12,spi1err)
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
 		####### reverse legend for spectral index
 		handles, labels = plotfig.axes[2].get_legend_handles_labels()
 		handles[0],handles[1]=handles[1],handles[0]
@@ -687,7 +673,7 @@ def run():
 		labels[1],labels[2]=labels[2],labels[1]
 		labels[2]='Sim'
 		plotfig.axes[2].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1)
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
 		
 
 	if d2.shape[0]==3:
@@ -696,23 +682,27 @@ def run():
 		simplot_i1.set_ydata(sim_int1)
 		simplot_i2.set_ydata(sim_int2)
 		simplot_i3.set_ydata(sim_int3)
-		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
-		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2)
-		chi_array[2] = chisq(d2[2,:,1]/numpy.nanmax(d2[2,:,1]),sim_int3)
-		chi_array[3] = chisq(spi1,sim_a12)
-		chi_array[4] = chisq(spi2,sim_a23)
+		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
+		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[0,:,2]/numpy.nanmax(d2[1,:,1]))
+		chi_array[2] = chisq(d2[2,:,1]/numpy.nanmax(d2[2,:,1]),sim_int3,d2[0,:,2]/numpy.nanmax(d2[2,:,1]))
+		chi_array[3] = chisq(spi1,sim_a12,spi1err)
+		chi_array[4] = chisq(spi2,sim_a23,spi2err)
 
 		for i in range(3,5):
 			handles, labels = plotfig.axes[i].get_legend_handles_labels()
-			handles[0],handles[2]=handles[2],handles[0]
-			labels[0],labels[2]=labels[2],labels[0]
-			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize)
+			handles[0],handles[1]=handles[1],handles[0]
+			handles[1],handles[2]=handles[2],handles[1]
+			labels[1],labels[2]=labels[2],labels[1]
+			labels[2]='Sim'
+			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1)
+			plotfig.axes[i].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
 
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
-		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[3],2)))
-		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[4],2)))
+
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
+		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[3],2)))
+		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[4],2)))
 
 
 	if d2.shape[0]==4:
@@ -723,26 +713,30 @@ def run():
 		simplot_i2.set_ydata(sim_int2)
 		simplot_i3.set_ydata(sim_int3)
 		simplot_i4.set_ydata(sim_int4)
-		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
-		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2)
-		chi_array[2] = chisq(d2[2,:,1]/numpy.nanmax(d2[2,:,1]),sim_int3)
-		chi_array[3] = chisq(d2[3,:,1]/numpy.nanmax(d2[3,:,1]),sim_int4)
-		chi_array[4] = chisq(spi1,sim_a12)
-		chi_array[5] = chisq(spi2,sim_a23)
-		chi_array[6] = chisq(spi3,sim_a34)
+		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
+		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[0,:,2]/numpy.nanmax(d2[1,:,1]))
+		chi_array[2] = chisq(d2[2,:,1]/numpy.nanmax(d2[2,:,1]),sim_int3,d2[0,:,2]/numpy.nanmax(d2[2,:,1]))
+		chi_array[3] = chisq(d2[3,:,1]/numpy.nanmax(d2[3,:,1]),sim_int4,d2[0,:,2]/numpy.nanmax(d2[3,:,1]))
+		chi_array[4] = chisq(spi1,sim_a12,spi1err)
+		chi_array[5] = chisq(spi2,sim_a23,spi2err)
+		chi_array[6] = chisq(spi3,sim_a34,spi3err)
+
 		for i in range(4,7):
 			handles, labels = plotfig.axes[i].get_legend_handles_labels()
-			handles[0],handles[2]=handles[2],handles[0]
-			labels[0],labels[2]=labels[2],labels[0]
-			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize)
+			handles[0],handles[1]=handles[1],handles[0]
+			handles[1],handles[2]=handles[2],handles[1]
+			labels[1],labels[2]=labels[2],labels[1]
+			labels[2]='Sim'
+			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1)
+			plotfig.axes[i].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
 
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
-		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[3],2)))
-		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[4],2)))
-		plotfig.axes[5].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[5],2)))
-		plotfig.axes[6].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[6],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
+		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[3],2)))
+		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[4],2)))
+		plotfig.axes[5].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[5],2)))
+		plotfig.axes[6].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[6],2)))
 
 	plotcanvas.draw()
 
@@ -783,15 +777,9 @@ def run_noplot(varstochange,vals):
 	gridsize = len(d2[0,:,0])-1
 
 	###new gridsize
-	# length of datapoints -1
-#	data_length = len(d2[0,:,0])-1
-#	lim = 200/data_length
-#	gridsize = lim*data_length
-
 	data_length = len(d2[0,:,0])-1
 	lim = 200/data_length
 	gridsize = lim*data_length
-	steps = 1.0*max(d2[0,:,0])/gridsize
 
 	try:
 		nu1 = numpy.float(frequency1field.get())
@@ -856,12 +844,9 @@ def run_noplot(varstochange,vals):
 	parfile.close()
 	#run spinnaker
 	if show_spin_out:
-#		print 'system'
 		os.system('./spectral.x')
 	else:
-#		subprocess.Popen(['./spectral.x'],stdout=open(os.devnull,'w'))
-		os.popen('./spectral.x')
-#		print 'popen'
+		subprocess.Popen(['./spectral.x'],stdout=open(os.devnull,'w'))
 	try:
 		simdata = numpy.loadtxt('int.dat')
 		sim_int1 = simdata[:,1]
@@ -873,7 +858,6 @@ def run_noplot(varstochange,vals):
 		sim_a34 = simdata[:,7]
 	except:
 		return 999
-
 	d2 = numpy.array(data)
 
 	#get newarray
@@ -885,9 +869,7 @@ def run_noplot(varstochange,vals):
 	sim_a23_temp = []
 	sim_a34_temp = []
 
-#	print steps,lim
-#	print d2[0,:,0]
-	for i in range(0,len(sim_int1)+1,lim):
+	for i in range(0,max(int(d2[0,:,0]))+1,int(steps*lim)):
 		sim_int1_temp.append(sim_int1[i])
 		sim_int2_temp.append(sim_int2[i])
 		sim_int3_temp.append(sim_int3[i])
@@ -906,19 +888,13 @@ def run_noplot(varstochange,vals):
 
 	chi_array = numpy.zeros(shape=d2.shape[0]+d2.shape[0]-1)
 
-##	if haserror:
-#		print 'has error'
-
 	if d2.shape[0]==1:
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
 
 	if d2.shape[0]==2:
-#		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
-#		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2)
-#		chi_array[2] = chisq(spi1,sim_a12,spierror)
-		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
-		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[1,:,1]))
-		chi_array[2] = chisq(spi1,sim_a12,spi1err)
+		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
+		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2)
+		chi_array[2] = chisq(spi1,sim_a12,spierror)
 
 	if d2.shape[0]==3:
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1)
@@ -938,7 +914,6 @@ def run_noplot(varstochange,vals):
 
 	res_chi = get_global_chi()
 	if numpy.isnan(res_chi):
-		print '999'
 		return 999
 	else:
 		return get_global_chi()
@@ -967,9 +942,49 @@ filenames.append(0)
 data = []
 
 
-def openfile1():
+def loadpars():
+	parfile = askopenfilename()
+	global def_cri, def_v0, def_hb1, def_hb2, def_b0, def_b1, def_Z1, def_hv, def_D0, def_mu, def_modestr, def_ablossesstr, def_norm, def_epsilon, def_velfield, def_gmode, tabs, def_mode
+	lastpars = open(parfile,'r').read().split('\n')
+	def_cri= float(lastpars[0].split(':')[1])#
+	def_v0 = float(lastpars[8].split(':')[1])#
+	def_hb1= float(lastpars[3].split(':')[1])#
+	def_hb2= float(lastpars[4].split(':')[1])#
+	def_b0 = float(lastpars[1].split(':')[1])#
+	def_b1 = float(lastpars[2].split(':')[1])#
+	def_Z1 = float(lastpars[5].split(':')[1])#
+	def_hv = float(lastpars[9].split(':')[1])#
+	def_D0 = float(lastpars[12].split(':')[1])#
+	def_mu = float(lastpars[13].split(':')[1])#
+	def_modestr.set(lastpars[7].split(':')[1].replace(' ',''))
+	def_ablossesstr.set(lastpars[10].split(':')[1])
+	def_norm.set(int(lastpars[18].split(':')[1]))
+	def_epsilon.set(int(lastpars[19].split(':')[1]))
+	def_velfield.set(int(lastpars[11].split(':')[1]))
+	def_gmode.set(int(lastpars[6].split(':')[1]))
+
+
+	if def_modestr.get()=="Advection":
+		def_modestr.set('Advection')
+		def_mode = 1
+		tabs.select(tab_adv)
+	else:
+		def_modestr.set('Diffusion')
+		def_mode = 2
+		tabs.select(tab_diff)
+
+	if def_ablossesstr.get()=="Yes":
+		def_ablosses = 1
+	else:
+		def_ablosses = -1
+
+	run()
+	plot_dummylegend()
+
+def openfile1(fn1=''):
 	global data, filename1, openfile2_button, show_spin_out, debug_out
-	fn1 = askopenfilename()
+	if fn1=='':
+		fn1 = askopenfilename()
 	try:
 		d = numpy.loadtxt(fn1,delimiter=';')
 		maxval = numpy.nanmax(d[:,1])
@@ -990,9 +1005,10 @@ def openfile1():
 	savefig_button.configure(state=Tk.NORMAL)
 	parsearch_button.configure(state=Tk.NORMAL)
 
-def openfile2():
+def openfile2(fn2=''):
 	global data, openfile3_button,show_spin_out, debug_out
-	fn2 = askopenfilename()
+	if fn2=='':
+		fn2 = askopenfilename()
 	try:
 		d = numpy.loadtxt(fn2,delimiter=';')
 		maxval = numpy.nanmax(d[:,1])
@@ -1011,9 +1027,10 @@ def openfile2():
 	initial_plot()
 	openfile3_button.configure(state=Tk.NORMAL)
 
-def openfile3():
+def openfile3(fn3=''):
 	global data, openfile4_button, show_spin_out, debug_out
-	fn3 = askopenfilename()
+	if fn3=='':
+		fn3 = askopenfilename()
 	try:
 		d = numpy.loadtxt(fn3,delimiter=';')
 		maxval = numpy.nanmax(d[:,1])
@@ -1033,9 +1050,10 @@ def openfile3():
 	initial_plot()
 	openfile4_button.configure(state=Tk.NORMAL)
 
-def openfile4():
+def openfile4(fn4=''):
 	global data, show_spin_out, debug_out
-	fn4 = askopenfilename()
+	if fn4=='':
+		fn4 = askopenfilename()
 	try:
 		d = numpy.loadtxt(fn4,delimiter=';')
 		maxval = numpy.nanmax(d[:,1])
@@ -1130,15 +1148,17 @@ tabs.grid(column=0,row=21,rowspan=4,columnspan=3,sticky=Tk.W+Tk.E)
 
 
 	
-def parp(var,delta):
+def parp(var,delta,plot=True):
 	exec('{0}+={1}'.format(var,delta),globals())
-	run()
-	plot_dummylegend()
+	if plot:
+		run()
+		plot_dummylegend()
 
-def parm(var,delta):
+def parm(var,delta,plot=True):
 	exec('{0}-={1}'.format(var,delta),globals())
-	run()
-	plot_dummylegend()	
+	if plot:
+		run()
+		plot_dummylegend()	
 
 
 def setdummval(val):
@@ -1187,7 +1207,6 @@ def search():
 	for i in range(len(searchpars)):
 		global b
 		b=0
-#		exec('print {0}.get()'.format(searchpars[i]))
 		exec('if {0}.get()==1: b=1'.format(searchpars[i]),globals())
 		if b==1:
 			tosearch.append(pararray[i])
@@ -1226,10 +1245,10 @@ def search():
 
 	for i in range(len(currentvalues)):
 		if searchres.get()=='very coarse':
-			searches.append((tosearch[i],searchdict2[tosearch[i]][0],searchdict2[tosearch[i]][1],searchdict2[tosearch[i]][2]))
+			searches.append((pararray[i],searchdict2[pararray[i]][0],searchdict2[pararray[i]][1],searchdict2[pararray[i]][2]))
 
 		if searchres.get()=='coarse':
-			searches.append((tosearch[i],searchdict[tosearch[i]][0],searchdict[tosearch[i]][1],searchdict[tosearch[i]][2]))
+			searches.append((pararray[i],searchdict[pararray[i]][0],searchdict[pararray[i]][1],searchdict[pararray[i]][2]))
 
 		if searchres.get()=='medium':
 			delta = currentvalues[i]*0.50
@@ -1238,7 +1257,7 @@ def search():
 				minval=delta
 			maxval = currentvalues[i]+delta
 			stepsize = 2*delta*0.1		#take 10% of total range as stepsize
-			searches.append((tosearch[i],minval,maxval,stepsize))
+			searches.append((pararray[i],minval,maxval,stepsize))
 		
 		if searchres.get()=='fine':
 			delta = currentvalues[i]*0.20
@@ -1248,16 +1267,14 @@ def search():
 
 			maxval = currentvalues[i]+delta
 			stepsize = 2*delta*0.05		#take 5% of total range as stepsize
-			searches.append((tosearch[i],minval,maxval,stepsize))
+			searches.append((pararray[i],minval,maxval,stepsize))
 
 	varstochange = []
 	mins = []
 	maxs = []
-#	steps = []
 	vals = numpy
 	for i in searches:
 		varstochange.append(i[0])
-
 
 	totaldict = {}
 	for i in range(len(varstochange)):
@@ -1265,7 +1282,6 @@ def search():
 		for y in numpy.arange(searches[i][1],searches[i][2]+searches[i][3],searches[i][3]):
 			ar.append(y)
 		totaldict["{0}".format(i)]=ar
-
 
 	#sort dictionary
 	ordereddict = collections.OrderedDict(sorted(totaldict.items()))
@@ -1281,7 +1297,6 @@ def search():
 	for i in combinations:
 		t0 = time.time()
 		result = run_noplot(varstochange,i)
-	#	print i,result
 		resultdict[str(i)]=result
 		itercount+=1
 		progress.set(str(round(100*itercount/Ncombinations,2))+'%')
@@ -1398,8 +1413,7 @@ eta_label = Tk.StringVar()
 
 global best_results_array
 best_results_array = []
-#global search_dif_button
-#global search_adv_button
+
 
 def setsearchmode_adv():
 	global d0_check_var
@@ -1590,6 +1604,11 @@ rownum=29
 distlabel=Tk.Label(configframe,textvariable=distlabelvar)
 distlabel.grid(row=rownum,column=0,columnspan=3,sticky=Tk.W+Tk.E)
 
+#load pars button
+rownum=30
+loadpars_button = Tk.Button(master=configframe,text='Load Pars',command=loadpars)
+loadpars_button.grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
+
 #advection only options
 rownum=0
 dv0 = Tk.DoubleVar()
@@ -1628,7 +1647,6 @@ mu.set(0.1)
 delta_mu = Tk.Entry(tab_diff,width=10,textvariable=mu).grid(row=rownum,column=2)
 button_mup = Tk.Button(tab_diff, text=u'\N{GREEK SMALL LETTER MU}+', command=lambda: parp('def_mu','mu.get()')).grid(row=rownum,column=0,sticky=Tk.W+Tk.E)
 button_mum = Tk.Button(tab_diff, text=u'\N{GREEK SMALL LETTER MU}-', command=lambda: parm('def_mu','mu.get()')).grid(row=rownum,column=1,sticky=Tk.W+Tk.E)
-
 #run()
 root.protocol("WM_DELETE_WINDOW", quitit)
 Tk.mainloop()
