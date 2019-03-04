@@ -211,6 +211,8 @@ void adiabatic (void)
 struct grid_1d setup_initial_grid (void)
 {
     double B_CMB;
+    int nu2;
+    
 
     B_CMB = 3.2e-6;
     
@@ -315,7 +317,9 @@ struct grid_1d setup_initial_grid (void)
         else if (velocity_field == 1)
             v_z[i] = V0 * exp(cr[i][0].z / kpc / h_V);
         else if (velocity_field == 2)
-            v_z[i] = V0 * (1.0 + pow(cr[i][0].z / kpc / h_V, beta) );
+            v_z[i] = V0 * pow(1.0 - kpc / (cr[i][0].z + kpc) / h_V, 0.5);
+        
+//            v_z[i] = V0 * (1.0 + pow(cr[i][0].z / kpc / h_V, beta) );
         else
         {
             printf("Wrong velocity field.\n");
@@ -348,14 +352,38 @@ struct grid_1d setup_initial_grid (void)
 /* Use the injection spectral index gamma_in */
 
     cr[0][0].N = 1.0; //arbitrary units
-    
+
+/* Option for a broken power-law injection spectrum */
+    nu2 = (int) (log(1.5e9 / 0.001e9) / log(delta_nu_factor));
 
     for (j=0; j <= nu_channel + 1; j++)
     {
         for (i=0; i <= grid_size + 1; i++)
-            cr[i][j].N = cr[0][0].N * 
+            cr[i][j].N = cr[0][0].N *
                 pow (cr[0][j].E / cr[0][0].E, -gamma_in);
     }
+
+    /* for (j=0; j <= nu_channel + 1; j++) */
+    /* { */
+    /*     if (j <= nu2) */
+    /*     { */
+            
+    /*         for (i=0; i <= grid_size + 1; i++) */
+    /*             cr[i][j].N = cr[0][0].N * */
+    /*                 pow (cr[0][j].E / cr[0][0].E, -gamma_in); */
+
+    /*     } */
+
+    /*     else */
+
+    /*     { */
+    /*         for (i=0; i <= grid_size + 1; i++) */
+    /*             cr[i][j].N = cr[0][nu2].N * */
+    /*                 pow (cr[0][j].E / cr[0][nu2].E, -gamma_in-1.0); */
+
+    /*     } */
+        
+    /* } */
 
 /* Advection time */
     
@@ -441,7 +469,7 @@ void output_file (int i_max)
 
 /*    JP model test */
 
-    int spec_1 = 12;
+    int spec_1 = 0;
     int spec_2 = 51;
     int spec_3 = 104;
     int spec_4 = 153;
@@ -706,7 +734,7 @@ void output_file (int i_max)
             {
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0),  V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, v_z[0] / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), v_z[0] / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  v_z[0] / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0),  v_z[0] / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
                 else          
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                             cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
