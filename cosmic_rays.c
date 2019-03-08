@@ -857,6 +857,157 @@ void output_file (int i_max)
     fclose(f9);
 }
 
+void output_stdout (int i_max)
+{
+    int ii, jj, kk, ii_mod;
+    int nu1, nu2, nu3, nu4, nu_spec_ref, nu1_crit[402], nu2_crit[402];
+    double x1[402][402], x2[402][402];
+    double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
+    double v_z_interp;
+    double grid_print_modulo;
+    
+    nu1 = (int) (log(nu_1 / 0.001e9) / log(delta_nu_factor));
+    nu2 = (int) (log(nu_2 / 0.001e9) / log(delta_nu_factor));
+    nu3 = (int) (log(nu_3 / 0.001e9) / log(delta_nu_factor));
+    nu4 = (int) (log(nu_4 / 0.001e9) / log(delta_nu_factor));
+
+/* This is for the spectral output */
+    nu_spec_ref = (int) (log(0.03e9 / 0.001e9) / log(delta_nu_factor));
+
+// NEEEEEEEED
+/*    printf ("nu1=%i nu_1=%g Hz E1=%g GeV\n", nu1, cr[0][nu1].nu, cr[0][nu1].E / 1.6e-3);*/
+/*    printf ("nu2=%i nu_2=%g Hz E2=%g GeV\n", nu2, cr[0][nu2].nu, cr[0][nu2].E / 1.6e-3);*/
+/*    printf ("nu3=%i nu_3=%g Hz E3=%g GeV\n", nu3, cr[0][nu3].nu, cr[0][nu3].E / 1.6e-3);*/
+/*    printf ("nu4=%i nu_4=%g Hz E4=%g GeV\n", nu4, cr[0][nu4].nu, cr[0][nu4].E / 1.6e-3);*/
+
+    double gamma_mean, nu_crit_corr;
+
+/*    JP model test */
+
+    int spec_1 = 12;
+    int spec_2 = 51;
+    int spec_3 = 104;
+    int spec_4 = 153;
+    int spec_5 = 215;
+    int spec_6 = 300;
+    
+    
+//NEEEEEEEEEEEEEEEED
+   // f3=fopen("./int.dat", "w");
+   
+    for (ii=0; ii <= i_max; ii++)
+    {
+        for (jj=0; jj <= nu_channel+1; jj++)
+        {
+            nu_crit_corr = pow(B0 / B_field[ii], 1.0);
+            x1[ii][jj] = nu_1 * nu_crit_corr / cr[ii][jj].nu;
+            x2[ii][jj] = nu_2 * nu_crit_corr / cr[ii][jj].nu;
+            nu1_crit[ii] = (int) (log(nu_crit_corr * nu_1 / 0.001e9) / log(delta_nu_factor));
+            nu2_crit[ii] = (int) (log(nu_crit_corr * nu_2 / 0.001e9) / log(delta_nu_factor));
+        }
+    }
+
+    for (ii=0; ii <= grid_size; ii++)
+    {
+        intensity_nu1[ii] = synchrotron_intensity (nu_1, ii);
+        intensity_nu2[ii] = synchrotron_intensity (nu_2, ii);
+        intensity_nu3[ii] = synchrotron_intensity (nu_3, ii);
+        intensity_nu4[ii] = synchrotron_intensity (nu_4, ii);
+    }
+
+    for (ii=0; ii <= i_max; ii++)
+    {
+        
+        if (ii == spec_1)
+        {
+            kk = 1;
+            synchrotron_spectrum (kk, ii);
+        }
+
+         if (ii == spec_2)
+        {
+            kk = 2;
+            synchrotron_spectrum (kk, ii);
+        }
+
+         if (ii == spec_3)
+        {
+            kk = 3;
+            synchrotron_spectrum (kk, ii);
+        }
+
+         if (ii == spec_4)
+        {
+            kk = 4;
+            synchrotron_spectrum (kk, ii);
+        }
+
+         if (ii == spec_5)
+        {
+            kk = 5;
+            synchrotron_spectrum (kk, ii);
+        }
+
+         if (ii == spec_6)
+        {
+            kk = 6;
+            synchrotron_spectrum (kk, ii);
+        }
+
+  
+    }
+
+    if (epsilon == 1)
+        printf("# z[kpc], epsilon(nu_1), epsilon(nu_2), epsilon(nu_3), epsilon(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_3-nu_4)\n");
+    else
+        printf("# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_3-nu_4)\n");
+
+    for (ii=0; ii <= i_max; ii++)
+    {
+        gamma_mean = (- log (cr[ii][nu2].N / cr[ii][nu1].N) /
+                      log (cr[ii][nu2].E / cr[ii][nu1].E) );
+
+        if (first_data_point_at_0kpc == 1)
+            grid_print_modulo = 1.0;
+        else
+            grid_print_modulo = 2.0;
+                    
+        if((ii-(int)(grid_delta/grid_print_modulo))%grid_delta == 0)
+        {
+            
+/* Output file: int.dat */
+/* Export emissivities */            
+            if ( epsilon == 1 )
+            {
+
+                if ( ii == 0 )
+                    //printf("radius = %g, R0 = %g\n", radius(cr[ii][0].z / kpc), R0);
+                
+                
+                if (normalize_intensities == 1)
+                    printf("% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  R0 / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0), R0 / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                else
+                    printf("% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu1 (0),  kpc / radius(cr[ii][0].z / kpc) * R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu1 (0), kpc / radius(cr[ii][0].z / kpc) *  R0 / radius(cr[ii][0].z / kpc) * V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu1 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                    
+            }
+            
+/* Output file: int.dat */
+/* Export intensities */              
+            else
+            {
+                if (normalize_intensities == 1)
+                    printf("% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  V0 / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0),  V0 / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                else          
+                    printf( "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                            cr[ii][0].z / kpc, V0 / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), V0 / v_z[ii] * convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  V0 / v_z[ii] * convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+            }            
+        }
+    }
+};
+
 
 /**********************************************************************/
 double interpolate_frequency (double value, double value_low, double value_high, double nu, int jj)

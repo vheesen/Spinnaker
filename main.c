@@ -4,24 +4,91 @@
 #include "read_parameters.h"
 #include "synchrotron.h"
 #include "jet.h"
+#include "read_parameters2.h"
+#include <time.h>
 
 /****************************************************************************/
+
 /* Command line argument that reads the name of the parameter file*/
+
 int main(int argc,char* argv[])
 {
     int choice_rk, rk_energy, counter;
-
+	time_t seconds_0;
+	time_t seconds_1;
+	struct timespec ts_start;
+	struct timespec ts_end;
     if(argc == 1)
+	{
         strcpy (parameter_file_name,"parameters");
-    else
+//	clock_gettime(CLOCK_MONOTONIC, &ts_start);
+	read_parameters ();
+//	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+//	printf("Old Reading took %ld microseconds\n",(ts_end.tv_nsec-ts_start.tv_nsec)/1000);
+	}
+    if(argc == 2)
+	{
         strcpy (parameter_file_name,argv[1]);
+//	clock_gettime(CLOCK_MONOTONIC, &ts_start);
+	read_parameters ();
+//	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+//	printf("Old Reading took %ld seconds\n",(ts_end.tv_nsec-ts_start.tv_nsec)/1000);
+	}
 
+// Read the parameters from argv[2]. No need for a file 
+    if(argc == 3)
+	{
+	if(strcmp(argv[1],"-x")==0)
+		{
+//			clock_gettime(CLOCK_MONOTONIC, &ts_start);
+			read_parameters2(argv[2]);
+		//	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+		//	printf("New Reading took %ld microseconds\n",(ts_end.tv_nsec-ts_start.tv_nsec)/1000);
+		}
+	}
     
-/* Read the parameters from a file */
-    read_parameters ();
-
+// print variables from parameters.
+int show=0;	//for debugging purposes.
+if(show==1)
+{
+//	printf("%s\n",argv[2]);
+	printf("grid_size = %d\n",grid_size);
+	printf("nu_channel = %d\n",nu_channel);
+	printf("grid_delta = %d\n",grid_delta);
+	printf("z_halo = %lg\n",z_halo/kpc);
+	printf("first_data_point_at_0kpc = %d\n",first_data_point_at_0kpc);
+	printf("normalize_intensities = %d\n",normalize_intensities);
+	printf("nu_1 = %lg\n",nu_1);
+	printf("nu_2 = %lg\n",nu_2);
+	printf("nu_3 = %lg\n",nu_3);
+	printf("nu_4 = %lg\n",nu_4);
+	printf("mode = %d\n",mode);
+	printf("epsilon = %d\n",epsilon);
+	printf("FWHM_effective_beam = %lg\n",FWHM_effective_beam);
+	printf("gamma_in = %lg\n",gamma_in);
+	printf("rad_field = %lg\n",rad_field);
+	printf("V0 = %lg\n",V0);
+	printf("Velocity_field = %d\n",velocity_field);
+	printf("h_V = %lg\n",h_V);
+	printf("adiabatic_losses = %d\n",adiabatic_losses);
+	printf("D0 = %lg\n",D0); 
+	printf("mu_diff = %lg\n",mu_diff);
+	printf("galaxy_mode = %d\n",galaxy_mode);
+	printf("z1 = %lg\n",z1);
+	printf("B0 = %lg\n",B0);
+	printf("B1 = %lg\n",B1);
+	printf("h_B1 = %lg\n",h_B1);
+	printf("h_B2 = %lg\n",h_B2);
+	printf("model = %d\n",model);
+	printf("initialize_model = %d\n",initialize_model);
+	printf("model_north = %d\n",model_north);
+	printf("update_model = %d\n",update_model); 
+	printf("xi = %lg\n",xi); 
+	printf("beta = %lg\n",beta); 
+	printf("R0 = %lg\n",R0);
+}
 /* Setup of the 2D grid in spatial and energy coordinates */    
-    setup_initial_grid ();
+	setup_initial_grid ();
 
 /* Use the most accurate Runge-Kutta alogrithm of 4th order */    
     choice_rk = 4;
@@ -334,10 +401,17 @@ int main(int argc,char* argv[])
 /*         } */
         
     
-    
-    
-    output_file ( (int) (grid_size / 2.0) );    
-   
+	if(argc == 3)
+	{
+		if(strcmp(argv[1],"-x")==0)
+			{
+				output_stdout( (int) (grid_size / 2.0) );
+			}
+	}
+	else
+	{
+  	  	output_file ( (int) (grid_size / 2.0) );        
+	}
 
     return 0;
 }
