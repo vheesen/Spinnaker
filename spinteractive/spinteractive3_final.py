@@ -966,6 +966,45 @@ filenames.append(0)
 
 data = []
 
+def loadpars():
+	parfile = askopenfilename()
+	global def_cri, def_v0, def_hb1, def_hb2, def_b0, def_b1, def_Z1, def_hv, def_D0, def_mu, def_modestr, def_ablossesstr, def_norm, def_epsilon, def_velfield, def_gmode, tabs, def_mode
+	lastpars = open(parfile,'r').read().split('\n')
+	def_cri= float(lastpars[0].split(':')[1])#
+	def_v0 = float(lastpars[8].split(':')[1])#
+	def_hb1= float(lastpars[3].split(':')[1])#
+	def_hb2= float(lastpars[4].split(':')[1])#
+	def_b0 = float(lastpars[1].split(':')[1])#
+	def_b1 = float(lastpars[2].split(':')[1])#
+	def_Z1 = float(lastpars[5].split(':')[1])#
+	def_hv = float(lastpars[9].split(':')[1])#
+	def_D0 = float(lastpars[12].split(':')[1])#
+	def_mu = float(lastpars[13].split(':')[1])#
+	def_modestr.set(lastpars[7].split(':')[1].replace(' ',''))
+	def_ablossesstr.set(lastpars[10].split(':')[1])
+	def_norm.set(int(lastpars[18].split(':')[1]))
+	def_epsilon.set(int(lastpars[19].split(':')[1]))
+	def_velfield.set(int(lastpars[11].split(':')[1]))
+	def_gmode.set(int(lastpars[6].split(':')[1]))
+
+
+	if def_modestr.get()=="Advection":
+		def_modestr.set('Advection')
+		def_mode = 1
+		tabs.select(tab_adv)
+	else:
+		def_modestr.set('Diffusion')
+		def_mode = 2
+		tabs.select(tab_diff)
+
+	if def_ablossesstr.get()=="Yes":
+		def_ablosses = 1
+	else:
+		def_ablosses = -1
+
+	run()
+	plot_dummylegend()
+
 
 def openfile1():
 	global data, filename1, openfile2_button, show_spin_out, debug_out
@@ -1590,6 +1629,11 @@ rownum=29
 distlabel=Tk.Label(configframe,textvariable=distlabelvar)
 distlabel.grid(row=rownum,column=0,columnspan=3,sticky=Tk.W+Tk.E)
 
+#load pars button
+rownum=30
+loadpars_button = Tk.Button(master=configframe,text='Load Pars',command=loadpars)
+loadpars_button.grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
+
 #advection only options
 rownum=0
 dv0 = Tk.DoubleVar()
@@ -1632,5 +1676,6 @@ button_mum = Tk.Button(tab_diff, text=u'\N{GREEK SMALL LETTER MU}-', command=lam
 #run()
 root.protocol("WM_DELETE_WINDOW", quitit)
 Tk.mainloop()
+
 
 
