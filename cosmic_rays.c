@@ -311,15 +311,17 @@ struct grid_1d setup_initial_grid (void)
             v_z[i] = V0 * pow(radius(cr[i][0].z / kpc) / R0, beta);
         
         
-//Old version with radius not set
-//v_z[i] = V0 * pow( (R0 / kpc + cr[i][0].z / kpc / h_V) / R0 * kpc , beta);            
+/* Old version with radius not set yet
+   v_z[i] = V0 * pow( (R0 / kpc + cr[i][0].z / kpc / h_V) / R0 * kpc , beta); */
 
         else if (velocity_field == 1)
             v_z[i] = V0 * exp(cr[i][0].z / kpc / h_V);
         else if (velocity_field == 2)
-            v_z[i] = V0 * pow(1.0 - kpc / (cr[i][0].z + kpc) / h_V, 0.5);
+            v_z[i] = V0 * (1.0 + pow(cr[i][0].z / kpc / h_V, beta) );
+
+//        v_z[i] = V0 * pow(1.0 - kpc / (cr[i][0].z + kpc) / h_V, 0.5);
         
-//            v_z[i] = V0 * (1.0 + pow(cr[i][0].z / kpc / h_V, beta) );
+        
         else
         {
             printf("Wrong velocity field.\n");
