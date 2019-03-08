@@ -9,7 +9,7 @@
 /*************************************************************************/
 /* Read parameters from command line input, given by main as char array */
 
-//reads values between the searched variable and the # character
+/* reads values between the searched variable and the # character */
 char regit(char input[], char *buf, char var[])
 {
 	char *pch = strstr(input,var);

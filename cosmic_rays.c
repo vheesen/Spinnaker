@@ -982,7 +982,7 @@ void output_stdout (int i_max)
             if ( epsilon == 1 )
             {
 
-                if ( ii == 0 )
+//                if ( ii == 0 )
                     //printf("radius = %g, R0 = %g\n", radius(cr[ii][0].z / kpc), R0);
                 
                 
