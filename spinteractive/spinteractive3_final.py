@@ -321,7 +321,7 @@ def initial_plot():
 			simplot_i1, = plotfig.axes[0].plot(d2[0,:,0]/1000,numpy.zeros(shape=len(d2[0,:,0])),color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=options.labelsize)
 			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
 			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
@@ -351,13 +351,13 @@ def initial_plot():
 			simplot_a12, = plotfig.axes[2].plot(d2[0,:,0]/1000.,spi1,color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
 #			plotfig.axes[0].set_ylabel('Normalized Intensity',fontsize=18)
 			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
@@ -379,7 +379,7 @@ def initial_plot():
 				plotfig.axes[3].scatter(d2[0,:,0],spi1,s=50)
 			else:
 				plotfig.axes[3].scatter(d2[0,:,0],spi1,color='green',label=r'$\alpha$')
-			plotfig.axes[3].legend(scatterpoints=1,fontsize=22)
+			plotfig.axes[3].legend(loc=0,scatterpoints=1,fontsize=22)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -393,7 +393,7 @@ def initial_plot():
 				plotfig.axes[4].scatter(d2[0,:,0],spi2,s=50)
 			else:
 				plotfig.axes[4].scatter(d2[0,:,0],spi2,color='green',label=r'$\alpha$ 2-3')
-			plotfig.axes[4].legend(scatterpoints=1,fontsize=22)
+			plotfig.axes[4].legend(loc=0,scatterpoints=1,fontsize=22)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -407,19 +407,19 @@ def initial_plot():
 			simplot_a23, = plotfig.axes[4].plot(d2[0,:,0],spi2,color='red',label=r'Sim')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[3].get_xlim()
 			ylim = plotfig.axes[3].get_ylim()
-			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[4].get_xlim()
 			ylim = plotfig.axes[4].get_ylim()
-			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 
 		except:
 			if debug_out:
@@ -436,7 +436,7 @@ def initial_plot():
 				plotfig.axes[4].scatter(d2[0,:,0],spi1,s=50,color='green')
 			else:
 				plotfig.axes[4].scatter(d2[0,:,0],spi1,color='green',label=r'$\alpha$ 1-2')
-			plotfig.axes[4].legend(scatterpoints=1)
+			plotfig.axes[4].legend(loc=0,scatterpoints=1)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -450,7 +450,7 @@ def initial_plot():
 				plotfig.axes[5].scatter(d2[0,:,0],spi2,s=50,color='green')
 			else:
 				plotfig.axes[5].scatter(d2[0,:,0],spi2,color='green',label=r'$\alpha$ 2-3',ls='none')
-			plotfig.axes[5].legend(scatterpoints=1)
+			plotfig.axes[5].legend(loc=0,scatterpoints=1)
 		except:
 			if debug_out:	
 				traceback.print_exc()
@@ -464,7 +464,7 @@ def initial_plot():
 				plotfig.axes[6].scatter(d2[0,:,0],spi3,s=50,color='green')
 			else:
 				plotfig.axes[6].plot(d2[0,:,0],spi3,color='green',label=r'$\alpha$ 2-4',ls='none')
-			plotfig.axes[6].legend(scatterpoints=1)
+			plotfig.axes[6].legend(loc=0,scatterpoints=1)
 		except:
 			if debug_out:
 				traceback.print_exc()
@@ -480,25 +480,25 @@ def initial_plot():
 			simplot_a34, = plotfig.axes[6].plot(d2[0,:,0],spi3,color='red',label=r'Sim 3-4')
 			xlim = plotfig.axes[0].get_xlim()
 			ylim = plotfig.axes[0].get_ylim()
-			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[1].get_xlim()
 			ylim = plotfig.axes[1].get_ylim()
-			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_2, = plotfig.axes[1].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
-			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[3].get_xlim()
 			ylim = plotfig.axes[3].get_ylim()
-			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_4, = plotfig.axes[3].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[4].get_xlim()
 			ylim = plotfig.axes[4].get_ylim()
-			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[5].get_xlim()
 			ylim = plotfig.axes[5].get_ylim()
-			chiplot_6, = plotfig.axes[5].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_6, = plotfig.axes[5].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			xlim = plotfig.axes[6].get_xlim()
 			ylim = plotfig.axes[6].get_ylim()
-			chiplot_7, = plotfig.axes[6].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi$="+str(0),alpha=0)
+			chiplot_7, = plotfig.axes[6].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 
 		except:
 			if debug_out:
@@ -506,7 +506,7 @@ def initial_plot():
 			pass
 
 	for i in range(len(plotfig.axes)):
-		plotfig.axes[i].legend(prop={'size': 12},scatterpoints=1,fontsize=22)
+		plotfig.axes[i].legend(prop={'size': 12},scatterpoints=1,fontsize=22,loc=0)
 		
 	global def_scale
 	if def_scale.get()=='Log':
@@ -662,13 +662,13 @@ def run():
 	for i in range(d2.shape[0]):
 		handles, labels = plotfig.axes[i].get_legend_handles_labels()
 		labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
-		plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1)
+		plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1,loc=0)
 
 	if d2.shape[0]==1:
 		simplot_i1.set_ydata(sim_int1)
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
 #		print round(chi_array[0],4)
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
 
 
 	if d2.shape[0]==2:
@@ -678,16 +678,16 @@ def run():
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
 		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[1,:,1]))
 		chi_array[2] = chisq(spi1,sim_a12,spi1err)
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
 		####### reverse legend for spectral index
 		handles, labels = plotfig.axes[2].get_legend_handles_labels()
 		handles[0],handles[1]=handles[1],handles[0]
 		handles[1],handles[2]=handles[2],handles[1]
 		labels[1],labels[2]=labels[2],labels[1]
 		labels[2]='Sim'
-		plotfig.axes[2].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1)
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
+		plotfig.axes[2].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1,loc=0)
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
 		
 
 	if d2.shape[0]==3:
@@ -706,13 +706,13 @@ def run():
 			handles, labels = plotfig.axes[i].get_legend_handles_labels()
 			handles[0],handles[2]=handles[2],handles[0]
 			labels[0],labels[2]=labels[2],labels[0]
-			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize)
+			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,loc=0)
 
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
-		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[3],2)))
-		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[4],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
+		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[3],2)))
+		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[4],2)))
 
 
 	if d2.shape[0]==4:
@@ -734,15 +734,15 @@ def run():
 			handles, labels = plotfig.axes[i].get_legend_handles_labels()
 			handles[0],handles[2]=handles[2],handles[0]
 			labels[0],labels[2]=labels[2],labels[0]
-			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize)
+			plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,loc=0)
 
-		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[0],2)))
-		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[1],2)))
-		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[2],2)))
-		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[3],2)))
-		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[4],2)))
-		plotfig.axes[5].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[5],2)))
-		plotfig.axes[6].legend_.texts[0].set_text(r"$\chi$="+str(round(chi_array[6],2)))
+		plotfig.axes[0].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[0],2)))
+		plotfig.axes[1].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[1],2)))
+		plotfig.axes[2].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[2],2)))
+		plotfig.axes[3].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[3],2)))
+		plotfig.axes[4].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[4],2)))
+		plotfig.axes[5].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[5],2)))
+		plotfig.axes[6].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[6],2)))
 
 	plotcanvas.draw()
 
