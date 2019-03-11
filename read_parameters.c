@@ -303,6 +303,11 @@ void read_parameters(void)
 	    exit(0);
 	}
 
+/* For diffusion the velocity field should be set to zero
+ so that the CRe number density is calculated correctly */
+    if (mode != 1)
+        velocity_field = 0;
+    
     
     if (model == 1 || initialize_model == 1)
     {
