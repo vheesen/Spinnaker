@@ -47,7 +47,11 @@ def quitit():
 	sys.exit()
 
 def saveplotpars(fname):
-	pars = [["Gamma:",def_cri],["b0:",def_b0],["b1:",def_b1],["hb1:",def_hb1],["hb2:",def_hb2],["Z1:",def_Z1],["galaxy mode:",def_gmode.get()],["mode:",def_modestr.get()],["v0:",def_v0],["hv:",def_hv],["abiatic losses:",def_ablossesstr.get()],["velocity field:",def_velfield.get()],["D0:",def_D0],["mu:",def_mu],["freq 1:",frequency1field.get()],["freq 2:",frequency2field.get()],["freq 3:",frequency3field.get()],["freq 4:",frequency4field.get()],['normalize:',def_norm.get()],['epsilon:',def_epsilon.get()],["rChi^2_1: ",chi_array[0]],["rChi^2_2: ",chi_array[1]],["rChi^2_spi1: ",chi_array[2]],["RMS chi: ",get_global_chi()],["fwhm: ",def_fwhm]]
+	pars = [["Gamma:",def_cri],["b0:",def_b0],["b1:",def_b1],["hb1:",def_hb1],["hb2:",def_hb2],["Z1:",def_Z1],["galaxy mode:",def_gmode.get()],["mode:",def_modestr.get()],["v0:",def_v0],["hv:",def_hv],["abiatic losses:",def_ablossesstr.get()],["velocity field:",def_velfield.get()],["D0:",def_D0],["mu:",def_mu],["freq 1:",frequency1field.get()],["freq 2:",frequency2field.get()],["freq 3:",frequency3field.get()],["freq 4:",frequency4field.get()],['normalize:',def_norm.get()],['epsilon:',def_epsilon.get()]]
+	for i in range(len(chi_array)):
+		pars.append(["rChi^2_"+str(i+1)+": ",chi_array[i]])
+	pars.append(["fwhm: ",def_fwhm])
+	pars.append(["RMS chi: ",get_global_chi()])
 	numpy.savetxt(fname,pars,fmt='%s')
 
 #define needed variables or load last used values
