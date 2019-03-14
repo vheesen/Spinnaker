@@ -389,7 +389,7 @@ def initial_plot():
 		try:
 			spi2 = calc_spi(numpy.float(frequency2field.get()),numpy.float(frequency3field.get()),d2[1,:,1],d2[2,:,1])
 			if haserror:
-				spi2err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
+				spi2err = (1/numpy.log(numpy.float(frequency2field.get())/numpy.float(frequency3field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
 				plotfig.axes[4].errorbar(d2[0,:,0]/1000.,spi2,spi2err,color='green',ls='none')
 				plotfig.axes[4].scatter(d2[0,:,0]/1000.,spi2,s=50,color='green',label=r'$\alpha$ 2-3')
 			else:
@@ -454,7 +454,7 @@ def initial_plot():
 		try:
 			spi2 = calc_spi(numpy.float(frequency2field.get()),numpy.float(frequency3field.get()),d2[1,:,1],d2[2,:,1])
 			if haserror:
-				spi2err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
+				spi2err = (1/numpy.log(numpy.float(frequency2field.get())/numpy.float(frequency3field.get())))*((d2[1,:,2]/d2[1,:,1])**2+(d2[2,:,2]/d2[2,:,1])**2)**0.5
 				plotfig.axes[5].errorbar(d2[0,:,0]/1000.,spi2,spi2err,color='green',ls='none')
 				plotfig.axes[5].scatter(d2[0,:,0]/1000.,spi2,s=50,label=r'$\alpha$ 2-3',color='green')
 			else:
@@ -468,7 +468,7 @@ def initial_plot():
 		try:
 			spi3 = calc_spi(numpy.float(frequency3field.get()),numpy.float(frequency4field.get()),d2[2,:,1],d2[3,:,1])
 			if haserror:
-				spi3err = (1/numpy.log(numpy.float(frequency1field.get())/numpy.float(frequency2field.get())))*((d2[2,:,2]/d2[2,:,1])**2+(d2[3,:,2]/d2[3,:,1])**2)**0.5
+				spi3err = (1/numpy.log(numpy.float(frequency3field.get())/numpy.float(frequency4field.get())))*((d2[2,:,2]/d2[2,:,1])**2+(d2[3,:,2]/d2[3,:,1])**2)**0.5
 				plotfig.axes[6].errorbar(d2[0,:,0]/1000.,spi3,spi3err,color='green')
 				plotfig.axes[6].scatter(d2[0,:,0]/1000.,spi3,s=50,label=r'$\alpha$ 3-4',color='green')
 			else:
