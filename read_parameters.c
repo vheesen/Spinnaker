@@ -327,7 +327,13 @@ void read_parameters(void)
     }
 
     grid_size = (int) 2.0 * grid_size;
-            
+
+    normalize_intensities = -1;
+    adiabatic_losses = 1;
+    R0 = 7.0 * kpc;
+    h_grav = 28.0;
+    
+    
     fclose(f);
 
 }

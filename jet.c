@@ -745,7 +745,7 @@ double radius (double z)
                 radius_jet = mod[counter_min].radius + (mod[counter_min].radius - mod[counter_min-1].radius) * ( z - mod[counter_min].z ) / ( mod[counter_min].z - mod[counter_min-1].z );
         }
         
-        else
+        else 
         {
             printf("Error in function 'radius'. Stop.\n");
             exit (0);
@@ -763,8 +763,8 @@ double radius (double z)
 
     {
 
-        if ( velocity_field == -1)
-            radius_jet = R0 / kpc + z / h_V;
+        if ( velocity_field == 3)
+            radius_jet = R0 / kpc * pow(1.0 + pow(z / h_V, beta), 0.5);
         else
             radius_jet = R0 / kpc;
 

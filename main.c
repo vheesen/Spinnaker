@@ -6,6 +6,7 @@
 #include "jet.h"
 #include "read_parameters2.h"
 #include <time.h>
+#include "output.h"
 
 /****************************************************************************/
 

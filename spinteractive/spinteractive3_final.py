@@ -15,7 +15,7 @@ parser.add_option("--label_size", type='float', help="Label Size", default = 18,
 parser.add_option("--tick_label_size", type='int', help="Tick Label Size", default = 12, dest='ticklabelsize')
 (options, args) = parser.parse_args()
 
-plotlabelsize=20
+plotlabelsize=12
 
 show_spin_out = options.show_spin_out
 debug_out = options.debug_out
@@ -173,7 +173,7 @@ def plot_dummylegend():
 	stuff[13] = 'Epsilon: '+str(def_epsilon.get())
 	stuff[14] = 'Normalization: '+str(def_norm.get())
 	stuff[15] = 'RMS '+r'$\chi^2$: ' + str(round(get_global_chi(),2))
-	l1 = ax0.legend(stuff,loc=10,handlelength=0, handletextpad=0,markerscale=0,fontsize=22,scatterpoints=1)
+	l1 = ax0.legend(stuff,loc=10,handlelength=0, handletextpad=0,markerscale=0,fontsize=12,scatterpoints=1)
 	for i in range(len(variables)):
 		l1.legendHandles[i].set_visible(False)
 	parametercanvas.draw()
@@ -309,7 +309,9 @@ def initial_plot():
 		if int(def_norm.get())==1:
 			normfac = numpy.max(d2[i,:,1])
 		else:
-			normfac = 1
+#Normalisation with respect to nu1 at z=0
+			normfac = numpy.max(d2[0,:,1])
+
 		global haserror
 		if d2[i,:].shape[1]==3:
 			plotfig.axes[i].errorbar(d2[i,:,0]/1000,d2[i,:,1]/normfac,d2[i,:,2]/normfac,ls='none')
@@ -687,7 +689,7 @@ def run():
 		simplot_i1.set_ydata(sim_int1)
 		simplot_i2.set_ydata(sim_int2)
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
-		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[1,:,1]))
+		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[0,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[0,:,1]))
 		chi_array[2] = chisq(spi1,sim_a12,spi1err)
 		
 
@@ -737,7 +739,7 @@ def run():
 		handles[1],handles[0]=handles[0],handles[1]
 		labels[-1],labels[0]=labels[0],labels[-1]
 		labels[1],labels[0]=labels[0],labels[1]
-		plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1,loc=2,prop={'size': 12})
+		plotfig.axes[i].legend(handles,labels,fontsize=plotlabelsize,scatterpoints=1,loc=3,prop={'size': 12})
 		plotfig.axes[i].legend_.texts[0].set_text(r"$\chi^2$="+str(round(chi_array[i],2)))
 
 	plotcanvas.draw()
@@ -898,7 +900,7 @@ def run_noplot(varstochange,vals):
 
 	if d2.shape[0]==2:
 		chi_array[0] = chisq(d2[0,:,1]/numpy.nanmax(d2[0,:,1]),sim_int1,d2[0,:,2]/numpy.nanmax(d2[0,:,1]))
-		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[1,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[1,:,1]))
+		chi_array[1] = chisq(d2[1,:,1]/numpy.nanmax(d2[0,:,1]),sim_int2,d2[1,:,2]/numpy.nanmax(d2[0,:,1]))
 		chi_array[2] = chisq(spi1,sim_a12,spi1err)
 
 	if d2.shape[0]==3:
@@ -1634,7 +1636,7 @@ option = Tk.OptionMenu(tab_adv, def_ablossesstr, "Yes", "No" ,command=setdummval
 
 rownum=3
 Tk.Label(tab_adv,text='Velocity Field').grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
-option = Tk.OptionMenu(tab_adv, def_velfield, -1, 0, 1, 2,command=setdummval).grid(row=rownum,column=2)
+option = Tk.OptionMenu(tab_adv, def_velfield, -1, 0, 1, 2, 3, command=setdummval).grid(row=rownum,column=2)
 
 
 #diffusion only options
