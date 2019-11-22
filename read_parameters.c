@@ -245,6 +245,9 @@ void read_parameters(void)
     strcpy(paramf.string_search, "mu_diff");
     mu_diff = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "V_rot");
+    V_rot = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
 /*Magnetic field setup*/
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "galaxy_mode");
@@ -265,6 +268,12 @@ void read_parameters(void)
     strcpy(paramf.string_search, "h_B2");
     h_B2 = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
+     strcpy(paramf.string_search, "beta");
+    beta = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
+    strcpy(paramf.string_search, "R0");
+    R0 = get_float_parameter(paramf, f); 
+/*--------------------------------------------------------------------------*/
 /*#Use a magnetic field model (needs edit of the source files)*/
 /*--------------------------------------------------------------------------*/
     strcpy(parami.string_search, "model");
@@ -282,11 +291,6 @@ void read_parameters(void)
     strcpy(paramf.string_search, "xi");
     xi = get_float_parameter(paramf, f); 
 /*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "beta");
-    beta = get_float_parameter(paramf, f); 
-/*--------------------------------------------------------------------------*/
-    strcpy(paramf.string_search, "R0");
-    R0 = get_float_parameter(paramf, f); 
 /****************************************************************************/
     z_halo = z_halo_kpc * kpc;
     
@@ -328,11 +332,8 @@ void read_parameters(void)
 
     grid_size = (int) 2.0 * grid_size;
 
-    normalize_intensities = -1;
-    adiabatic_losses = 1;
-    R0 = 7.0 * kpc;
-    h_grav = 28.0;
-    
+    R0 = R0 * kpc;
+    h_grav = 18.0;
     
     fclose(f);
 

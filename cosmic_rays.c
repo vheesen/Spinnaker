@@ -214,7 +214,7 @@ void adiabatic (void)
 struct grid_1d setup_initial_grid (void)
 {
     double B_CMB;
-    int nu2, ii;
+    int nu_break, ii;
     double fnewton, fnewton_prime, v_wind, rhs, z_crit, c_const;
     
 
@@ -270,9 +270,9 @@ struct grid_1d setup_initial_grid (void)
         for (ii = 0; ii <= 10; ii++)
                 
         {
-            fnewton =  pow(z_crit, beta) - 2.0 * beta * pow(V0, 2.0) / pow(187.e5, 2.0) * (R0/kpc) * pow(z_crit, beta -1.0) *
+            fnewton =  pow(z_crit, beta) - 2.0 * beta * pow(V0, 2.0) / pow(V_rot, 2.0) * (R0/kpc) * pow(z_crit, beta -1.0) *
                 exp(z_crit / h_grav) + pow(h_V, beta);
-            fnewton_prime = beta * pow(z_crit, beta - 1.0) - 2.0 * beta * pow(V0 / 187.e5, 2.0) * (R0/kpc) * exp(z_crit / h_grav) *
+            fnewton_prime = beta * pow(z_crit, beta - 1.0) - 2.0 * beta * pow(V0 / V_rot, 2.0) * (R0/kpc) * exp(z_crit / h_grav) *
                 (pow(z_crit, beta -2.0) + pow(z_crit, beta -1.0) / h_grav);
 
             z_crit = z_crit - fnewton / fnewton_prime;
@@ -327,9 +327,9 @@ struct grid_1d setup_initial_grid (void)
             {
 
                 
-                c_const = 1.0 - 2.0 * log(1.0 + pow(z_crit / h_V, beta)) - pow(187.e5 / V0, 2.0) * h_grav * kpc / R0 * exp(-z_crit / h_grav);
+                c_const = 1.0 - 2.0 * log(1.0 + pow(z_crit / h_V, beta)) - pow(V_rot / V0, 2.0) * h_grav * kpc / R0 * exp(-z_crit / h_grav);
                                 
-                rhs = 2.0 * log(1.0 + pow(cr[i][0].z / kpc / h_V, beta)) + pow(187.e5 / V0, 2.0) * h_grav * kpc / R0 * exp(-cr[i][0].z / kpc / h_grav) + c_const;
+                rhs = 2.0 * log(1.0 + pow(cr[i][0].z / kpc / h_V, beta)) + pow(V_rot / V0, 2.0) * h_grav * kpc / R0 * exp(-cr[i][0].z / kpc / h_grav) + c_const;
                 fnewton = pow(v_wind, 2.0) - 2.0 * log(v_wind) - rhs;
                 fnewton_prime = 2.0 * v_wind - 2.0 / v_wind;
                 v_wind = v_wind - fnewton / fnewton_prime;
@@ -383,9 +383,11 @@ struct grid_1d setup_initial_grid (void)
             {
 /* Magnetic field models from Baum et al. (1997) */                
 /* Adiabatic longitudinal magnetic field */                
-/*                B_field[i] = B0 * R0 * R0 / pow(radius(cr[i][0].z / kpc), 2.0); */
+//                B_field[i] = B0 * R0 * R0 / pow(radius(cr[i][0].z / kpc), 2.0); 
 /* Adiabatic radial and toroidal magnetic field */
                 B_field[i] = B0 * R0 / radius(cr[i][0].z / kpc) * v_z[0] / v_z[i];
+/* Flux freezing */                
+//                B_field[i] = B0 * R0 / radius(cr[i][0].z / kpc) * pow(v_z[0] / v_z[i], 0.5);
                 
             }
             
@@ -446,7 +448,7 @@ struct grid_1d setup_initial_grid (void)
     cr[0][0].N = 1.0; //arbitrary units
 
 /* Option for a broken power-law injection spectrum */
-    nu2 = (int) (log(1.5e9 / 0.001e9) / log(delta_nu_factor));
+    nu_break = (int) (log(10.0e9 / 0.001e9) / log(delta_nu_factor));
 
     for (j=0; j <= nu_channel + 1; j++)
     {
@@ -457,7 +459,7 @@ struct grid_1d setup_initial_grid (void)
 
     /* for (j=0; j <= nu_channel + 1; j++) */
     /* { */
-    /*     if (j <= nu2) */
+    /*     if (j <= nu_break) */
     /*     { */
             
     /*         for (i=0; i <= grid_size + 1; i++) */
@@ -470,8 +472,8 @@ struct grid_1d setup_initial_grid (void)
 
     /*     { */
     /*         for (i=0; i <= grid_size + 1; i++) */
-    /*             cr[i][j].N = cr[0][nu2].N * */
-    /*                 pow (cr[0][j].E / cr[0][nu2].E, -gamma_in-1.0); */
+    /*             cr[i][j].N = cr[0][nu_break].N * */
+    /*                 pow (cr[0][j].E / cr[0][nu_break].E, -gamma_in-1.0); */
 
     /*     } */
         

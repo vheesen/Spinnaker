@@ -28,7 +28,7 @@ int galaxy_mode;
 double z1, B0, B1, h_B1, h_B2;
 int model, initialize_model, model_north, update_model;
 double xi;
-double beta, R0, h_grav;
+double beta, R0, V_rot, h_grav;
 
 /* Output file */
 double intensity_nu1[402], intensity_nu2[402], intensity_nu3[402], intensity_nu4[402];

@@ -37,20 +37,20 @@ mpl.rcParams['ytick.major.pad'] = 8
 mpl.rcParams['xtick.major.pad'] = 8
 
 global variables
-variables = ['def_cri','def_v0','def_hb1','def_hb2','def_b0','def_b1','def_Z1','def_hv','def_gmode','def_D0','def_mu','def_modestr','def_ablossesstr','def_velfield','def_nu1','def_nu2','def_nu3','def_nu4','def_norm','def_epsilon','def_fwhm']
+variables = ['def_cri','def_v0','def_hb1','def_hb2','def_b0','def_b1','def_Z1','def_beta','def_hv','def_gmode','def_D0','def_mu','def_modestr','def_ablossesstr','def_velfield','def_nu1','def_nu2','def_nu3','def_nu4','def_norm','def_epsilon','def_fwhm']
 
 juststarted = True
 
 def quitit():
-	pars = [def_cri,def_v0,def_hb1,def_hb2,def_b0,def_b1,def_Z1,def_hv,def_gmode.get(),def_D0,def_mu,def_modestr.get(),def_ablossesstr.get(),def_velfield.get(),frequency1field.get(),frequency2field.get(),frequency3field.get(),frequency4field.get(),def_norm.get(),def_epsilon.get(),FWHMfield.get()]
+	pars = [def_cri,def_b0,def_b1,def_hb1,def_hb2,def_Z1,def_beta,def_gmode.get(),def_modestr.get(),def_v0,def_hv,def_ablossesstr.get(),def_velfield.get(),def_D0,def_mu,frequency1field.get(),frequency2field.get(),frequency3field.get(),frequency4field.get(),def_epsilon.get(),def_norm.get(),FWHMfield.get()]
 	numpy.savetxt('pars.last',pars,fmt='%s')
 	sys.exit()
 
 def saveplotpars(fname):
-	pars = [["Gamma:",def_cri],["b0:",def_b0],["b1:",def_b1],["hb1:",def_hb1],["hb2:",def_hb2],["Z1:",def_Z1],["galaxy mode:",def_gmode.get()],["mode:",def_modestr.get()],["v0:",def_v0],["hv:",def_hv],["abiatic losses:",def_ablossesstr.get()],["velocity field:",def_velfield.get()],["D0:",def_D0],["mu:",def_mu],["freq 1:",frequency1field.get()],["freq 2:",frequency2field.get()],["freq 3:",frequency3field.get()],["freq 4:",frequency4field.get()],['normalize:',def_norm.get()],['epsilon:',def_epsilon.get()]]
+	pars = [["Gamma:",def_cri],["b0:",def_b0],["b1:",def_b1],["hb1:",def_hb1],["hb2:",def_hb2],["Z1:",def_Z1],["Beta:",def_beta],["galaxy mode:",def_gmode.get()],["mode:",def_modestr.get()],["v0:",def_v0],["hv:",def_hv],["adiabatic losses:",def_ablossesstr.get()],["velocity field:",def_velfield.get()],["D0:",def_D0],["mu:",def_mu],["freq 1:",frequency1field.get()],["freq 2:",frequency2field.get()],["freq 3:",frequency3field.get()],["freq 4:",frequency4field.get()],['epsilon:',def_epsilon.get()],['normalize:',def_norm.get()],["fwhm: ",def_fwhm]]
 	for i in range(len(chi_array)):
 		pars.append(["rChi^2_"+str(i+1)+": ",chi_array[i]])
-	pars.append(["fwhm: ",def_fwhm])
+	
 	pars.append(["RMS chi: ",get_global_chi()])
 	numpy.savetxt(fname,pars,fmt='%s')
 
@@ -58,22 +58,22 @@ def saveplotpars(fname):
 try:
 	lastpars = numpy.loadtxt('pars.last',dtype=object)
 	def_cri= float(lastpars[0])
-	def_v0 = float(lastpars[1])
+	def_b0 = float(lastpars[1])
 	def_hb1= float(lastpars[2])
 	def_hb2= float(lastpars[3])
-	def_b0 = float(lastpars[4])
-	def_b1 = float(lastpars[5])
-	def_Z1 = float(lastpars[6])
-	def_hv = float(lastpars[7])
+	def_b1 = float(lastpars[4])
+	def_Z1 = float(lastpars[5])
+        def_beta = float(lastpars[6])
 	def_gmode = Tk.IntVar()
-	def_gmode.set(int(lastpars[8]))
-
-
-	def_D0 = float(lastpars[9])
-	def_mu = float(lastpars[10])
-
+	def_gmode.set(int(lastpars[7]))
 	def_modestr = Tk.StringVar()
-	def_modestr.set(lastpars[11])
+	def_modestr.set(lastpars[8])
+	def_v0 = float(lastpars[9])
+	def_hv = float(lastpars[10])
+        
+
+
+
 
 	if def_modestr.get()=="Advection":
 		def_mode = 1
@@ -81,24 +81,32 @@ try:
 		def_mode = 2
 
 	def_ablossesstr = Tk.StringVar()
-	def_ablossesstr.set(lastpars[12])
+	def_ablossesstr.set(lastpars[11])
 
 	if def_ablossesstr.get()=="Yes":
 		def_ablosses = 1
 	else:
 		def_ablosses = -1
 
-	def_velfield = Tk.IntVar()
-	def_velfield.set(int(lastpars[13]))
-	def_nu1 = lastpars[14]
-	def_nu2 = lastpars[15]
-	def_nu3 = lastpars[16]
-	def_nu4 = lastpars[17]
-	def_norm = Tk.IntVar()
-	def_norm.set(int(lastpars[18]))
+        print 'string = ', def_ablossesstr.get()
+
+        def_velfield = Tk.IntVar()
+	def_velfield.set(int(lastpars[12]))
+
+	def_D0 = float(lastpars[13])
+	def_mu = float(lastpars[14])
+
+
+        
+	def_nu1 = lastpars[15]
+	def_nu2 = lastpars[16]
+	def_nu3 = lastpars[17]
+	def_nu4 = lastpars[18]
 	def_epsilon = Tk.IntVar()
 	def_epsilon.set(int(lastpars[19]))
-	def_fwhm = float(lastpars[20])
+	def_norm = Tk.IntVar()
+	def_norm.set(int(lastpars[20]))
+	def_fwhm = float(lastpars[21])
 
 	print 'Parameters from last file loaded succesfully'
 except:
@@ -117,6 +125,7 @@ except:
 	def_b1 = 7
 	def_hv = 1
 	def_Z1 = 10
+	def_beta = 2.0
 	def_D0 = 2.0
 	def_mu = 0.5
 	def_velfield = Tk.IntVar()
@@ -139,8 +148,9 @@ except:
 	def_epsilon = Tk.IntVar()
 	def_epsilon.set(-1)
 	def_norm = Tk.IntVar()
-	def_norm.set(1)
+	def_norm.set(-1)
 	def_fwhm = 1.2
+        def_beta = 2.0
 
 	##########################################################
 
@@ -160,7 +170,8 @@ def plot_dummylegend():
 	stuff[3]=r'$hb_1$: '+str(round(def_hb1,3))+' kpc'
 	stuff[4]=r'$hb_2$: '+str(round(def_hb2,3))+' kpc'
 	stuff[5]=r'$Z_1$: '+str(round(def_Z1,3))+' kpc'
-	stuff[6]='gmode: '+str(def_gmode.get())
+	stuff[6]=r'$\beta$: '+str(round(def_beta,3))
+	stuff[7]='gmode: '+str(def_gmode.get())
 	stuff[8]='mode: '+str(def_modestr.get())
 	if def_modestr.get()=='Advection':
 		stuff[9]=r'$v_0$: '+str(round(def_v0,3))+' km/s'
@@ -172,7 +183,8 @@ def plot_dummylegend():
 		stuff[10]=r'$\mu_{diff}$: '+str(round(def_mu,3))
 	stuff[13] = 'Epsilon: '+str(def_epsilon.get())
 	stuff[14] = 'Normalization: '+str(def_norm.get())
-	stuff[15] = 'RMS '+r'$\chi^2$: ' + str(round(get_global_chi(),2))
+        stuff[15] = 'FWHM: '+str(def_fwhm)
+	stuff[16] = 'RMS '+r'$\chi^2$: ' + str(round(get_global_chi(),2))
 	l1 = ax0.legend(stuff,loc=10,handlelength=0, handletextpad=0,markerscale=0,fontsize=12,scatterpoints=1)
 	for i in range(len(variables)):
 		l1.legendHandles[i].set_visible(False)
@@ -554,7 +566,7 @@ def chisq(x,y,error):
 	return reduced
 
 def run():
-	global filenames, def_mode, def_v0, def_cri, def_b0, def_b1, def_hb1, def_hb2, def_D0, def_gmode, def_Z1, def_hv, def_mode, def_ablosses, def_mu, def_velfield, def_norm, def_epsilon, data, plotfig, simplot_i1, simplot_i2, simplot_i3, simplot_i4, simplot_a12, simplot_a23, simplot_a34, chi_array, show_spin_out, debug_out, chiplot_1,  chiplot_2, chiplot_3, chiplot_4, chiplot_5, chiplot_6, chiplot_7, tosearch, best_results_array, def_fwhm
+	global filenames, def_mode, def_v0, def_cri, def_b0, def_b1, def_hb1, def_hb2, def_D0, def_gmode, def_Z1, def_beta, def_hv, def_mode, def_ablosses, def_mu, def_velfield, def_norm, def_epsilon, data, plotfig, simplot_i1, simplot_i2, simplot_i3, simplot_i4, simplot_a12, simplot_a23, simplot_a34, chi_array, show_spin_out, debug_out, chiplot_1,  chiplot_2, chiplot_3, chiplot_4, chiplot_5, chiplot_6, chiplot_7, tosearch, best_results_array, def_fwhm
 	global applyvalues
 	try:
 		if (applyvalues==1):
@@ -611,7 +623,15 @@ def run():
 		if debug_out:
 			traceback.print_exc()	
 		pass
-	pars2 = pars2.replace('z_halo = 8.','z_halo = '+str(halosize))	#enter here the parameter you wish to change
+
+        if def_ablossesstr.get()=="Yes":
+		def_ablosses = 1
+	else:
+		def_ablosses = -1
+
+        
+        print 'string = ', def_ablossesstr.get()
+        pars2 = pars2.replace('z_halo = 8.','z_halo = '+str(halosize))	#enter here the parameter you wish to change
 	pars2 = pars2.replace('grid_size = 200','grid_size = '+str(gridsize))
 	pars2 = pars2.replace('V0 = 300.0e5','V0 = '+str(def_v0)+'e5')
 	pars2 = pars2.replace('gamma_in = 2.7','gamma_in = '+str(def_cri))
@@ -622,11 +642,12 @@ def run():
 	pars2 = pars2.replace('D0 = 2.0e28','D0 = '+str(def_D0)+'e28')
 	pars2 = pars2.replace('galaxy_mode = 1','galaxy_mode = '+str(int(def_gmode.get())))
 	pars2 = pars2.replace('z1 = 10.0','z1 = '+str(def_Z1))
+	pars2 = pars2.replace('beta = 2.0','beta = '+str(def_beta))
 	pars2 = pars2.replace('h_V = 1.','h_V = '+str(def_hv))
 	pars2 = pars2.replace('mode = 1#Adv','mode = '+str(def_mode)+'#Adv')
-	pars2 = pars2.replace('adiabatic_losses = -1','adiabatic_losses = '+str((int(def_ablosses))))
+	pars2 = pars2.replace('adiabatic_losses = 1','adiabatic_losses = '+str((int(def_ablosses))))
 	pars2 = pars2.replace('mu_diff = 0.5','mu_diff = '+str(def_mu))
-	pars2 = pars2.replace('velocity_field = 1','velocity_field = '+str(def_velfield.get()))
+	pars2 = pars2.replace('velocity_field = 0','velocity_field = '+str(def_velfield.get()))
 	pars2 = pars2.replace('normalize_intensities = -1','normalize_intensities = '+str(def_norm.get()))
 	pars2 = pars2.replace('epsilon = -1','epsilon = '+str(def_epsilon.get()))
 	pars2 = pars2.replace('FWHM_effective_beam = 1.2','FWHM_effective_beam = '+str(FWHMfield.get()))
@@ -745,7 +766,7 @@ def run():
 	plotcanvas.draw()
 
 def run_noplot(varstochange,vals):
-	global filenames, def_mode, def_v0, def_fwhm, def_cri, def_b0, def_b1, def_hb1, def_hb2, def_D0, def_gmode, def_Z1, def_hv, def_mode, def_ablosses, def_mu, def_velfield, def_norm, def_epsilon, data, chi_array
+	global filenames, def_mode, def_v0, def_fwhm, def_cri, def_b0, def_b1, def_hb1, def_hb2, def_D0, def_gmode, def_Z1, def_beta, def_hv, def_mode, def_ablosses, def_mu, def_velfield, def_norm, def_epsilon, data, chi_array
 	#copy to local variables
 	global loc_def_v0
 	global loc_def_cri
@@ -755,6 +776,7 @@ def run_noplot(varstochange,vals):
 	global loc_def_hb2
 	global loc_def_D0
 	global loc_def_Z1
+        global loc_def_beta
 	global loc_def_hv
 	global loc_def_mu
 	global loc_def_fwhm
@@ -767,6 +789,7 @@ def run_noplot(varstochange,vals):
 	loc_def_hb2 = def_hb2
 	loc_def_D0 = def_D0
 	loc_def_Z1 = def_Z1
+        loc_def_beta = def_beta
 	loc_def_hv = def_hv
 	loc_def_mu = def_mu
 	loc_def_fwhm = def_fwhm
@@ -835,11 +858,12 @@ def run_noplot(varstochange,vals):
 	pars2 = pars2.replace('D0 = 2.0e28','D0 = '+str(loc_def_D0)+'e28')
 	pars2 = pars2.replace('galaxy_mode = 1','galaxy_mode = '+str(int(def_gmode.get())))
 	pars2 = pars2.replace('z1 = 10.0','z1 = '+str(loc_def_Z1))
+	pars2 = pars2.replace('beta = 2.0','beta = '+str(loc_def_beta))
 	pars2 = pars2.replace('h_V = 1.','h_V = '+str(loc_def_hv))
 	pars2 = pars2.replace('mode = 1#Adv','mode = '+str(def_mode)+'#Adv')
-	pars2 = pars2.replace('adiabatic_losses = -1','adiabatic_losses = '+str((int(def_ablosses))))
+	pars2 = pars2.replace('adiabatic_losses = 1','adiabatic_losses = '+str((int(def_ablosses))))
 	pars2 = pars2.replace('mu_diff = 0.5','mu_diff = '+str(loc_def_mu))
-	pars2 = pars2.replace('velocity_field = 1','velocity_field = '+str(def_velfield.get()))
+	pars2 = pars2.replace('velocity_field = 0','velocity_field = '+str(def_velfield.get()))
 	pars2 = pars2.replace('normalize_intensities = -1','normalize_intensities = '+str(def_norm.get()))
 	pars2 = pars2.replace('epsilon = -1','epsilon = '+str(def_epsilon.get()))
 	pars2 = pars2.replace('FWHM_effective_beam = 1.2','FWHM_effective_beam = '+str(loc_def_fwhm))
@@ -951,25 +975,31 @@ data = []
 
 def loadpars():
 	parfile = askopenfilename()
-	global def_cri, def_v0, def_hb1, def_hb2, def_b0, def_b1, def_Z1, def_hv, def_D0, def_mu, def_modestr, def_ablossesstr, def_norm, def_epsilon, def_velfield, def_gmode, tabs, def_mode
+	global def_cri, def_v0, def_hb1, def_hb2, def_b0, def_b1, def_Z1, def_beta, def_hv, def_D0, def_mu, def_modestr, def_ablossesstr, def_norm, def_epsilon, def_velfield, def_gmode, tabs, def_mode
 	lastpars = open(parfile,'r').read().split('\n')
 	def_cri= float(lastpars[0].split(':')[1])#
-	def_v0 = float(lastpars[8].split(':')[1])#
-	def_hb1= float(lastpars[3].split(':')[1])#
-	def_hb2= float(lastpars[4].split(':')[1])#
 	def_b0 = float(lastpars[1].split(':')[1])#
 	def_b1 = float(lastpars[2].split(':')[1])#
+	def_hb1= float(lastpars[3].split(':')[1])#
+	def_hb2= float(lastpars[4].split(':')[1])#
 	def_Z1 = float(lastpars[5].split(':')[1])#
-	def_hv = float(lastpars[9].split(':')[1])#
-	def_D0 = float(lastpars[12].split(':')[1])#
-	def_mu = float(lastpars[13].split(':')[1])#
-	def_modestr.set(lastpars[7].split(':')[1].replace(' ',''))
-	def_ablossesstr.set(lastpars[10].split(':')[1])
-	def_norm.set(int(lastpars[18].split(':')[1]))
-	def_epsilon.set(int(lastpars[19].split(':')[1]))
-	def_velfield.set(int(lastpars[11].split(':')[1]))
-	def_gmode.set(int(lastpars[6].split(':')[1]))
+        def_beta = float(lastpars[6].split(':')[1])#VH: possibly change this
+	def_gmode.set(int(lastpars[7].split(':')[1]))
+	def_modestr.set(lastpars[8].split(':')[1].replace(' ',''))
+	def_v0 = float(lastpars[9].split(':')[1])#
+	def_hv = float(lastpars[10].split(':')[1])#
+	def_ablossesstr.set(lastpars[11].split(':')[1])
+	def_velfield.set(int(lastpars[12].split(':')[1]))
+	def_D0 = float(lastpars[13].split(':')[1])#
+	def_mu = float(lastpars[14].split(':')[1])#
 
+
+	def_epsilon.set(int(lastpars[19].split(':')[1]))
+	def_norm.set(int(lastpars[20].split(':')[1]))
+
+
+
+#        print 'string = ', def_ablossesstr.get()
 
 	if def_modestr.get()=="Advection":
 		def_modestr.set('Advection')
@@ -1195,6 +1225,7 @@ z1_check_var = Tk.IntVar()
 #advection
 v0_check_var = Tk.IntVar()
 hv_check_var = Tk.IntVar()
+beta_check_var = Tk.IntVar()
 #diffusion
 d0_check_var = Tk.IntVar()
 mu_check_var = Tk.IntVar()
@@ -1202,9 +1233,9 @@ searchres= Tk.StringVar()
 searchres.set('coarse')
 
 def search():
-	searchpars = ['gamma_check_var','b0_check_var','b1_check_var','hb0_check_var','hb1_check_var','z1_check_var','v0_check_var','hv_check_var','d0_check_var','mu_check_var']
-	pararray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
-	labelarray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
+	searchpars = ['gamma_check_var','b0_check_var','b1_check_var','hb0_check_var','hb1_check_var','z1_check_var','beta_check_var','v0_check_var','hv_check_var','d0_check_var','mu_check_var']
+	pararray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_beta', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
+	labelarray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_beta', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
 	global tosearch
 	tosearch = []
 	for i in range(len(searchpars)):
@@ -1223,29 +1254,45 @@ def search():
 	#determine search resolution for coarse mode
 	searches = []
 
+        #Coarse
 	searchdict = {}
-	searchdict["def_cri"]=[0.1,5,0.5]
+	searchdict["def_cri"]=[2.0,3.0,0.05]
 	searchdict["def_b0"]=[0.1,30,5]
 	searchdict["def_b1"]=[0.1,30,5]
 	searchdict["def_hb1"]=[0.1,15,2]
 	searchdict["def_hb2"]=[0.1,15,2]
 	searchdict["def_Z1"]=[0.1,20,2]
-	searchdict["def_v0"]=[10,1000,100]
-	searchdict["def_hv"]=[0.1,5,0.5]
+	searchdict["def_beta"]=[1.0,3.0,0.1]
+	searchdict["def_v0"]=[10,1000,50]
+	searchdict["def_hv"]=[1.0,10,0.5]
 	searchdict["def_D0"]=[1,5,0.5]
 	searchdict["def_mu"]=[0.1,1,0.1]
 
+        #Very coarse
 	searchdict2 = {}
-	searchdict2["def_cri"]=[0.1,5,1]
-	searchdict2["def_b0"]=[0.1,30,10]
-	searchdict2["def_b1"]=[0.1,30,10]
-	searchdict2["def_hb1"]=[0.1,15,5]
-	searchdict2["def_hb2"]=[0.1,15,5]
-	searchdict2["def_Z1"]=[0.1,20,4]
-	searchdict2["def_v0"]=[10,1000,300]
-	searchdict2["def_hv"]=[0.1,5,1]
-	searchdict2["def_D0"]=[1,5,1]
+	searchdict2["def_cri"]=[2.0,3.0,0.1]
+	searchdict2["def_b0"]=[0.1,30,5]
+	searchdict2["def_b1"]=[0.1,30,5]
+	searchdict2["def_hb1"]=[0.1,15,2]
+	searchdict2["def_hb2"]=[0.1,15,2]
+	searchdict2["def_Z1"]=[0.1,20,2]
+	searchdict2["def_beta"]=[1.0,3.0,0.2]
+	searchdict2["def_v0"]=[10,1000,100]
+	searchdict2["def_hv"]=[1.0,10,1.0]
+	searchdict2["def_D0"]=[1,5,0.5]
 	searchdict2["def_mu"]=[0.1,1,0.1]
+
+	# searchdict2["def_cri"]=[0.1,5,1]
+	# searchdict2["def_b0"]=[0.1,30,10]
+	# searchdict2["def_b1"]=[0.1,30,10]
+	# searchdict2["def_hb1"]=[0.1,15,5]
+	# searchdict2["def_hb2"]=[0.1,15,5]
+	# searchdict2["def_Z1"]=[0.1,20,4]
+	# searchdict2["def_beta"]=[0.1,4.0,0.5]
+	# searchdict2["def_v0"]=[10,1000,300]
+	# searchdict2["def_hv"]=[0.1,5,1]
+	# searchdict2["def_D0"]=[1,5,1]
+	# searchdict2["def_mu"]=[0.1,1,0.1]
 
 	for i in range(len(currentvalues)):
 		if searchres.get()=='very coarse':
@@ -1255,22 +1302,39 @@ def search():
 			searches.append((tosearch[i],searchdict[tosearch[i]][0],searchdict[tosearch[i]][1],searchdict[tosearch[i]][2]))
 
 		if searchres.get()=='medium':
-			delta = currentvalues[i]*0.50
+			delta = currentvalues[i]*0.20
 			minval = currentvalues[i]-delta
 			if minval<0:
 				minval=delta
 			maxval = currentvalues[i]+delta
-			stepsize = 2*delta*0.1		#take 10% of total range as stepsize
+			stepsize = 2*delta*0.2		#take 20% of total range as stepsize
 			searches.append((tosearch[i],minval,maxval,stepsize))
 		
+		# if searchres.get()=='medium':
+                #         if (i == 0):
+                #                 delta = 0.1
+                #         else:
+		# 	        delta = currentvalues[i]*0.20
+		# 	minval = currentvalues[i]-delta
+		# 	if minval<0:
+		# 		minval=delta
+		# 	maxval = currentvalues[i]+delta
+                #         if (i == 0):
+                #                 stepsize = 0.05
+                #         else:
+		# 	        stepsize = 2*delta*0.1		#take 10% of total range as stepsize
+		# 	searches.append((tosearch[i],minval,maxval,stepsize))
+
+                # print 'searches = ', searches
+                        
 		if searchres.get()=='fine':
-			delta = currentvalues[i]*0.20
+			delta = currentvalues[i]*0.10
 			minval = currentvalues[i]-delta
 			if minval<0:
 				minval=delta
 
 			maxval = currentvalues[i]+delta
-			stepsize = 2*delta*0.05		#take 5% of total range as stepsize
+			stepsize = 2*delta*0.1		#take 10% of total range as stepsize
 			searches.append((tosearch[i],minval,maxval,stepsize))
 
 	varstochange = []
@@ -1387,6 +1451,13 @@ def_Z1_result_2_var = Tk.StringVar()
 global def_Z1_result_3_var
 def_Z1_result_3_var = Tk.StringVar()
 
+global def_beta_result_1_var
+def_beta_result_1_var = Tk.StringVar()
+global def_beta_result_2_var
+def_beta_result_2_var = Tk.StringVar()
+global def_beta_result_3_var
+def_beta_result_3_var = Tk.StringVar()
+
 global def_v0_result_1_var
 def_v0_result_1_var = Tk.StringVar()
 global def_v0_result_2_var
@@ -1451,9 +1522,9 @@ global applyvalues
 applyvalues = 0
 
 def apply_vals():
-	searchpars = ['gamma_check_var','b0_check_var','b1_check_var','hb0_check_var','hb1_check_var','z1_check_var','v0_check_var','hv_check_var','d0_check_var','mu_check_var']
-	pararray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
-	labelarray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
+	searchpars = ['gamma_check_var','b0_check_var','b1_check_var','hb0_check_var','hb1_check_var','z1_check_var','beta_check_var','v0_check_var','hv_check_var','d0_check_var','mu_check_var']
+	pararray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_beta', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
+	labelarray = ['def_cri', 'def_b0', 'def_b1', 'def_hb1', 'def_hb2', 'def_Z1', 'def_beta', 'def_v0', 'def_hv', 'def_D0', 'def_mu']
 	for i in range(len(tosearch)):
 		exec('{0}={1}'.format(tosearch[i],best_results_array[i],globals()))
 	global applyvalues
@@ -1495,37 +1566,41 @@ def open_parsearch_window():
 	Tk.Label(parsearchframe,textvariable=def_Z1_result_1_var).grid(row=7,column=1,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_Z1_result_2_var).grid(row=7,column=2,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_Z1_result_3_var).grid(row=7,column=3,stick=Tk.W)
-	v0_box = Tk.Checkbutton(master=parsearchframe,text='v0', var=v0_check_var).grid(row=8,column=0,sticky=Tk.W)
+	beta_box = Tk.Checkbutton(master=parsearchframe,text=u"\N{GREEK SMALL LETTER BETA}", var=beta_check_var).grid(row=8,column=0,sticky=Tk.W)
+	Tk.Label(parsearchframe,textvariable=def_beta_result_1_var).grid(row=7,column=1,stick=Tk.W)
+	Tk.Label(parsearchframe,textvariable=def_beta_result_2_var).grid(row=7,column=2,stick=Tk.W)
+	Tk.Label(parsearchframe,textvariable=def_beta_result_3_var).grid(row=7,column=3,stick=Tk.W)
+	v0_box = Tk.Checkbutton(master=parsearchframe,text='v0', var=v0_check_var).grid(row=9,column=0,sticky=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_v0_result_1_var).grid(row=8,column=1,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_v0_result_2_var).grid(row=8,column=2,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_v0_result_3_var).grid(row=8,column=3,stick=Tk.W)
-	hv_box = Tk.Checkbutton(master=parsearchframe,text='h_v', var=hv_check_var).grid(row=9,column=0,sticky=Tk.W)
+	hv_box = Tk.Checkbutton(master=parsearchframe,text='h_v', var=hv_check_var).grid(row=10,column=0,sticky=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_hv_result_1_var).grid(row=9,column=1,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_hv_result_2_var).grid(row=9,column=2,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_hv_result_3_var).grid(row=9,column=3,stick=Tk.W)
-	d0_box = Tk.Checkbutton(master=parsearchframe,text='D0', var=d0_check_var).grid(row=10,column=0,sticky=Tk.W)
+	d0_box = Tk.Checkbutton(master=parsearchframe,text='D0', var=d0_check_var).grid(row=12,column=0,sticky=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_D0_result_1_var).grid(row=10,column=1,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_D0_result_2_var).grid(row=10,column=2,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_D0_result_3_var).grid(row=10,column=3,stick=Tk.W)
-	mu_box = Tk.Checkbutton(master=parsearchframe,text=u'\N{GREEK SMALL LETTER MU}', var=mu_check_var).grid(row=11,column=0,sticky=Tk.W)
+	mu_box = Tk.Checkbutton(master=parsearchframe,text=u'\N{GREEK SMALL LETTER MU}', var=mu_check_var).grid(row=12,column=0,sticky=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_mu_result_1_var).grid(row=11,column=1,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_mu_result_2_var).grid(row=11,column=2,stick=Tk.W)
 	Tk.Label(parsearchframe,textvariable=def_mu_result_3_var).grid(row=11,column=3,stick=Tk.W)
 
 	Tk.Label(master=parsearchframe,text=u'\u03C7^2').grid(row=12,column=0,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,textvariable=chi_result_1_label).grid(row=12,column=1,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,textvariable=chi_result_2_label).grid(row=12,column=2,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,textvariable=chi_result_3_label).grid(row=12,column=3,sticky=Tk.W)
-	Tk.Label(parsearchframe,text='Search resolution').grid(row=13,column=0,sticky=Tk.W)
-	Tk.OptionMenu(parsearchframe, searchres, 'very coarse', 'coarse','medium','fine').grid(row=13,column=1)
-	search_adv_button=Tk.Button(parsearchframe,text='Advection',command=setsearchmode_adv).grid(row=13,column=2)
-	search_dif_button=Tk.Button(parsearchframe,text='Diffusion',command=setsearchmode_dif).grid(row=13,column=3)
-	searchbutton = Tk.Button(parsearchframe,text='Search!',command=search).grid(row=14,column=0,columnspan=3)
-	searchbutton = Tk.Button(parsearchframe,text='Apply results',command=apply_vals).grid(row=14,column=3,columnspan=1)
-	Tk.Label(master=parsearchframe,text='Progress:').grid(row=15,column=0,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,textvariable=progress).grid(row=15,column=1,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,text='Time remaining:').grid(row=15,column=2,sticky=Tk.W)
-	Tk.Label(master=parsearchframe,textvariable=eta_label).grid(row=15,column=3,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,textvariable=chi_result_1_label).grid(row=13,column=1,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,textvariable=chi_result_2_label).grid(row=13,column=2,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,textvariable=chi_result_3_label).grid(row=13,column=3,sticky=Tk.W)
+	Tk.Label(parsearchframe,text='Search resolution').grid(row=14,column=0,sticky=Tk.W)
+	Tk.OptionMenu(parsearchframe, searchres, 'very coarse', 'coarse','medium','fine').grid(row=14,column=1)
+	search_adv_button=Tk.Button(parsearchframe,text='Advection',command=setsearchmode_adv).grid(row=14,column=2)
+	search_dif_button=Tk.Button(parsearchframe,text='Diffusion',command=setsearchmode_dif).grid(row=14,column=3)
+	searchbutton = Tk.Button(parsearchframe,text='Search!',command=search).grid(row=15,column=0,columnspan=3)
+	searchbutton = Tk.Button(parsearchframe,text='Apply results',command=apply_vals).grid(row=15,column=3,columnspan=1)
+	Tk.Label(master=parsearchframe,text='Progress:').grid(row=16,column=0,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,textvariable=progress).grid(row=16,column=1,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,text='Time remaining:').grid(row=16,column=2,sticky=Tk.W)
+	Tk.Label(master=parsearchframe,textvariable=eta_label).grid(row=16,column=3,sticky=Tk.W)
 
 
 
@@ -1615,6 +1690,8 @@ rownum=30
 loadpars_button = Tk.Button(master=configframe,text='Load Pars',command=loadpars)
 loadpars_button.grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
 
+
+
 #advection only options
 rownum=0
 dv0 = Tk.DoubleVar()
@@ -1638,6 +1715,12 @@ rownum=3
 Tk.Label(tab_adv,text='Velocity Field').grid(row=rownum,column=0,columnspan=2,sticky=Tk.W+Tk.E)
 option = Tk.OptionMenu(tab_adv, def_velfield, -1, 0, 1, 2, 3, command=setdummval).grid(row=rownum,column=2)
 
+rownum=4
+dbeta = Tk.DoubleVar()
+dbeta.set(0.1)
+delta_beta = Tk.Entry(tab_adv,width=10,textvariable=dbeta).grid(row=rownum,column=2)
+button_betap = Tk.Button(tab_adv, text=u"\N{GREEK SMALL LETTER BETA}+", command=lambda: parp('def_beta','dbeta.get()')).grid(row=rownum,column=0,sticky=Tk.W+Tk.E)
+button_betam = Tk.Button(tab_adv, text=u"\N{GREEK SMALL LETTER BETA}-", command=lambda: parm('def_beta','dbeta.get()')).grid(row=rownum,column=1,sticky=Tk.W+Tk.E)
 
 #diffusion only options
 rownum = 0
