@@ -473,7 +473,7 @@ struct grid_1d setup_initial_grid (void)
     /*     { */
     /*         for (i=0; i <= grid_size + 1; i++) */
     /*             cr[i][j].N = cr[0][nu_break].N * */
-    /*                 pow (cr[0][j].E / cr[0][nu_break].E, -gamma_in-1.0); */
+    /*                 pow (cr[0][j].E / cr[0][nu_break].E, -gamma_in-0.3); */
 
     /*     } */
         

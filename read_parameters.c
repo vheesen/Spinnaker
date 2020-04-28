@@ -333,7 +333,7 @@ void read_parameters(void)
     grid_size = (int) 2.0 * grid_size;
 
     R0 = R0 * kpc;
-    h_grav = 18.0;
+    h_grav = 4.0 * R0 / kpc;
     
     fclose(f);
 

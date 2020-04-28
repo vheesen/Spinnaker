@@ -19,6 +19,7 @@ void output_file (int i_max)
     FILE *f8;
     FILE *f9;
     FILE *f10;
+    FILE *f11;
 
     int ii, jj, kk, ii_mod;
     int nu1, nu2, nu3, nu4, nu_spec_ref, nu1_crit[402], nu2_crit[402];
@@ -26,6 +27,7 @@ void output_file (int i_max)
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
     double v_z_interp;
     double grid_print_modulo;
+    double rho0, rho, u_grav;
     
         
     
@@ -71,6 +73,7 @@ void output_file (int i_max)
     f4=fopen("./spec.dat", "w");
     f5=fopen("./ne_spec.dat", "w");
     f10=fopen("./bnorm.dat", "w");
+    f11=fopen("./e.dat", "w");
     if (model == 1 || initialize_model == 1)
     {
         
@@ -147,6 +150,12 @@ void output_file (int i_max)
   
     }
 
+
+    rho0 = pow(B_field[0] / 1.e-6, 2.0) * pow(v_z[0] / 2.2e5, -2.0) * 1.67e-24;
+   
+    
+    printf ("rho0 = %g\n", rho0);
+    
  
     fprintf(f1, "# z[kpc], n(nu_1), n(nu_2), n(nu_1_crit), n(nu_2_crit), R/R0, V/V0\n");
 
@@ -158,6 +167,10 @@ void output_file (int i_max)
         fprintf(f3, "# z[kpc], I(nu_1), I(nu_2), I(nu_3), I(nu_4), alpha(nu_1-nu_2), alpha(nu_2-nu_3), alpha(nu_3-nu_4)\n");
     fprintf(f4, "# nu[Hz], I(z_1), I(z_2), I(z_3), I(z_4), I(z_5), I(z_6)\n");
     fprintf(f5, "# nu[Hz], N(z_1), N(z_2), N(z_3), N(z_4), N(z_5), N(z_6)\n");
+
+
+    fprintf(f11, "# z[kpc], rho [cm^-3], U_cr, U_B, U_kin, U_grav, U_cr_work [10^-12 erg cm^-2 s^-1]\n");
+
 
     for (ii=0; ii <= i_max; ii++)
     {
@@ -283,6 +296,17 @@ void output_file (int i_max)
                     cr[ii][0].z / kpc, B_field[ii], v_z[ii], radius(cr[ii][0].z / kpc), t_ad[ii] , t_ad_r[ii], t_ad_v[ii], cr[ii][0].t_adv );
             fprintf(f10, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                     cr[ii][0].z / kpc, B_field[ii] / B0, v_z[ii] / v_z[0], radius(cr[ii][0].z / kpc) / R0, t_ad[ii] , t_ad_r[ii], t_ad_v[ii], cr[ii][0].t_adv );
+
+            rho = rho0 * pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii];
+
+            if (ii == 0)
+                 u_grav = 0.0;
+            else
+                u_grav = rho * pow(V_rot, 2.0) / (2.0 * R0) * exp(-cr[ii][0].z / kpc / h_grav) * (cr[ii][0].z - cr[ii-1][0].z) + u_grav;
+            
+                
+            fprintf(f11, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
+                    cr[ii][0].z / kpc, rho / 1.67e-24, 1.e12 * u_B[0] * pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii] * cr[ii][0].N, 1.e12 * u_B[0] * pow(B_field[ii] / B_field[0], 2.0), 1.e12 * rho * 0.5 * pow(v_z[ii], 2.0), 1.e12 * u_grav, 1.e12 * u_B[0] * (1.0 - pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii] * cr[ii][0].N ) );
             
             /* if (model == 1 || initialize_model == 1) */
             /* { */
@@ -442,7 +466,7 @@ void output_file (int i_max)
     }
     fclose(f9);
     fclose(f10);
-    
+    fclose(f11);
 }
 
 void output_stdout (int i_max)
