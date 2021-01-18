@@ -357,12 +357,14 @@ double convolve_intensity_nu1 (int ii_ref)
         for (ii=0; ii <= grid_size; ii++)
         {
 
-            int_conv = int_conv + intensity_nu1[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+            int_conv = int_conv + V0 / v_z[ii] *
+                intensity_nu1[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                             ( 2.0 * sigma_beam * sigma_beam ) )
                 / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
                 
             if (ii != 0 )
-                int_conv = int_conv + intensity_nu1[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+                int_conv = int_conv + V0 / v_z[ii] *
+                    intensity_nu1[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                                 ( 2.0 * sigma_beam * sigma_beam ) )
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
         }
@@ -395,12 +397,14 @@ double convolve_intensity_nu2 (int ii_ref)
         for (ii=0; ii <= grid_size; ii++)
         {
 
-            int_conv = int_conv + intensity_nu2[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+            int_conv = int_conv + V0 / v_z[ii] *
+                intensity_nu2[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                             ( 2.0 * sigma_beam * sigma_beam ) )
                 / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
 
             if (ii != 0 )
-                int_conv = int_conv + intensity_nu2[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+                int_conv = int_conv + V0 / v_z[ii] *
+                    intensity_nu2[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                                 ( 2.0 * sigma_beam * sigma_beam ) )
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
             
@@ -433,12 +437,14 @@ double convolve_intensity_nu3 (int ii_ref)
         for (ii=0; ii <= grid_size; ii++)
         {
 
-            int_conv = int_conv + intensity_nu3[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+            int_conv = int_conv +  V0 / v_z[ii] *
+                intensity_nu3[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                             ( 2.0 * sigma_beam * sigma_beam ) )
                 / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
 
             if (ii != 0 )
-                int_conv = int_conv + intensity_nu3[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+                int_conv = int_conv +  V0 / v_z[ii] *
+                    intensity_nu3[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                                 ( 2.0 * sigma_beam * sigma_beam ) )
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
     
@@ -471,12 +477,14 @@ double convolve_intensity_nu4 (int ii_ref)
         for (ii=0; ii <= grid_size; ii++)
         {
 
-            int_conv = int_conv + intensity_nu4[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+            int_conv = int_conv +  V0 / v_z[ii] *
+                intensity_nu4[ii] * exp ( -pow ( cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                             ( 2.0 * sigma_beam * sigma_beam ) )
                 / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
 
             if (ii != 0 )
-                int_conv = int_conv + intensity_nu4[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
+                int_conv = int_conv +  V0 / v_z[ii] *
+                    intensity_nu4[ii] * exp ( -pow ( -cr[ii][0].z -  cr[ii_ref][0].z, 2.0 ) /
                                                                 ( 2.0 * sigma_beam * sigma_beam ) )
                     / sqrt(2.0 * pi * sigma_beam * sigma_beam)* cr[ii][0].delta_z;
             

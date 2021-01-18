@@ -10,7 +10,7 @@
 #define DEC_H
 
 /*Global integer variables*/
-int i, j;
+int i, j, i_crit;
 
 /*Definitions for the parameters read from file*/
 char parameter_file_name[25];

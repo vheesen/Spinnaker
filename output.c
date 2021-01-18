@@ -20,6 +20,8 @@ void output_file (int i_max)
     FILE *f9;
     FILE *f10;
     FILE *f11;
+    FILE *f12;
+    
 
     int ii, jj, kk, ii_mod;
     int nu1, nu2, nu3, nu4, nu_spec_ref, nu1_crit[402], nu2_crit[402];
@@ -27,8 +29,8 @@ void output_file (int i_max)
     double intensity_interp1, intensity_interp2, intensity_interp3, intensity_interp4;
     double v_z_interp;
     double grid_print_modulo;
-    double rho0, rho, u_grav;
-    
+    double rho0, rho, u_grav, area, area0, P_g, P_c;
+        
         
     
     nu1 = (int) (log(nu_1 / 0.001e9) / log(delta_nu_factor));
@@ -74,6 +76,7 @@ void output_file (int i_max)
     f5=fopen("./ne_spec.dat", "w");
     f10=fopen("./bnorm.dat", "w");
     f11=fopen("./e.dat", "w");
+    f12=fopen("./flux.dat", "w");
     if (model == 1 || initialize_model == 1)
     {
         
@@ -151,9 +154,16 @@ void output_file (int i_max)
     }
 
 
-    rho0 = pow(B_field[0] / 1.e-6, 2.0) * pow(v_z[0] / 2.2e5, -2.0) * 1.67e-24;
-   
+//    rho0 = pow(B_field[0] / 1.e-6, 2.0) * pow(v_z[0] / 2.2e5, -2.0) * 1.67e-24;
+
+    P_c = u_B[i_crit] / 3.;
+    P_g = 2. / 3. * u_B[i_crit] / 2.5;
     
+    
+    rho0 = (5/3 * P_g + 4/3 * P_c) / pow(V0, 2.);
+            
+   
+    printf ("P_c = %g\n", P_c);
     printf ("rho0 = %g\n", rho0);
     
  
@@ -170,6 +180,7 @@ void output_file (int i_max)
 
 
     fprintf(f11, "# z[kpc], rho [cm^-3], U_cr, U_B, U_kin, U_grav, U_cr_work [10^-12 erg cm^-2 s^-1]\n");
+    fprintf(f12, "# z[kpc], M [g s^-1], E_cr, E_B, E_kin [erg s^-1]\n");
 
 
     for (ii=0; ii <= i_max; ii++)
@@ -297,16 +308,38 @@ void output_file (int i_max)
             fprintf(f10, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
                     cr[ii][0].z / kpc, B_field[ii] / B0, v_z[ii] / v_z[0], radius(cr[ii][0].z / kpc) / R0, t_ad[ii] , t_ad_r[ii], t_ad_v[ii], cr[ii][0].t_adv );
 
-            rho = rho0 * pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii];
+            rho = rho0 * pow (radius(cr[i_crit][0].z / kpc) / radius(cr[ii][0].z / kpc), 2.0) * v_z[i_crit] / v_z[ii];
+            area = 3.1415 * pow(radius(cr[ii][0].z / kpc), 2.0 );
+            area0 = 3.1415 * pow(R0, 2.0 );
+            
 
             if (ii == 0)
                  u_grav = 0.0;
             else
                 u_grav = rho * pow(V_rot, 2.0) / (2.0 * R0) * exp(-cr[ii][0].z / kpc / h_grav) * (cr[ii][0].z - cr[ii-1][0].z) + u_grav;
             
-                
+/* Thermal electron density and energy densities of the CRs, B, E_kin, u_grav, E_CR_work */                
             fprintf(f11, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                    cr[ii][0].z / kpc, rho / 1.67e-24, 1.e12 * u_B[0] * pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii] * cr[ii][0].N, 1.e12 * u_B[0] * pow(B_field[ii] / B_field[0], 2.0), 1.e12 * rho * 0.5 * pow(v_z[ii], 2.0), 1.e12 * u_grav, 1.e12 * u_B[0] * (1.0 - pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii] * cr[ii][0].N ) );
+                    cr[ii][0].z / kpc,
+                    rho / 1.67e-24 / 1.3,
+                    1.e12 * u_B[0] * pow(v_z[ii] * area / v_z[0] / area0, -(gamma_in + 2.0) / 3.0),
+                    1.e12 * u_B[0] * pow(B_field[ii] / B_field[0], 2.0),
+                    1.e12 * rho * 0.5 * pow(v_z[ii], 2.0),
+                    1.e12 * u_grav,
+                    1.e12 * u_B[0] * (1.0 - pow (R0 / radius(cr[ii][0].z / kpc), 2.0) * v_z[0] / v_z[ii] * cr[ii][0].N )
+                );
+            
+/* Energy flux */
+
+            fprintf(f12, "% 10e % 10e % 10e % 10e % 10e \n",
+                    cr[ii][0].z / kpc,
+                    rho * area * v_z[ii],
+                    u_B[0] * area * v_z[ii] *
+                    pow(v_z[ii] * area / v_z[0] / area0, -(gamma_in + 2.0) / 3.0),
+                    u_B[0] * pow(B_field[ii] / B_field[0], 2.0) * area * v_z[ii],
+                    rho * 0.5 * pow(v_z[ii], 3.0) * area
+                );
+            
             
             /* if (model == 1 || initialize_model == 1) */
             /* { */
@@ -344,10 +377,10 @@ void output_file (int i_max)
             {
                 if (normalize_intensities == 1)
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, v_z[0] / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), v_z[0] / v_z[ii] * convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  v_z[0] / v_z[ii] * convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0),  v_z[0] / v_z[ii] * convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), convolve_intensity_nu2 (ii) / convolve_intensity_nu2 (0),  convolve_intensity_nu3 (ii) / convolve_intensity_nu3 (0), convolve_intensity_nu4 (ii) / convolve_intensity_nu4 (0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
                 else          
                     fprintf(f3, "% 10e % 10e % 10e % 10e % 10e % 10e % 10e % 10e \n",
-                            cr[ii][0].z / kpc, v_z[0] / v_z[ii] * convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), v_z[0] / v_z[ii] * convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  v_z[0] / v_z[ii] * convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  v_z[0] / v_z[ii] * convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
+                            cr[ii][0].z / kpc, convolve_intensity_nu1 (ii) / convolve_intensity_nu1 (0), convolve_intensity_nu2(ii) / convolve_intensity_nu1(0),  convolve_intensity_nu3(ii) / convolve_intensity_nu1(0),  convolve_intensity_nu4(ii) / convolve_intensity_nu1(0), log(convolve_intensity_nu1(ii)/convolve_intensity_nu2(ii))/log(nu_1/nu_2), log(convolve_intensity_nu2(ii)/convolve_intensity_nu3(ii))/log(nu_2/nu_3), log(convolve_intensity_nu3(ii)/convolve_intensity_nu4(ii))/log(nu_3/nu_4) );
             }
             
             
@@ -467,6 +500,7 @@ void output_file (int i_max)
     fclose(f9);
     fclose(f10);
     fclose(f11);
+    fclose(f12);
 }
 
 void output_stdout (int i_max)

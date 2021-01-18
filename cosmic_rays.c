@@ -283,6 +283,19 @@ struct grid_1d setup_initial_grid (void)
                 printf("z_crit = %g kpc\n", z_crit);
                 
         }
+
+
+        i_crit = 0;
+        for (i=0; i <= grid_size + 1; i++)
+            if ( fabs(cr[i][0].z - z_crit * kpc) < fabs(cr[i_crit][0].z - z_crit * kpc) )
+                i_crit = i;
+                
+//        printf("z_crit = %g z_crit_approx = %g\n", z_crit, cr[i_crit][0].z/kpc );
+        
+
+        
+        
+        
         
     }
     

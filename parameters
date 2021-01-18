@@ -31,6 +31,7 @@ h_V = 1.#[kpc]
 adiabatic_losses = -1#Yes: 1, No: -1 (only for advection)
 D0 = 3.0e28#Diffusion coefficient [cm^2 s^-1]
 mu_diff = 0.5#Energy dependence D=D0*E^mu_diff
+V_rot = 187.e5#rotational velocity [cm s^-1]
 #----------------------------------------------------------------------------
 #Magnetic field setup
 #----------------------------------------------------------------------------
@@ -41,6 +42,8 @@ B0 = 13.5e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 B1 = 8.6e-6#Magnetic field strength [G], 1mikroGauss=1.0e-10Tesla
 h_B1 = 0.6#Scaleheight of the B-field in zone 1 [kpc]
 h_B2 = 5.0#Scaleheight of the B-field in zone 2 [kpc]
+beta = 1.0#Power-law index for the velocity, V = V0 * (R/R0)^-beta
+R0 = 1.04e22#Jet radius at the base [cm]
 #----------------------------------------------------------------------------
 #Use a magnetic field model (needs edit of the source files)
 #----------------------------------------------------------------------------
@@ -49,6 +52,4 @@ initialize_model = -1#Initialze magnetic field model
 model_north = 1#Use northern part of the model
 update_model = -1#Rescale magnetic field model
 xi = 3.65#Model normalization
-beta = 1.0#Power-law index for the velocity, V = V0 * (R/R0)^-beta
-R0 = 1.04e22#Jet radius at the base [cm]
 #EOF*************************************************************************
