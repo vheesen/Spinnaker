@@ -88,7 +88,8 @@ try:
 	else:
 		def_ablosses = -1
 
-        print 'string = ', def_ablossesstr.get()
+                # test whether adiabatic losses are switched on
+                #        print 'string = ', def_ablossesstr.get()
 
         def_velfield = Tk.IntVar()
 	def_velfield.set(int(lastpars[12]))
@@ -327,10 +328,10 @@ def initial_plot():
 		global haserror
 		if d2[i,:].shape[1]==3:
 			plotfig.axes[i].errorbar(d2[i,:,0]/1000,d2[i,:,1]/normfac,d2[i,:,2]/normfac,ls='none')
-			plotfig.axes[i].scatter(d2[i,:,0]/1000,d2[i,:,1]/normfac,s=50,label=str(frequencies[i]/1e9)+' GHz')
+			plotfig.axes[i].scatter(d2[i,:,0]/1000,d2[i,:,1]/normfac,s=50,label=str(frequencies[i]/1e6)+' MHz')
 			haserror = True
 		else:
-			plotfig.axes[i].plot(d2[i,:,0]/1000,d2[i,:,1]/normfac,label=str(frequencies[i]/1e9)+' GHz')
+			plotfig.axes[i].plot(d2[i,:,0]/1000,d2[i,:,1]/normfac,label=str(frequencies[i]/1e6)+' MHz')
 			haserror = False
 
 	if d2.shape[0]==1:
@@ -340,7 +341,7 @@ def initial_plot():
 			ylim = plotfig.axes[0].get_ylim()
 			chiplot_1, = plotfig.axes[0].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 			plotfig.axes[0].set_ylabel('Normalized intensity',fontsize=options.labelsize)
-			plotfig.axes[0].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
+			plotfig.axes[0].set_xlabel('Distance from disc [kpc]',fontsize=options.labelsize)
 			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
 		except:
 			if debug_out:
@@ -374,7 +375,7 @@ def initial_plot():
 			xlim = plotfig.axes[2].get_xlim()
 			ylim = plotfig.axes[2].get_ylim()
 			chiplot_3, = plotfig.axes[2].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
-			plotfig.axes[2].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
+			plotfig.axes[2].set_xlabel('Distance from disc [kpc]',fontsize=options.labelsize)
 			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
 			plotfig.axes[2].set_ylabel('Spectral index',fontsize=options.labelsize)
 			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
@@ -435,7 +436,7 @@ def initial_plot():
 			xlim = plotfig.axes[4].get_xlim()
 			ylim = plotfig.axes[4].get_ylim()
 			chiplot_5, = plotfig.axes[4].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
-			plotfig.axes[4].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
+			plotfig.axes[4].set_xlabel('Distance from disc [kpc]',fontsize=options.labelsize)
 			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
 			plotfig.axes[3].set_ylabel('Spectral index',fontsize=options.labelsize)
 			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
@@ -523,7 +524,7 @@ def initial_plot():
 			ylim = plotfig.axes[6].get_ylim()
 			chiplot_7, = plotfig.axes[6].plot(numpy.mean(xlim),numpy.mean(ylim),label=r"$\chi^2$="+str(0),alpha=0)
 
-			plotfig.axes[6].set_xlabel('Distance from disk [kpc]',fontsize=options.labelsize)
+			plotfig.axes[6].set_xlabel('Distance from disc [kpc]',fontsize=options.labelsize)
 			plotfig.axes[1].set_ylabel('Normalized intensity',fontsize=options.labelsize,y=1)
 			plotfig.axes[5].set_ylabel('Spectral index',fontsize=options.labelsize)
 			plotfig.axes[0].tick_params(labelsize=options.ticklabelsize)
@@ -630,7 +631,7 @@ def run():
 		def_ablosses = -1
 
         
-        print 'string = ', def_ablossesstr.get()
+#        print 'string = ', def_ablossesstr.get()
         pars2 = pars2.replace('z_halo = 8.','z_halo = '+str(halosize))	#enter here the parameter you wish to change
 	pars2 = pars2.replace('grid_size = 200','grid_size = '+str(gridsize))
 	pars2 = pars2.replace('V0 = 300.0e5','V0 = '+str(def_v0)+'e5')
@@ -1337,7 +1338,11 @@ def search():
 			stepsize = 2*delta*0.1		#take 10% of total range as stepsize
 			searches.append((tosearch[i],minval,maxval,stepsize))
 
-	varstochange = []
+
+        print 'searches = ', searches
+
+
+        varstochange = []
 	mins = []
 	maxs = []
 	vals = numpy
@@ -1361,14 +1366,23 @@ def search():
 	global progress
 	global bestresult
 	global bestresultchi
+
+        f1 = open('chi.dat', 'w')
+        
 	#stuff for ETA calculation
 	timearray = []
+        chi_data = []
+        i_values_1 = []
+        i_values_2 = []
 	Ncombinations = len(combinations)
 	for i in combinations:
 		t0 = time.time()
 		result = run_noplot(varstochange,i)
-	#	print i,result
+		print 'result =', i,result
 		resultdict[str(i)]=result
+                chi_data.append(float(result))
+                i_values_1.append(float(i[0]))
+                i_values_2.append(float(i[1]))
 		itercount+=1
 		progress.set(str(round(100*itercount/Ncombinations,2))+'%')
 		root.update_idletasks()
@@ -1381,6 +1395,9 @@ def search():
 		s = int(eta_time-h*3600-m*60)
 		eta_label.set(str(int(h)).zfill(2)+':'+str(int(m)).zfill(2)+':'+str(s).zfill(2))
 
+        for i in range(len(chi_data)):
+                f1.write(str(i_values_1[i]) + '  ' + (str(i_values_2[i]))+ '  ' + str(chi_data[i])+'\n')        
+        f1.close()
 	#reset labels
 	for v in pararray:
 		exec('{0}_result_1_var.set("")'.format(v))
@@ -1399,7 +1416,13 @@ def search():
 	chi_result_1_label.set(round(orderedresult[0][1],5))
 	chi_result_2_label.set(round(orderedresult[1][1],5))
 	chi_result_3_label.set(round(orderedresult[2][1],5))
-		
+        print 'chi =', chi_result_1_label
+
+
+#        for i in combinations:
+#                print 'results =', orderedresult[i][0][1:-1]
+       
+
 global progress
 progress = Tk.StringVar()
 global chi_result_1_label
