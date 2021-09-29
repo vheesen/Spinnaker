@@ -267,7 +267,7 @@ struct grid_1d setup_initial_grid (void)
 
         z_crit = 1.0;
         
-        for (ii = 0; ii <= 10; ii++)
+        for (ii = 0; ii <= 100; ii++)
                 
         {
             fnewton =  pow(z_crit, beta) - 2.0 * beta * pow(V0, 2.0) / pow(V_rot, 2.0) * (R0/kpc) * pow(z_crit, beta -1.0) *
@@ -277,10 +277,21 @@ struct grid_1d setup_initial_grid (void)
 
             z_crit = z_crit - fnewton / fnewton_prime;
 
+            
+                
+
+            if (fabs(fnewton / fnewton_prime) < 0.001)
+            {
+                
+                printf("z_crit = %g kpc\n", z_crit);
+                break;
+            }
+            
+            
                 
 //            printf("fnewton = %g fnewton_prime = %g z_crit =%g \n", fnewton, fnewton_prime, z_crit);
-            if (ii == 10)
-                printf("z_crit = %g kpc\n", z_crit);
+            if (ii == 100)
+                printf("Warning: solution of the critical point did not converge\n");
                 
         }
 
