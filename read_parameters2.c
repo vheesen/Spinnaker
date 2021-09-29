@@ -18,6 +18,7 @@ char regit(char input[], char *buf, char var[])
 	char *chr=strchr(temp,'#');
 	int len = strlen(var);
 	strncpy(buf,temp+len,chr-temp-len);
+    return 0;
 }
 
 //returns a float variable
