@@ -214,7 +214,7 @@ void adiabatic (void)
 struct grid_1d setup_initial_grid (void)
 {
     double B_CMB;
-    int nu_break, ii;
+    int nu_break, ii, warning_flag;
     double fnewton, fnewton_prime, v_wind, rhs, z_crit, c_const;
     
 
@@ -345,7 +345,8 @@ struct grid_1d setup_initial_grid (void)
             else
                 v_wind = 2.0;
             
-
+            warning_flag = 0;
+            
             for (ii = 0; ii <= 10; ii++)
                 
             {
@@ -356,22 +357,32 @@ struct grid_1d setup_initial_grid (void)
                 rhs = 2.0 * log(1.0 + pow(cr[i][0].z / kpc / h_V, beta)) + pow(V_rot / V0, 2.0) * h_grav * kpc / R0 * exp(-cr[i][0].z / kpc / h_grav) + c_const;
                 fnewton = pow(v_wind, 2.0) - 2.0 * log(v_wind) - rhs;
                 fnewton_prime = 2.0 * v_wind - 2.0 / v_wind;
+                
                 v_wind = v_wind - fnewton / fnewton_prime;
+/*                if (ii ==0)
+                    printf("v_wind = %g z = %g j =%i\n", v_wind, fnewton, j);
+                if (v_wind < fnewton / fnewton_prime)
+                printf("v_wind = %g z = %g j =%i\n", v_wind, fnewton, j);*/
 
-
-                if ((ii == 10) && (j <= nu_channel) && (fnewton >= 1.0e-6))
+                if ((ii == 10) && (fnewton >= 1.0e-6))
                 {
                     
                     printf("Problem in the solution of the wind equation.\n");
                     printf("v_wind = %g fnewton = %g rhs = %g\n", v_wind, fnewton, rhs);
-                    printf("Stop at i = %i j = %i\n", i, j);
-                    exit(0);
+                    printf("Reset velocity at i = %i z = %g kpc\n", i, cr[i][0].z / kpc);
+                    warning_flag = 1;
+                    
+//                    exit(0);
                 }
                 
                 
             }
 
-            v_z[i] = v_wind * V0;
+            if (warning_flag == 0)
+                v_z[i] = v_wind * V0;
+            else
+                v_z[i] = V0;
+            
             
         }
         
