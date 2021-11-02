@@ -364,7 +364,7 @@ struct grid_1d setup_initial_grid (void)
                 if (v_wind < fnewton / fnewton_prime)
                 printf("v_wind = %g z = %g j =%i\n", v_wind, fnewton, j);*/
 
-                if ((ii == 10) && (fnewton >= 1.0e-6))
+                if ((ii == 10) && (fnewton >= 1.0e-6) && (rhs - 1.0 >= 1.0e-4))
                 {
                     
                     printf("Problem in the solution of the wind equation.\n");
